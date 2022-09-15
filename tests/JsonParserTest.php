@@ -1,15 +1,15 @@
 <?php
 
-namespace Cerbero\:package_ns;
+namespace Cerbero\JsonParser;
 
-use Cerbero\:package_ns\Providers\:package_nsServiceProvider;
+use Cerbero\JsonParser\Providers\JsonParserServiceProvider;
 use Orchestra\Testbench\TestCase;
 
 /**
  * The package test suite.
  *
  */
-class :package_nsTest extends TestCase
+class JsonParserTest extends TestCase
 {
     /**
      * Retrieve the package providers.
@@ -20,7 +20,7 @@ class :package_nsTest extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            :package_nsServiceProvider::class,
+            JsonParserServiceProvider::class,
         ];
     }
 }

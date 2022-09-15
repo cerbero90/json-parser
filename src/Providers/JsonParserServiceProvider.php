@@ -1,6 +1,6 @@
 <?php
 
-namespace Cerbero\:package_ns\Providers;
+namespace Cerbero\JsonParser\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
  * The service provider.
  *
  */
-class :package_nsServiceProvider extends ServiceProvider
+class JsonParserServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name=":package_name">
-    <description>The coding standard of :package_name package</description>
+<ruleset name="json-parser">
+    <description>The coding standard of json-parser package</description>
     <arg value="p" />
 
     <config name="ignore_warnings_on_exit" value="1" />

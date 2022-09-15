@@ -1,11 +1,13 @@
 {
-    "name": "cerbero/:package_name",
+    "name": "cerbero/json-parser",
     "type": "library",
-    "description": ":package_description",
+    "description": "Zero-dependencies pull parser and lexer to save memory while reading big JSONs.",
     "keywords": [
-        "laravel"
+        "json",
+        "parser",
+        "lexer"
     ],
-    "homepage": "https://github.com/cerbero90/:package_name",
+    "homepage": "https://github.com/cerbero90/json-parser",
     "license": "MIT",
     "authors": [{
         "name": "Andrea Marco Sartori",
@@ -14,23 +16,23 @@
         "role": "Developer"
     }],
     "require": {
-        "php": "^8.0",
-        "illuminate/support": ">=8.0"
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "php": "^8.0"
     },
     "require-dev": {
-        "orchestra/testbench": ">=6.0",
         "pestphp/pest": "^1.21",
         "scrutinizer/ocular": "^1.8",
         "squizlabs/php_codesniffer": "^3.0"
     },
     "autoload": {
         "psr-4": {
-            "Cerbero\\:package_ns\\": "src"
+            "Cerbero\\JsonParser\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cerbero\\:package_ns\\": "tests"
+            "Cerbero\\JsonParser\\": "tests"
         }
     },
     "scripts": {
@@ -41,11 +43,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
-        },
-        "laravel": {
-            "providers": [
-                "Cerbero\\:package_ns\\Providers\\:package_nsServiceProvider"
-            ]
         }
     },
     "config": {
