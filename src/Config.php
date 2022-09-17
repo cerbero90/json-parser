@@ -22,7 +22,7 @@ class Config
     /**
      * The JSON pointers.
      *
-     * @var string[]
+     * @var Pointer[]
      */
     public array $pointers = [];
 
@@ -36,7 +36,7 @@ class Config
     /**
      * The callback to run during a parsing error.
      *
-     * @var callable|null
+     * @var Closure|null
      */
     public ?Closure $onError = null;
 
