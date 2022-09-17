@@ -33,7 +33,10 @@
     "autoload-dev": {
         "psr-4": {
             "Cerbero\\JsonParser\\": "tests"
-        }
+        },
+        "files": [
+            "helpers.php"
+        ]
     },
     "scripts": {
         "test": "pest",
