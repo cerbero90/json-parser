@@ -13,41 +13,6 @@ use Traversable;
 class Lexer implements IteratorAggregate
 {
     /**
-     * The JSON token boundaries.
-     *
-     * @var array
-     */
-    protected const BOUNDARIES = [
-        "\xEF" => true,
-        "\xBB" => true,
-        "\xBF" => true,
-        "\n" => true,
-        "\r" => true,
-        "\t" => true,
-        ' ' => true,
-        '{' => true,
-        '}' => true,
-        '[' => true,
-        ']' => true,
-        ':' => true,
-        ',' => true,
-    ];
-
-    /**
-     * The JSON structural boundaries.
-     *
-     * @var array
-     */
-    protected const STRUCTURES = [
-        '{' => true,
-        '}' => true,
-        '[' => true,
-        ']' => true,
-        ':' => true,
-        ',' => true,
-    ];
-
-    /**
      * The buffer to yield.
      *
      * @var string
@@ -81,8 +46,8 @@ class Lexer implements IteratorAggregate
             foreach (mb_str_split($chunk) as $char) {
                 // $this->isEscape = $char == '\\' && !$this->isEscape;
 
-                if (isset(static::BOUNDARIES[$char]) && $this->buffer != '') {
-                    if (isset(static::STRUCTURES[$char])) {
+                if (isset(Tokens::BOUNDARIES[$char]) && $this->buffer != '') {
+                    if (isset(Tokens::STRUCTURES[$char])) {
                         $this->buffer .= $char;
                     }
 
