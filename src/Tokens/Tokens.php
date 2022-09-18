@@ -1,6 +1,6 @@
 <?php
 
-namespace Cerbero\JsonParser;
+namespace Cerbero\JsonParser\Tokens;
 
 /**
  * The tokens related information.
