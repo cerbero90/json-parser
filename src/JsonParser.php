@@ -4,6 +4,7 @@ namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Decoders\ObjectDecoder;
+use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Sources\Source;
 use IteratorAggregate;
 use Traversable;
