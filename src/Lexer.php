@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Sources\Source;
+use Cerbero\JsonParser\Tokens\Tokens;
 use IteratorAggregate;
 use Traversable;
 
@@ -47,18 +48,17 @@ class Lexer implements IteratorAggregate
                 // $this->isEscape = $char == '\\' && !$this->isEscape;
 
                 if (isset(Tokens::BOUNDARIES[$char]) && $this->buffer != '') {
-                    if (isset(Tokens::STRUCTURES[$char])) {
-                        $this->buffer .= $char;
-                    }
-
                     yield $this->buffer;
                     $this->buffer = '';
-                    continue;
-                }
 
-                // if (!$this->isEscape) {
-                $this->buffer .= $char;
-                // }
+                    if (isset(Tokens::STRUCTURES[$char])) {
+                        yield $char;
+                    }
+                } else {
+                    // if (!$this->isEscape) {
+                    $this->buffer .= $char;
+                    // }
+                }
             }
         }
 
