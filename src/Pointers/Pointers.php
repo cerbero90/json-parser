@@ -77,6 +77,19 @@ class Pointers implements Countable
     }
 
     /**
+     * Mark the given pointer as found
+     *
+     * @param Pointer $pointer
+     * @return void
+     */
+    public function markAsFound(Pointer $pointer): void
+    {
+        $key = (string) $pointer;
+
+        $this->found[$key] = true;
+    }
+
+    /**
      * Determine whether all pointers were found within the JSON
      *
      * @return bool
