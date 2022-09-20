@@ -4,7 +4,10 @@ namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
+use Cerbero\JsonParser\Tokens\Scalar;
+use Cerbero\JsonParser\Tokens\StateMutator;
 use Cerbero\JsonParser\Tokens\Token;
+use Cerbero\JsonParser\Tokens\Value;
 use Generator;
 use IteratorAggregate;
 use Traversable;
@@ -100,8 +103,12 @@ class Parser implements IteratorAggregate
      */
     protected function traverseToken(Token $token): void
     {
-        if (!$this->state->inObject && $token instanceof Value && $this->state->depth < $this->pointer->depth()) {
-            $this->state->tree->traverse($token);
+        if (
+            !$this->state->inObject &&
+            $token instanceof Value &&
+            $this->state->tree->depth() < $this->pointer->depth()
+        ) {
+            $this->state->tree->traverseArray($this->pointer);
             $this->state->treeChanged = true;
         }
     }
@@ -117,6 +124,30 @@ class Parser implements IteratorAggregate
         if ($this->pointer->matchesTree($this->state->tree) && $this->shouldBufferToken($token)) {
             $this->state->buffer .= $token;
         }
+    }
+
+    /**
+     * Determine whether the given token should be buffered
+     *
+     * @param Token $token
+     * @return bool
+     */
+    protected function shouldBufferToken(Token $token): bool
+    {
+        return $this->state->tree->depth() > $this->pointer->depth()
+            || (!$this->state->expectsKey && $this->tokenIsExpected($token));
+    }
+
+    /**
+     * Determine whether the given token is expected
+     *
+     * @param Token $token
+     * @return bool
+     */
+    protected function tokenIsExpected(Token $token): bool
+    {
+        return ($this->state->tree->depth() == $this->pointer->depth() && $token instanceof Value)
+            || ($this->state->tree->depth() + 1 == $this->pointer->depth() && $token instanceof Scalar);
     }
 
     /**
