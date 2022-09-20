@@ -2,6 +2,7 @@
 
 namespace Cerbero\JsonParser\Pointers;
 
+use ArrayAccess;
 use Cerbero\JsonParser\Tree;
 use Stringable;
 
@@ -9,7 +10,7 @@ use Stringable;
  * The JSON pointer.
  *
  */
-class Pointer implements Stringable
+class Pointer implements ArrayAccess, Stringable
 {
     /**
      * The reference tokens.
@@ -112,6 +113,51 @@ class Pointer implements Stringable
         }
 
         return array_slice($this->referenceTokens, 0, $firstNest) == array_slice($tree->original(), 0, $firstNest);
+    }
+
+    /**
+     * Determine whether the given reference token exists
+     *
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->referenceTokens[$offset]);
+    }
+
+    /**
+     * Retrieve the given reference token
+     *
+     * @param mixed $offset
+     * @return mixed
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->referenceTokens[$offset] ?? null;
+    }
+
+    /**
+     * Do not set any reference token
+     *
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        return;
+    }
+
+    /**
+     * Do not unset any reference token
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        return;
     }
 
     /**
