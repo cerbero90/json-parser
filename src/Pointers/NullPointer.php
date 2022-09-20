@@ -2,6 +2,8 @@
 
 namespace Cerbero\JsonParser\Pointers;
 
+use Cerbero\JsonParser\Tree;
+
 /**
  * The null pointer.
  *
@@ -29,5 +31,16 @@ class NullPointer extends Pointer
     public function __construct()
     {
         $this->pointer = '';
+    }
+
+    /**
+     * Determine whether the pointer matches the given tree
+     *
+     * @param Tree $tree
+     * @return bool
+     */
+    public function matchesTree(Tree $tree): bool
+    {
+        return true;
     }
 }
