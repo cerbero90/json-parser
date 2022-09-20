@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Tokens\Token;
+use Cerbero\JsonParser\Pointers\Pointer;
 use IteratorAggregate;
 use Traversable;
 
@@ -31,18 +31,21 @@ class Tree implements IteratorAggregate
      *
      * @var int
      */
-    protected int $depth = 0;
+    protected int $depth = -1;
 
     /**
-     * Traverse the given token
+     * Traverse an array
      *
-     * @param Token $token
+     * @param Pointer $pointer
      * @return void
      */
-    public function traverse(Token $token): void
+    public function traverseArray(Pointer $pointer): void
     {
-        $this->original[$this->depth] = $token->value();
-        $this->wildcarded[$this->depth] = is_int($token->value()) ? '-' : $token->value();
+        $this->original[$this->depth] = isset($this->original[$this->depth]) ? $this->original[$this->depth] + 1 : 0;
+        array_splice($this->original, $this->depth + 1);
+
+        $this->wildcarded[$this->depth] = $pointer[$this->depth] == '-' ? '-' : $this->original[$this->depth];
+        array_splice($this->wildcarded, $this->depth + 1);
     }
 
     /**
