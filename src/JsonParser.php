@@ -101,6 +101,16 @@ class JsonParser implements IteratorAggregate
     }
 
     /**
+     * Silence errors while parsing
+     *
+     * @return static
+     */
+    public function ignoreErrors(): static
+    {
+        return $this->onError(fn () => true);
+    }
+
+    /**
      * Set the logic to run during parsing errors
      *
      * @param callable $callback
