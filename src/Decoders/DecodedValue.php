@@ -20,7 +20,7 @@ class DecodedValue
         public ?mixed $value = null,
         public ?string $error = null,
         public ?int $code = null,
-        public ?JsonException $e = null,
+        public ?JsonException $exception = null,
         public ?string $json = null,
     ) {
     }
