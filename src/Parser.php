@@ -4,6 +4,7 @@ namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
+use Cerbero\JsonParser\Tokens\Token;
 use Generator;
 use IteratorAggregate;
 use Traversable;
@@ -55,13 +56,14 @@ class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
+        /** @var Token $token */
         foreach ($this->lexer as $token) {
             $this->rematchPointer();
             $this->traverseToken($token);
             $this->bufferToken($token);
             $this->mutateState($token);
 
-            if ($this->state->depth > $this->pointer->depth()) {
+            if ($token->shouldContinue() || $this->state->tree->depth() > $this->pointer->depth()) {
                 continue;
             }
 
@@ -69,7 +71,9 @@ class Parser implements IteratorAggregate
                 yield from $this->yieldDecodedBuffer();
             }
 
-            if ($this->pointers->wereFound() && !$this->pointer->includesTree($this->tree)) {
+            $this->markPointerAsFound();
+
+            if ($this->pointers->wereFound() && !$this->pointer->includesTree($this->state->tree)) {
                 break;
             }
         }
@@ -97,8 +101,8 @@ class Parser implements IteratorAggregate
     protected function traverseToken(Token $token): void
     {
         if (!$this->state->inObject && $token instanceof Value && $this->state->depth < $this->pointer->depth()) {
-            $this->state->treeChanged = true;
             $this->state->tree->traverse($token);
+            $this->state->treeChanged = true;
         }
     }
 
@@ -146,6 +150,18 @@ class Parser implements IteratorAggregate
             yield $this->state->tree[$this->state->depth] => $decoded->value;
         } else {
             yield $decoded->value;
+        }
+    }
+
+    /**
+     * Mark the matching JSON pointer as found
+     *
+     * @return void
+     */
+    protected function markPointerAsFound(): void
+    {
+        if ($this->pointer->matchesTree($this->state->tree)) {
+            $this->pointers->markAsFound($this->pointer);
         }
     }
 }
