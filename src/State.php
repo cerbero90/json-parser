@@ -30,6 +30,13 @@ class State
     public string $buffer = '';
 
     /**
+     * Whether the token should be an object key.
+     *
+     * @var bool
+     */
+    public bool $expectsKey = false;
+
+    /**
      * Instantiate the class.
      *
      */
