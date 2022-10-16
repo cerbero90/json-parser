@@ -9,30 +9,11 @@ namespace Cerbero\JsonParser\Tokens;
 abstract class Token
 {
     /**
-     * Instantiate the class.
-     *
-     * @param mixed $value
-     */
-    public function __construct(protected mixed $value)
-    {
-    }
-
-    /**
-     * Retrieve the underlying value
-     *
-     * @return mixed
-     */
-    public function value(): mixed
-    {
-        return $this->value;
-    }
-
-    /**
-     * Determine whether the JSON parsing should continue after this token
+     * Determine whether this token closes a JSON chunk
      *
      * @return bool
      */
-    public function shouldContinue(): bool
+    public function closesChunk(): bool
     {
         return false;
     }
