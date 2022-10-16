@@ -2,9 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
-use Cerbero\JsonParser\Tokens\Scalar;
 use Cerbero\JsonParser\Tokens\StateMutator;
 use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Value;
@@ -33,13 +31,6 @@ class Parser implements IteratorAggregate
     protected Pointers $pointers;
 
     /**
-     * The JSON pointer matching the current tree.
-     *
-     * @var Pointer
-     */
-    protected Pointer $pointer;
-
-    /**
      * Instantiate the class.
      *
      * @param Lexer $lexer
@@ -49,7 +40,7 @@ class Parser implements IteratorAggregate
     {
         $this->state = new State();
         $this->pointers = new Pointers(...$config->pointers);
-        $this->pointer = $this->pointers->matchTree($this->state->tree);
+        $this->state->matchPointer($this->pointers);
     }
 
     /**
@@ -59,24 +50,23 @@ class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        /** @var Token $token */
         foreach ($this->lexer as $token) {
             $this->rematchPointer();
             $this->traverseToken($token);
             $this->bufferToken($token);
             $this->mutateState($token);
 
-            if ($token->shouldContinue() || $this->state->tree->depth() > $this->pointer->depth()) {
+            if (!$token->closesChunk() || $this->state->treeIsDeep()) {
                 continue;
             }
 
-            if ($this->state->buffer != '') {
+            if ($this->state->hasBuffer()) {
                 yield from $this->yieldDecodedBuffer();
             }
 
             $this->markPointerAsFound();
 
-            if ($this->pointers->wereFound() && !$this->pointer->includesTree($this->state->tree)) {
+            if ($this->pointers->wereFound() && !$this->state->treeInPointer()) {
                 break;
             }
         }
@@ -89,9 +79,9 @@ class Parser implements IteratorAggregate
      */
     protected function rematchPointer(): void
     {
-        if ($this->state->treeChanged && $this->pointers->count() > 1) {
-            $this->pointer = $this->pointers->matchTree($this->state->tree);
-            $this->state->treeChanged = false;
+        if ($this->state->treeChanged() && $this->pointers->count() > 1) {
+            $this->state->matchPointer($this->pointers);
+            $this->state->treeDidntChange();
         }
     }
 
@@ -103,13 +93,8 @@ class Parser implements IteratorAggregate
      */
     protected function traverseToken(Token $token): void
     {
-        if (
-            !$this->state->inObject &&
-            $token instanceof Value &&
-            $this->state->tree->depth() < $this->pointer->depth()
-        ) {
-            $this->state->tree->traverseArray($this->pointer);
-            $this->state->treeChanged = true;
+        if (!$this->state->inObject() && $token instanceof Value && $this->state->treeIsShallow()) {
+            $this->state->traverseArray();
         }
     }
 
@@ -121,33 +106,9 @@ class Parser implements IteratorAggregate
      */
     protected function bufferToken(Token $token): void
     {
-        if ($this->pointer->matchesTree($this->state->tree) && $this->shouldBufferToken($token)) {
-            $this->state->buffer .= $token;
+        if ($this->state->shouldBufferToken($token)) {
+            $this->state->bufferToken($token);
         }
-    }
-
-    /**
-     * Determine whether the given token should be buffered
-     *
-     * @param Token $token
-     * @return bool
-     */
-    protected function shouldBufferToken(Token $token): bool
-    {
-        return $this->state->tree->depth() > $this->pointer->depth()
-            || (!$this->state->expectsKey && $this->tokenIsExpected($token));
-    }
-
-    /**
-     * Determine whether the given token is expected
-     *
-     * @param Token $token
-     * @return bool
-     */
-    protected function tokenIsExpected(Token $token): bool
-    {
-        return ($this->state->tree->depth() == $this->pointer->depth() && $token instanceof Value)
-            || ($this->state->tree->depth() + 1 == $this->pointer->depth() && $token instanceof Scalar);
     }
 
     /**
@@ -170,15 +131,14 @@ class Parser implements IteratorAggregate
      */
     protected function yieldDecodedBuffer(): Generator
     {
-        $decoded = $this->config->decoder->decode($this->state->buffer);
-        $this->state->buffer = '';
+        $decoded = $this->config->decoder->decode($this->state->pullBuffer());
 
         if (!$decoded->succeeded) {
             call_user_func($this->config->onError, $decoded);
         }
 
-        if ($this->state->inObject) {
-            yield $this->state->tree[$this->state->depth] => $decoded->value;
+        if ($this->state->inObject()) {
+            yield $this->state->node() => $decoded->value;
         } else {
             yield $decoded->value;
         }
@@ -191,8 +151,8 @@ class Parser implements IteratorAggregate
      */
     protected function markPointerAsFound(): void
     {
-        if ($this->pointer->matchesTree($this->state->tree)) {
-            $this->pointers->markAsFound($this->pointer);
+        if ($this->state->pointerMatchesTree()) {
+            $this->pointers->markAsFound($this->state->pointer());
         }
     }
 }
