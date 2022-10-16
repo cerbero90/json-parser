@@ -25,7 +25,14 @@ class Lexer implements IteratorAggregate
      *
      * @var bool
      */
-    // protected bool $isEscape = false;
+    protected bool $isEscape = false;
+
+    /**
+     * The map of token instances.
+     *
+     * @var array
+     */
+    protected array $tokensMap = [];
 
     /**
      * Instantiate the class.
@@ -34,30 +41,41 @@ class Lexer implements IteratorAggregate
      */
     public function __construct(protected Source $source)
     {
+        $this->hydrateTokens();
+    }
+
+    /**
+     * Set the hydrated tokens
+     *
+     * @return void
+     */
+    protected function hydrateTokens(): void
+    {
+        foreach (Tokens::MAP as $token => $class) {
+            $this->tokensMap[$token] = new $class();
+        }
     }
 
     /**
      * Retrieve the JSON fragments
      *
-     * @return Traversable
+     * @return \Cerbero\JsonParser\Tokens\Token[]
      */
     public function getIterator(): Traversable
     {
         foreach ($this->source as $chunk) {
             foreach (mb_str_split($chunk) as $char) {
-                // $this->isEscape = $char == '\\' && !$this->isEscape;
+                $this->isEscape = $char == '\\' && !$this->isEscape;
 
                 if (isset(Tokens::BOUNDARIES[$char]) && $this->buffer != '') {
                     yield $this->buffer;
                     $this->buffer = '';
 
-                    if (isset(Tokens::STRUCTURES[$char])) {
+                    if (isset(Tokens::DELIMITERS[$char])) {
                         yield $char;
                     }
-                } else {
-                    // if (!$this->isEscape) {
+                } elseif (!$this->isEscape) {
                     $this->buffer .= $char;
-                    // }
                 }
             }
         }

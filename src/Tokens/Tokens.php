@@ -84,12 +84,21 @@ class Tokens
      *
      * @var array
      */
-    public const STRUCTURES = [
+    public const DELIMITERS = [
         '{' => true,
         '}' => true,
         '[' => true,
         ']' => true,
         ':' => true,
         ',' => true,
+    ];
+
+    /**
+     * The tokens class map.
+     *
+     * @var array
+     */
+    public const MAP = [
+        //
     ];
 }
