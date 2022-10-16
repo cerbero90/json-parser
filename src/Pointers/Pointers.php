@@ -44,16 +44,6 @@ class Pointers implements Countable
     }
 
     /**
-     * Retrieve the number of JSON pointers
-     *
-     * @return int
-     */
-    public function count(): int
-    {
-        return count($this->pointers);
-    }
-
-    /**
      * Retrieve the pointer matching the given tree
      *
      * @param Tree $tree
@@ -80,13 +70,13 @@ class Pointers implements Countable
      * Mark the given pointer as found
      *
      * @param Pointer $pointer
-     * @return void
+     * @return static
      */
-    public function markAsFound(Pointer $pointer): void
+    public function markAsFound(Pointer $pointer): static
     {
-        $key = (string) $pointer;
+        $this->found[(string) $pointer] = true;
 
-        $this->found[$key] = true;
+        return $this;
     }
 
     /**
@@ -96,6 +86,17 @@ class Pointers implements Countable
      */
     public function wereFound(): bool
     {
-        return count($this->pointers) == count($this->found);
+        return $this->count() > 0
+            && $this->count() == count($this->found);
+    }
+
+    /**
+     * Retrieve the number of JSON pointers
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->pointers);
     }
 }
