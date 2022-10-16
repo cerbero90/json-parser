@@ -6,7 +6,6 @@ use Cerbero\JsonParser\Decoders\ArrayDecoder;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Pointers\Pointer;
-use Closure;
 
 /**
  * The configuration.
@@ -38,9 +37,9 @@ class Config
     /**
      * The callback to run during a parsing error.
      *
-     * @var Closure
+     * @var callable
      */
-    public Closure $onError;
+    public callable $onError;
 
     /**
      * Instantiate the class
