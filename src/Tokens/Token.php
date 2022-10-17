@@ -2,6 +2,8 @@
 
 namespace Cerbero\JsonParser\Tokens;
 
+use Cerbero\JsonParser\State;
+
 /**
  * The abstract implementation of a token.
  *
@@ -9,11 +11,69 @@ namespace Cerbero\JsonParser\Tokens;
 abstract class Token
 {
     /**
-     * Determine whether this token closes a JSON chunk
+     * The token value.
+     *
+     * @var string
+     */
+    protected string $value;
+
+    /**
+     * Retrieve the token type
+     *
+     * @return int
+     */
+    abstract public function type(): int;
+
+    /**
+     * Set the token value
+     *
+     * @param string $value
+     * @return static
+     */
+    public function setValue(string $value): static
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    /**
+     * Determine whether the token is a value
      *
      * @return bool
      */
-    public function closesChunk(): bool
+    public function isValue(): bool
+    {
+        return ($this->type() | Tokens::VALUE_ANY) == Tokens::VALUE_ANY;
+    }
+
+    /**
+     * Determine whether the token is a scalar value
+     *
+     * @return bool
+     */
+    public function isScalar(): bool
+    {
+        return ($this->type() | Tokens::VALUE_SCALAR) == Tokens::VALUE_SCALAR;
+    }
+
+    /**
+     * Mutate the given state
+     *
+     * @param State $state
+     * @return void
+     */
+    public function mutateState(State $state): void
+    {
+        return;
+    }
+
+    /**
+     * Determine whether this token ends a JSON chunk
+     *
+     * @return bool
+     */
+    public function endsChunk(): bool
     {
         return false;
     }
