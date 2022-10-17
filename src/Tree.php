@@ -34,21 +34,6 @@ class Tree implements IteratorAggregate
     protected int $depth = -1;
 
     /**
-     * Traverse an array
-     *
-     * @param Pointer $pointer
-     * @return void
-     */
-    public function traverseArray(Pointer $pointer): void
-    {
-        $this->original[$this->depth] = isset($this->original[$this->depth]) ? $this->original[$this->depth] + 1 : 0;
-        array_splice($this->original, $this->depth + 1);
-
-        $this->wildcarded[$this->depth] = $pointer[$this->depth] == '-' ? '-' : $this->original[$this->depth];
-        array_splice($this->wildcarded, $this->depth + 1);
-    }
-
-    /**
      * Retrieve the original JSON tree
      *
      * @return array
@@ -96,6 +81,55 @@ class Tree implements IteratorAggregate
     public function emerge(): void
     {
         $this->depth--;
+    }
+
+    /**
+     * Determine whether the tree is traversing an object
+     *
+     * @return bool
+     */
+    public function inObject(): bool
+    {
+        return is_string($this->original[$this->depth]);
+    }
+
+    /**
+     * Traverse the given key
+     *
+     * @param string $key
+     * @return void
+     */
+    public function traverse(string $key): void
+    {
+        $this->original[$this->depth] = $key;
+        $this->wildcarded[$this->depth] = $key;
+
+        $this->trim();
+    }
+
+    /**
+     * Trim the tree after the latest traversed key
+     *
+     * @return void
+     */
+    protected function trim(): void
+    {
+        array_splice($this->original, $this->depth + 1);
+        array_splice($this->wildcarded, $this->depth + 1);
+    }
+
+    /**
+     * Traverse an array
+     *
+     * @param Pointer $pointer
+     * @return void
+     */
+    public function traverseArray(Pointer $pointer): void
+    {
+        $this->original[$this->depth] = isset($this->original[$this->depth]) ? $this->original[$this->depth] + 1 : 0;
+        $this->wildcarded[$this->depth] = $pointer[$this->depth] == '-' ? '-' : $this->original[$this->depth];
+
+        $this->trim();
     }
 
     /**

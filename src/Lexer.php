@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Sources\Source;
+use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Tokens;
 use IteratorAggregate;
 use Traversable;
@@ -13,6 +14,13 @@ use Traversable;
  */
 class Lexer implements IteratorAggregate
 {
+    /**
+     * The map of token instances.
+     *
+     * @var array<int, Token>
+     */
+    protected static array $tokensMap = [];
+
     /**
      * The buffer to yield.
      *
@@ -28,11 +36,11 @@ class Lexer implements IteratorAggregate
     protected bool $isEscape = false;
 
     /**
-     * The map of token instances.
+     * Whether the current character belongs to a string.
      *
-     * @var array
+     * @var bool
      */
-    protected array $tokensMap = [];
+    protected bool $inString = false;
 
     /**
      * Instantiate the class.
@@ -51,8 +59,12 @@ class Lexer implements IteratorAggregate
      */
     protected function hydrateTokens(): void
     {
-        foreach (Tokens::MAP as $token => $class) {
-            $this->tokensMap[$token] = new $class();
+        if (static::$tokensMap) {
+            return;
+        }
+
+        foreach (Tokens::MAP as $type => $class) {
+            static::$tokensMap[$type] = new $class();
         }
     }
 
@@ -64,26 +76,41 @@ class Lexer implements IteratorAggregate
     public function getIterator(): Traversable
     {
         foreach ($this->source as $chunk) {
-            foreach (mb_str_split($chunk) as $char) {
-                $this->isEscape = $char == '\\' && !$this->isEscape;
+            foreach (mb_str_split($chunk) as $character) {
+                $this->inString = $character == '"' && !$this->isEscape && !$this->inString;
+                $this->isEscape = $character == '\\' && !$this->isEscape;
 
-                if (isset(Tokens::BOUNDARIES[$char]) && $this->buffer != '') {
-                    yield $this->buffer;
+                if (isset(Tokens::BOUNDARIES[$character]) && $this->buffer != '' && !$this->inString) {
+                    yield $this->toToken($this->buffer);
                     $this->buffer = '';
 
-                    if (isset(Tokens::DELIMITERS[$char])) {
-                        yield $char;
+                    if (isset(Tokens::DELIMITERS[$character])) {
+                        yield $this->toToken($character);
                     }
                 } elseif (!$this->isEscape) {
-                    $this->buffer .= $char;
+                    $this->buffer .= $character;
                 }
             }
         }
 
         if ($this->buffer != '') {
             // @todo test whether this is ever called
-            yield $this->buffer;
+            yield $this->toToken($this->buffer);
             $this->buffer = '';
         }
+    }
+
+    /**
+     * Turn the given value into a token
+     *
+     * @param string $value
+     * @return Token
+     */
+    protected function toToken(string $value): Token
+    {
+        $character = $value[0];
+        $type = Tokens::TYPES[$character];
+
+        return static::$tokensMap[$type]->setValue($value);
     }
 }

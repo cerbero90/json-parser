@@ -4,9 +4,7 @@ namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
-use Cerbero\JsonParser\Tokens\Scalar;
 use Cerbero\JsonParser\Tokens\Token;
-use Cerbero\JsonParser\Tokens\Value;
 
 /**
  * The JSON parsing state.
@@ -43,7 +41,7 @@ class State
     protected string $buffer = '';
 
     /**
-     * Whether the token should be an object key.
+     * Whether an object key is expected.
      *
      * @var bool
      */
@@ -120,7 +118,7 @@ class State
      *
      * @return static
      */
-    public function treeDidntChange(): static
+    public function treeDidNotChange(): static
     {
         $this->treeChanged = false;
 
@@ -171,6 +169,20 @@ class State
     }
 
     /**
+     * Traverse the JSON tree through the given key
+     *
+     * @param string $key
+     * @return static
+     */
+    public function traverseTree(string $key): static
+    {
+        $this->tree->traverse($key);
+        $this->treeChanged = true;
+
+        return $this;
+    }
+
+    /**
      * Traverse a JSON array
      *
      * @return void
@@ -211,8 +223,8 @@ class State
      */
     protected function expectsToken(Token $token): bool
     {
-        return ($this->tree->depth() == $this->pointer->depth() && $token instanceof Value)
-            || ($this->tree->depth() + 1 == $this->pointer->depth() && $token instanceof Scalar);
+        return ($this->tree->depth() == $this->pointer->depth() && $token->isValue())
+            || ($this->tree->depth() + 1 == $this->pointer->depth() && $token->isScalar());
     }
 
     /**
@@ -243,12 +255,59 @@ class State
     }
 
     /**
+     * Determine whether an object key is expected
+     *
+     * @return bool
+     */
+    public function expectsKey(): bool
+    {
+        return $this->expectsKey;
+    }
+
+    /**
+     * Expect an object key
+     *
+     * @return static
+     */
+    public function expectKey(): static
+    {
+        $this->expectsKey = true;
+
+        return $this;
+    }
+
+    /**
+     * Do not expect any object key
+     *
+     * @return static
+     */
+    public function doNotExpectKey(): static
+    {
+        $this->expectsKey = false;
+
+        return $this;
+    }
+
+    /**
+     * Set whether the currently parsed node is an object
+     *
+     * @param bool $inObject
+     * @return static
+     */
+    public function setInObject(bool $inObject): static
+    {
+        $this->inObject = $inObject;
+
+        return $this;
+    }
+
+    /**
      * Determine whether the currently parsed node is an object
      *
      * @return bool
      */
     public function inObject(): bool
     {
-        return $this->inObject;
+        return $this->tree->inObject();
     }
 }
