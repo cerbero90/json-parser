@@ -5,7 +5,7 @@ namespace Cerbero\JsonParser;
 use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Decoders\ObjectDecoder;
 use Cerbero\JsonParser\Pointers\Pointer;
-use Cerbero\JsonParser\Sources\Source;
+use Cerbero\JsonParser\Sources\AnySource;
 use IteratorAggregate;
 use Traversable;
 
@@ -37,7 +37,8 @@ class JsonParser implements IteratorAggregate
     public function __construct(mixed $source)
     {
         $this->config = new Config();
-        $this->parser = new Parser(new Lexer(new Source($source)), $this->config);
+        $source = new AnySource($source, $this->config);
+        $this->parser = new Parser(new Lexer($source), $this->config);
     }
 
     /**
