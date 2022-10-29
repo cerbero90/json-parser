@@ -71,12 +71,13 @@ class Lexer implements IteratorAggregate
     /**
      * Retrieve the JSON fragments
      *
-     * @return \Cerbero\JsonParser\Tokens\Token[]
+     * @return Token[]
      */
     public function getIterator(): Traversable
     {
         foreach ($this->source as $chunk) {
-            foreach (mb_str_split($chunk) as $character) {
+            for ($i = 0, $size = strlen($chunk); $i < $size; $i++) {
+                $character = $chunk[$i];
                 $this->inString = $character == '"' && !$this->isEscape && !$this->inString;
                 $this->isEscape = $character == '\\' && !$this->isEscape;
 
