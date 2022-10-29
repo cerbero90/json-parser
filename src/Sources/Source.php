@@ -79,11 +79,11 @@ abstract class Source implements IteratorAggregate
     public function register(string ...$customSource): void
     {
         foreach ($customSource as $class) {
-            if (is_subclass_of($class, Source::class)) {
-                static::$customSources[] = $class;
+            if (!is_subclass_of($class, Source::class)) {
+                throw SourceException::invalidSource($class);
             }
 
-            throw SourceException::invalidSource($class);
+            static::$customSources[] = $class;
         }
     }
 
