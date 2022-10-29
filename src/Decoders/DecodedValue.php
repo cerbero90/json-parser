@@ -17,7 +17,7 @@ class DecodedValue
      */
     protected function __construct(
         public bool $succeeded,
-        public ?mixed $value = null,
+        public mixed $value = null,
         public ?string $error = null,
         public ?int $code = null,
         public ?JsonException $exception = null,
