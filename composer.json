@@ -16,14 +16,18 @@
         "role": "Developer"
     }],
     "require": {
-        "ext-json": "*",
-        "ext-mbstring": "*",
         "php": "^8.0"
     },
     "require-dev": {
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.2",
+        "illuminate/http": ">=6.20",
         "pestphp/pest": "^1.21",
         "scrutinizer/ocular": "^1.8",
         "squizlabs/php_codesniffer": "^3.0"
+    },
+    "suggest": {
+        "guzzlehttp/guzzle": "Required to load JSON from endpoints (^7.2)."
     },
     "autoload": {
         "psr-4": {
