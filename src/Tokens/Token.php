@@ -3,12 +3,13 @@
 namespace Cerbero\JsonParser\Tokens;
 
 use Cerbero\JsonParser\State;
+use Stringable;
 
 /**
  * The abstract implementation of a token.
  *
  */
-abstract class Token
+abstract class Token implements Stringable
 {
     /**
      * The token value.
@@ -76,5 +77,15 @@ abstract class Token
     public function endsChunk(): bool
     {
         return false;
+    }
+
+    /**
+     * Retrieve the underlying token value
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->value;
     }
 }
