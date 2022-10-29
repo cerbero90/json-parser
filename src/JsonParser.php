@@ -6,6 +6,7 @@ use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Decoders\ObjectDecoder;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Sources\AnySource;
+use Closure;
 use IteratorAggregate;
 use Traversable;
 
@@ -114,10 +115,10 @@ class JsonParser implements IteratorAggregate
     /**
      * Set the logic to run during parsing errors
      *
-     * @param callable $callback
+     * @param Closure $callback
      * @return static
      */
-    public function onError(callable $callback): static
+    public function onError(Closure $callback): static
     {
         $this->config->onError = $callback;
 
