@@ -32,15 +32,15 @@
     "autoload": {
         "psr-4": {
             "Cerbero\\JsonParser\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Cerbero\\JsonParser\\": "tests"
         },
         "files": [
             "helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cerbero\\JsonParser\\": "tests"
+        }
     },
     "scripts": {
         "test": "pest",
