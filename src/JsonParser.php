@@ -38,7 +38,7 @@ class JsonParser implements IteratorAggregate
     public function __construct(mixed $source)
     {
         $this->config = new Config();
-        $source = new AnySource($source, $this->config);
+        $source = AnySource::from($source, $this->config);
         $this->parser = new Parser(new Lexer($source), $this->config);
     }
 
