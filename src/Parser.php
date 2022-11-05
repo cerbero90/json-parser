@@ -5,7 +5,6 @@ namespace Cerbero\JsonParser;
 use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
-use Generator;
 use IteratorAggregate;
 use Traversable;
 
@@ -66,8 +65,10 @@ class Parser implements IteratorAggregate
                 continue;
             }
 
-            if ($this->state->hasBuffer()) {
-                yield from $this->yieldDecodedBuffer();
+            if ($this->state->hasBuffer() && $this->state->inObject()) {
+                yield $this->decode($this->state->key()) => $this->decode($this->state->pullBuffer());
+            } elseif ($this->state->hasBuffer() && !$this->state->inObject()) {
+                yield $this->decode($this->state->pullBuffer());
             }
 
             $this->markPointerAsFound();
@@ -84,15 +85,17 @@ class Parser implements IteratorAggregate
      * @param Token $token
      * @return void
      */
-    public function handleToken(Token $token): void
+    protected function handleToken(Token $token): void
     {
+        $inRoot = $this->state->inRoot();
+
         $token->mutateState($this->state);
 
         if ($token->isValue() && !$this->state->inObject() && $this->state->treeIsShallow()) {
             $this->state->traverseArray();
         }
 
-        if ($this->state->shouldBufferToken($token)) {
+        if ($inRoot && $this->state->shouldBufferToken($token)) {
             $this->state->bufferToken($token);
         }
     }
@@ -111,11 +114,11 @@ class Parser implements IteratorAggregate
     }
 
     /**
-     * Yield the decoded JSON of the buffer
+     * Retrieve the decoded JSON of the buffer
      *
-     * @return Generator
+     * @return mixed
      */
-    protected function yieldDecodedBuffer(): Generator
+    protected function decodeBuffer(): mixed
     {
         $decoded = $this->decoder->decode($this->state->pullBuffer());
 
@@ -123,11 +126,7 @@ class Parser implements IteratorAggregate
             call_user_func($this->config->onError, $decoded);
         }
 
-        if ($this->state->inObject()) {
-            yield $this->state->node() => $decoded->value;
-        } else {
-            yield $decoded->value;
-        }
+        return $decoded->value;
     }
 
     /**
