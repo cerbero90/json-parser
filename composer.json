@@ -1,7 +1,7 @@
 {
     "name": "cerbero/json-parser",
     "type": "library",
-    "description": "Zero-dependencies pull parser and lexer to save memory while reading big JSONs.",
+    "description": "Zero-dependencies, framework-agnostic pull parser to read big JSON in a memory-efficient way.",
     "keywords": [
         "json",
         "parser",
@@ -27,6 +27,7 @@
         "squizlabs/php_codesniffer": "^3.0"
     },
     "suggest": {
+        "ext-json": "Required to decode JSON with the built-in decoder.",
         "guzzlehttp/guzzle": "Required to load JSON from endpoints (^7.2)."
     },
     "autoload": {
