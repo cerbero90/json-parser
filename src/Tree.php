@@ -90,7 +90,9 @@ class Tree implements IteratorAggregate
      */
     public function inObject(): bool
     {
-        return is_string($this->original[$this->depth]);
+        $key = $this->original[$this->depth] ?? null;
+
+        return is_string($key);
     }
 
     /**
