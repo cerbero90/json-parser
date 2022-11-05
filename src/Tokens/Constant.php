@@ -15,7 +15,7 @@ class Constant extends Token
      */
     public function type(): int
     {
-        return $this->value != ':' ? Tokens::COLON : Tokens::SCALAR_CONST;
+        return $this->value == ':' ? Tokens::COLON : Tokens::SCALAR_CONST;
     }
 
     /**
