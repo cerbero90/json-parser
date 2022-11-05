@@ -5,10 +5,10 @@ namespace Cerbero\JsonParser\Sources;
 use Traversable;
 
 /**
- * The iterable source.
+ * The custom source.
  *
  */
-class IterableSource extends Source
+class CustomSource extends Source
 {
     /**
      * Retrieve the JSON fragments
@@ -27,7 +27,7 @@ class IterableSource extends Source
      */
     public function matches(): bool
     {
-        return is_iterable($this->source) && !$this->source instanceof Source;
+        return $this->source instanceof Source;
     }
 
     /**
@@ -37,6 +37,6 @@ class IterableSource extends Source
      */
     protected function calculateSize(): ?int
     {
-        return iterator_count(clone $this->source);
+        return $this->source->size();
     }
 }

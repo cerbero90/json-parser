@@ -18,6 +18,7 @@ class AnySource extends Source
      * @var array
      */
     protected array $supportedSources = [
+        CustomSource::class,
         Endpoint::class,
         Filename::class,
         IterableSource::class,
