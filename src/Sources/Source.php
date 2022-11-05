@@ -76,7 +76,7 @@ abstract class Source implements IteratorAggregate
      * @param string ...$customSource
      * @return void
      */
-    public function register(string ...$customSource): void
+    public static function register(string ...$customSource): void
     {
         foreach ($customSource as $class) {
             if (!is_subclass_of($class, Source::class)) {
