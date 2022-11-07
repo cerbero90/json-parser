@@ -5,10 +5,10 @@ namespace Cerbero\JsonParser\Tokens;
 use Cerbero\JsonParser\State;
 
 /**
- * The double quote token.
+ * The scalar string token.
  *
  */
-class DoubleQuote extends Token
+class ScalarString extends Token
 {
     /**
      * Whether this token is an object key.
@@ -42,18 +42,8 @@ class DoubleQuote extends Token
         $state->doNotExpectKey();
 
         if ($state->treeIsShallow()) {
-            $state->traverseTree($this->key());
+            $state->traverseKey($this->value);
         }
-    }
-
-    /**
-     * Retrieve the object key
-     *
-     * @return string
-     */
-    protected function key(): string
-    {
-        return substr($this->value, 1, -1);
     }
 
     /**

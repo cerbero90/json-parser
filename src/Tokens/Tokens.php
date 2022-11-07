@@ -109,6 +109,6 @@ class Tokens
         self::ARRAY_END => CompoundEnd::class,
         self::COLON => Constant::class,
         self::SCALAR_CONST => Constant::class,
-        self::SCALAR_STRING => DoubleQuote::class,
+        self::SCALAR_STRING => ScalarString::class,
     ];
 }

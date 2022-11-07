@@ -31,13 +31,6 @@ class Lexer implements IteratorAggregate
     protected string $buffer = '';
 
     /**
-     * Whether the current character is an escape.
-     *
-     * @var bool
-     */
-    protected bool $isEscape = false;
-
-    /**
      * Whether the current character belongs to a string.
      *
      * @var bool
@@ -57,25 +50,30 @@ class Lexer implements IteratorAggregate
     /**
      * Retrieve the JSON fragments
      *
-     * @return Token[]
+     * @return Generator<int, Token>
      */
     public function getIterator(): Traversable
     {
         foreach ($this->source as $chunk) {
             for ($i = 0, $size = strlen($chunk); $i < $size; $i++) {
                 $character = $chunk[$i];
-                $this->inString = $character == '"' && !$this->isEscape && !$this->inString;
-                $this->isEscape = $character == '\\' && !$this->isEscape;
+                $this->inString = $this->inString($character);
 
                 yield from $this->yieldOrBufferCharacter($character);
             }
         }
+    }
 
-        if ($this->buffer != '') {
-            // @todo test whether this is ever called
-            yield $this->tokenizer->toToken($this->buffer);
-            $this->buffer = '';
-        }
+    /**
+     * Determine whether the given character is within a string
+     *
+     * @param string $character
+     * @return bool
+     */
+    protected function inString(string $character): bool
+    {
+        return ($character == '"' && !$this->inString)
+            || ($character != '"' && $this->inString);
     }
 
     /**
@@ -86,17 +84,18 @@ class Lexer implements IteratorAggregate
      */
     protected function yieldOrBufferCharacter(string $character): Generator
     {
-        if (isset(Tokens::BOUNDARIES[$character]) && !$this->inString) {
-            if ($this->buffer != '') {
-                yield $this->tokenizer->toToken($this->buffer);
-                $this->buffer = '';
-            }
-
-            if (isset(Tokens::DELIMITERS[$character])) {
-                yield $this->tokenizer->toToken($character);
-            }
-        } elseif (!$this->isEscape) {
+        if ($this->inString || !isset(Tokens::BOUNDARIES[$character])) {
             $this->buffer .= $character;
+            return;
+        }
+
+        if ($this->buffer != '') {
+            yield $this->tokenizer->toToken($this->buffer);
+            $this->buffer = '';
+        }
+
+        if (isset(Tokens::DELIMITERS[$character])) {
+            yield $this->tokenizer->toToken($character);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
+use Cerbero\JsonParser\Pointers\NullPointer;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
@@ -48,13 +49,6 @@ class State
     protected bool $expectsKey = false;
 
     /**
-     * Whether the currently parsed node is an object.
-     *
-     * @var bool
-     */
-    protected bool $inObject = false;
-
-    /**
      * Instantiate the class.
      *
      */
@@ -80,7 +74,8 @@ class State
      */
     public function treeIsShallow(): bool
     {
-        return $this->tree->depth() < $this->pointer->depth();
+        return $this->pointer instanceof NullPointer
+            || $this->tree->depth() < $this->pointer->depth();
     }
 
     /**
@@ -98,9 +93,9 @@ class State
      *
      * @return string
      */
-    public function node(): string
+    public function key(): string
     {
-        return $this->tree[$this->tree->depth()];
+        return $this->tree->currentKey();
     }
 
     /**
@@ -169,14 +164,14 @@ class State
     }
 
     /**
-     * Traverse the JSON tree through the given key
+     * Traverse the given object key
      *
      * @param string $key
      * @return static
      */
-    public function traverseTree(string $key): static
+    public function traverseKey(string $key): static
     {
-        $this->tree->traverse($key);
+        $this->tree->traverseKey($key);
         $this->treeChanged = true;
 
         return $this;
@@ -212,7 +207,7 @@ class State
     public function shouldBufferToken(Token $token): bool
     {
         return $this->pointer->matchesTree($this->tree)
-            && ($this->treeIsDeep() || (!$this->expectsKey && $this->expectsToken($token)));
+            && ($this->treeIsDeep() || (!$this->expectsKey() && $this->expectsToken($token)));
     }
 
     /**
@@ -284,19 +279,6 @@ class State
     public function doNotExpectKey(): static
     {
         $this->expectsKey = false;
-
-        return $this;
-    }
-
-    /**
-     * Set whether the currently parsed node is an object
-     *
-     * @param bool $inObject
-     * @return static
-     */
-    public function setInObject(bool $inObject): static
-    {
-        $this->inObject = $inObject;
 
         return $this;
     }

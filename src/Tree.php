@@ -96,15 +96,17 @@ class Tree implements IteratorAggregate
     }
 
     /**
-     * Traverse the given key
+     * Traverse the given object key
      *
      * @param string $key
      * @return void
      */
-    public function traverse(string $key): void
+    public function traverseKey(string $key): void
     {
-        $this->original[$this->depth] = $key;
-        $this->wildcarded[$this->depth] = $key;
+        $trimmedKey = substr($key, 1, -1);
+
+        $this->original[$this->depth] = $trimmedKey;
+        $this->wildcarded[$this->depth] = $trimmedKey;
 
         $this->trim();
     }
@@ -132,6 +134,18 @@ class Tree implements IteratorAggregate
         $this->wildcarded[$this->depth] = $pointer[$this->depth] == '-' ? '-' : $this->original[$this->depth];
 
         $this->trim();
+    }
+
+    /**
+     * Retrieve the current key
+     *
+     * @return string|int
+     */
+    public function currentKey(): string|int
+    {
+        $key = $this->original[$this->depth];
+
+        return is_string($key) ? "\"$key\"" : $key;
     }
 
     /**

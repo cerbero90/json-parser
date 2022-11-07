@@ -2,7 +2,6 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
 use IteratorAggregate;
@@ -22,13 +21,6 @@ class Parser implements IteratorAggregate
     protected State $state;
 
     /**
-     * The JSON decoder.
-     *
-     * @var Decoder
-     */
-    protected Decoder $decoder;
-
-    /**
      * The JSON pointers collection.
      *
      * @var Pointers
@@ -44,7 +36,6 @@ class Parser implements IteratorAggregate
     public function __construct(protected Lexer $lexer, protected Config $config)
     {
         $this->state = new State();
-        $this->decoder = $config->decoder;
         $this->pointers = new Pointers(...$config->pointers);
     }
 
@@ -87,17 +78,15 @@ class Parser implements IteratorAggregate
      */
     protected function handleToken(Token $token): void
     {
-        $inRoot = $this->state->inRoot();
-
-        $token->mutateState($this->state);
-
         if ($token->isValue() && !$this->state->inObject() && $this->state->treeIsShallow()) {
             $this->state->traverseArray();
         }
 
-        if ($inRoot && $this->state->shouldBufferToken($token)) {
+        if ($this->state->inRoot() && $this->state->shouldBufferToken($token)) {
             $this->state->bufferToken($token);
         }
+
+        $token->mutateState($this->state);
     }
 
     /**
@@ -114,13 +103,14 @@ class Parser implements IteratorAggregate
     }
 
     /**
-     * Retrieve the decoded JSON of the buffer
+     * Retrieve the decoded value of the given JSON fragment
      *
+     * @param string $json
      * @return mixed
      */
-    protected function decodeBuffer(): mixed
+    protected function decode(string $json): mixed
     {
-        $decoded = $this->decoder->decode($this->state->pullBuffer());
+        $decoded = $this->config->decoder->decode($json);
 
         if (!$decoded->succeeded) {
             call_user_func($this->config->onError, $decoded);
