@@ -148,7 +148,7 @@ class State
      *
      * @return bool
      */
-    public function treeInPointer(): bool
+    public function inPointer(): bool
     {
         return $this->pointer->includesTree($this->tree);
     }

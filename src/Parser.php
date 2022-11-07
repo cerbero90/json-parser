@@ -64,7 +64,7 @@ class Parser implements IteratorAggregate
 
             $this->markPointerAsFound();
 
-            if ($this->pointers->wereFound() && !$this->state->treeInPointer()) {
+            if ($this->pointers->wereFound() && !$this->state->inPointer()) {
                 break;
             }
         }
