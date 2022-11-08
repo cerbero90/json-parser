@@ -10,7 +10,7 @@
 [![PSR-12][ico-psr12]][link-psr12]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Zero-dependencies pull parser and lexer to save memory while reading big JSONs.
+Zero-dependencies pull parser to read big JSON from any source in a memory-efficient way.
 
 
 ## 📦 Install

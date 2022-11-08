@@ -1,7 +1,7 @@
 {
     "name": "cerbero/json-parser",
     "type": "library",
-    "description": "Zero-dependencies, framework-agnostic pull parser to read big JSON in a memory-efficient way.",
+    "description": "Zero-dependencies pull parser to read big JSON from any source in a memory-efficient way.",
     "keywords": [
         "json",
         "parser",
