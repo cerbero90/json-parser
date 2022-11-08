@@ -6,6 +6,7 @@ return [
     'string' => 'foo',
     'escaped_string' => '"bar"',
     '"escaped_key"' => 'baz',
+    "unicode" => "hej då",
     'float' => 3.14,
     'bool' => false,
     'null' => null,
