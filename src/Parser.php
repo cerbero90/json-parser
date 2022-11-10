@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointers;
+use Cerbero\JsonParser\Sources\Source;
 use Cerbero\JsonParser\Tokens\Token;
 use IteratorAggregate;
 use Traversable;
@@ -37,6 +38,17 @@ class Parser implements IteratorAggregate
     {
         $this->state = new State();
         $this->pointers = new Pointers(...$config->pointers);
+    }
+
+    /**
+     * Instantiate the class statically
+     *
+     * @param Source $source
+     * @return static
+     */
+    public static function for(Source $source): static
+    {
+        return new static(new Lexer($source), $source->config());
     }
 
     /**

@@ -88,6 +88,16 @@ abstract class Source implements IteratorAggregate
     }
 
     /**
+     * Retrieve the underlying configuration
+     *
+     * @return Config
+     */
+    public function config(): Config
+    {
+        return $this->config;
+    }
+
+    /**
      * Retrieve the size of the JSON source and cache it
      *
      * @return int|null
