@@ -89,7 +89,7 @@ class State
     }
 
     /**
-     * Retrieve the current node of the JSON tree
+     * Retrieve the current key of the JSON tree
      *
      * @return string
      */
@@ -284,7 +284,7 @@ class State
     }
 
     /**
-     * Determine whether the currently parsed node is an object
+     * Determine whether the current position is within an object
      *
      * @return bool
      */

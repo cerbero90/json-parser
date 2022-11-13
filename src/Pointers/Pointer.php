@@ -70,23 +70,23 @@ class Pointer implements ArrayAccess, Stringable
     }
 
     /**
-     * Determine whether the reference token at the given depth matches the provided node
+     * Determine whether the reference token at the given depth matches the provided key
      *
      * @param int $depth
-     * @param mixed $node
+     * @param mixed $key
      * @return bool
      */
-    public function depthMatchesNode(int $depth, mixed $node): bool
+    public function depthMatchesKey(int $depth, mixed $key): bool
     {
         if (!isset($this->referenceTokens[$depth])) {
             return false;
         }
 
-        if ($this->referenceTokens[$depth] === (string) $node) {
+        if ($this->referenceTokens[$depth] === (string) $key) {
             return true;
         }
 
-        return is_int($node) && $this->referenceTokens[$depth] === '-';
+        return is_int($key) && $this->referenceTokens[$depth] === '-';
     }
 
     /**

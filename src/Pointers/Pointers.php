@@ -54,8 +54,8 @@ class Pointers implements Countable
         $pointers = [];
 
         foreach ($this->pointers as $pointer) {
-            foreach ($tree as $depth => $node) {
-                if (!$pointer->depthMatchesNode($depth, $node)) {
+            foreach ($tree as $depth => $key) {
+                if (!$pointer->depthMatchesKey($depth, $key)) {
                     continue 2;
                 } elseif (!isset($pointers[$depth])) {
                     $pointers[$depth] = $pointer;
@@ -63,7 +63,7 @@ class Pointers implements Countable
             }
         }
 
-        return end($pointers) ?: $this->defaultPointer;
+        return end($pointers) ?: $this->pointers[0] ?? $this->defaultPointer;
     }
 
     /**
