@@ -18,27 +18,26 @@ class Dataset
      */
     public static function forParsing(): Generator
     {
-        foreach (static::fixtureNamesIn('parsing') as $fixture) {
+        foreach (static::fixtures() as $fixture) {
+            $name = $fixture->getBasename('.json');
+
             yield [
-                file_get_contents(__DIR__ . "/fixtures/parsing/{$fixture}.json"),
-                require __DIR__ . "/fixtures/parsing/{$fixture}.php",
+                file_get_contents($fixture->getRealPath()),
+                require __DIR__ . "/fixtures/parsing/{$name}.php",
             ];
         }
     }
 
     /**
-     * Retrieve the names of the fixtures
+     * Retrieve the fixtures
      *
-     * @param string $directory
-     * @return Generator
+     * @return Generator<int, DirectoryIterator>
      */
-    protected static function fixtureNamesIn(string $directory): Generator
+    protected static function fixtures(): Generator
     {
-        $fixtures = new DirectoryIterator(__DIR__ . "/fixtures/{$directory}");
-
-        foreach ($fixtures as $file) {
-            if ($file->getExtension() === 'json') {
-                yield $file->getBasename('.json');
+        foreach (new DirectoryIterator(__DIR__ . '/fixtures/json') as $file) {
+            if (!$file->isDot()) {
+                yield $file;
             }
         }
     }
