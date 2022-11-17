@@ -41,4 +41,22 @@ class Dataset
             }
         }
     }
+
+    /**
+     * Retrieve the dataset to test single pointers
+     *
+     * @return Generator
+     */
+    public static function forSinglePointers(): Generator
+    {
+        $singlePointers = require __DIR__ . '/fixtures/pointers/single_pointer.php';
+
+        foreach ($singlePointers as $fixture => $pointers) {
+            $json = file_get_contents(__DIR__ . "/fixtures/json/{$fixture}.json");
+
+            foreach ($pointers as $pointer => $value) {
+                yield [$json, $pointer, $value];
+            }
+        }
+    }
 }
