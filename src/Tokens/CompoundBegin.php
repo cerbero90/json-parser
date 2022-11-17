@@ -21,12 +21,12 @@ class CompoundBegin extends Token
     }
 
     /**
-     * Mutate the given state
+     * Update the given state
      *
      * @param State $state
      * @return void
      */
-    public function mutateState(State $state): void
+    protected function updateState(State $state): void
     {
         $state->tree()->deepen();
 

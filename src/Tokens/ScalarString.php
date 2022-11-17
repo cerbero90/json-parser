@@ -28,22 +28,18 @@ class ScalarString extends Token
     }
 
     /**
-     * Mutate the given state
+     * Update the given state
      *
      * @param State $state
      * @return void
      */
-    public function mutateState(State $state): void
+    protected function updateState(State $state): void
     {
         if (!$this->isKey = $state->expectsKey()) {
             return;
         }
 
         $state->doNotExpectKey();
-
-        if ($state->treeIsShallow()) {
-            $state->traverseKey($this->value);
-        }
     }
 
     /**

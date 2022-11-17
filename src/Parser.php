@@ -4,7 +4,6 @@ namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Sources\Source;
-use Cerbero\JsonParser\Tokens\Token;
 use IteratorAggregate;
 use Traversable;
 
@@ -37,7 +36,6 @@ class Parser implements IteratorAggregate
     public function __construct(protected Lexer $lexer, protected Config $config)
     {
         $this->state = new State();
-        $this->pointers = new Pointers(...$config->pointers);
     }
 
     /**
@@ -58,10 +56,11 @@ class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
+        $this->pointers = new Pointers(...$this->config->pointers);
         $this->state->matchPointer($this->pointers);
 
         foreach ($this->lexer as $token) {
-            $this->handleToken($token);
+            $token->mutateState($this->state);
             $this->rematchPointer();
 
             if (!$token->endsChunk() || $this->state->treeIsDeep()) {
@@ -80,25 +79,6 @@ class Parser implements IteratorAggregate
                 break;
             }
         }
-    }
-
-    /**
-     * Handle the given token
-     *
-     * @param Token $token
-     * @return void
-     */
-    protected function handleToken(Token $token): void
-    {
-        if ($token->isValue() && !$this->state->inObject() && $this->state->treeIsShallow()) {
-            $this->state->traverseArray();
-        }
-
-        if ($this->state->inRoot() && $this->state->shouldBufferToken($token)) {
-            $this->state->bufferToken($token);
-        }
-
-        $token->mutateState($this->state);
     }
 
     /**
