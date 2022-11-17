@@ -85,7 +85,9 @@ class State
      */
     public function treeIsDeep(): bool
     {
-        return $this->tree->depth() > $this->pointer->depth();
+        return $this->pointer instanceof NullPointer
+            ? $this->tree->depth() > $this->pointer->depth()
+            : $this->tree->depth() >= $this->pointer->depth();
     }
 
     /**
@@ -207,7 +209,7 @@ class State
     public function shouldBufferToken(Token $token): bool
     {
         return $this->pointer->matchesTree($this->tree)
-            && ($this->treeIsDeep() || (!$this->expectsKey() && $this->expectsToken($token)));
+            && ($this->treeIsDeep() || (!$this->expectsKey() && ($token->isValue() || $this->expectsToken($token))));
     }
 
     /**
