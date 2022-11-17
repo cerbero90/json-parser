@@ -24,14 +24,22 @@
 |
 */
 
-expect()->extend('toParseTo', function (array $parsed) {
-    $actual = [];
+expect()->extend('toParseTo', function (array $expected) {
+    $actual = $itemsCount = [];
 
-    foreach ($this->value as $key => $value) {
-        $actual[$key] = $value;
+    foreach ($this->value as $parsedKey => $parsedValue) {
+        $itemsCount[$parsedKey] = empty($itemsCount[$parsedKey]) ? 1 : $itemsCount[$parsedKey] + 1;
+
+        // the following match is required as we may deal with parsed values that are arrays
+        // and unpacking a parsed value that is an array may lead to unexpected results
+        $actual[$parsedKey] = match ($itemsCount[$parsedKey]) {
+            1 => $parsedValue,
+            2 => [$actual[$parsedKey], $parsedValue],
+            default => [...$actual[$parsedKey], $parsedValue],
+        };
     }
 
-    expect($actual)->toBe($parsed);
+    expect($actual)->toBe($expected);
 });
 
 /*
