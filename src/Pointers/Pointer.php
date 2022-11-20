@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser\Pointers;
 
 use ArrayAccess;
+use Cerbero\JsonParser\Exceptions\PointerException;
 use Cerbero\JsonParser\Tree;
 use Stringable;
 
@@ -44,6 +45,10 @@ class Pointer implements ArrayAccess, Stringable
      */
     protected function toReferenceTokens(): array
     {
+        if (preg_match('#^(?:/(?:(?:[^/~])|(?:~[01]))*)*$#', $this->pointer) === 0) {
+            throw PointerException::invalid($this->pointer);
+        }
+
         $tokens = explode('/', substr($this->pointer, 1));
 
         return array_map(fn (string $token) => str_replace(['~1', '~0'], ['/', '~'], $token), $tokens);

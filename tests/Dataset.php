@@ -59,4 +59,14 @@ class Dataset
             }
         }
     }
+
+    /**
+     * Retrieve the dataset to test invalid pointers
+     *
+     * @return Generator
+     */
+    public static function forInvalidPointers(): Generator
+    {
+        yield from ['abc', '/foo~2', '/~', ' '];
+    }
 }
