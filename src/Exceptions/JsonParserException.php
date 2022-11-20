@@ -10,13 +10,9 @@ use Exception;
  */
 abstract class JsonParserException extends Exception
 {
-    /**
-     * Enforce factory methods to instantiate exceptions
-     *
-     * @param string $message
-     */
-    protected function __construct(string $message)
-    {
-        parent::__construct($message);
-    }
+    public const CODE_SOURCE_INVALID = 0;
+    public const CODE_SOURCE_UNSUPPORTED = 1;
+    public const CODE_SOURCE_GUZZLE = 2;
+
+    public const CODE_POINTER_INVALID = 3;
 }

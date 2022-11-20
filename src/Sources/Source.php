@@ -80,7 +80,7 @@ abstract class Source implements IteratorAggregate
     {
         foreach ($customSource as $class) {
             if (!is_subclass_of($class, Source::class)) {
-                throw SourceException::invalidSource($class);
+                throw SourceException::invalid($class);
             }
 
             static::$customSources[] = $class;
