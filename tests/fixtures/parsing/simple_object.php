@@ -12,4 +12,13 @@ return [
     'null' => null,
     'empty_array' => [],
     'empty_object' => [],
+    '' => 0,
+    'a/b' => 1,
+    'c%d' => 2,
+    'e^f' => 3,
+    'g|h' => 4,
+    'i\\j' => 5,
+    'k"l' => 6,
+    ' ' => 7,
+    'm~n' => 8
 ];
