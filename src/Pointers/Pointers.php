@@ -40,7 +40,7 @@ class Pointers implements Countable
     public function __construct(Pointer ...$pointers)
     {
         $this->pointers = $pointers;
-        $this->defaultPointer = new NullPointer();
+        $this->defaultPointer = new Pointer('');
     }
 
     /**

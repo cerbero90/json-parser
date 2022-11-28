@@ -2,7 +2,6 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Pointers\NullPointer;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
@@ -74,7 +73,7 @@ class State
      */
     public function treeIsShallow(): bool
     {
-        return $this->pointer instanceof NullPointer
+        return $this->pointer == ''
             || $this->tree->depth() < $this->pointer->depth();
     }
 
@@ -85,7 +84,7 @@ class State
      */
     public function treeIsDeep(): bool
     {
-        return $this->pointer instanceof NullPointer
+        return $this->pointer == ''
             ? $this->tree->depth() > $this->pointer->depth()
             : $this->tree->depth() >= $this->pointer->depth();
     }
@@ -162,7 +161,8 @@ class State
      */
     public function pointerMatchesTree(): bool
     {
-        return $this->pointer->matchesTree($this->tree);
+        return $this->pointer == ''
+            || in_array($this->pointer->referenceTokens(), [$this->tree->original(), $this->tree->wildcarded()]);
     }
 
     /**
@@ -208,7 +208,7 @@ class State
      */
     public function shouldBufferToken(Token $token): bool
     {
-        return $this->pointer->matchesTree($this->tree)
+        return $this->pointerMatchesTree()
             && ($this->treeIsDeep() || (!$this->expectsKey() && ($token->isValue() || $this->expectsToken($token))));
     }
 
