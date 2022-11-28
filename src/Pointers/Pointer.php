@@ -49,9 +49,10 @@ class Pointer implements ArrayAccess, Stringable
             throw PointerException::invalid($this->pointer);
         }
 
-        $tokens = explode('/', substr($this->pointer, 1));
+        $tokens = explode('/', $this->pointer);
+        $referenceTokens = array_map(fn (string $token) => str_replace(['~1', '~0'], ['/', '~'], $token), $tokens);
 
-        return array_map(fn (string $token) => str_replace(['~1', '~0'], ['/', '~'], $token), $tokens);
+        return array_slice($referenceTokens, 1);
     }
 
     /**
@@ -92,17 +93,6 @@ class Pointer implements ArrayAccess, Stringable
         }
 
         return is_int($key) && $this->referenceTokens[$depth] === '-';
-    }
-
-    /**
-     * Determine whether the pointer matches the given tree
-     *
-     * @param Tree $tree
-     * @return bool
-     */
-    public function matchesTree(Tree $tree): bool
-    {
-        return $this->referenceTokens == $tree->original() || $this->referenceTokens == $tree->wildcarded();
     }
 
     /**
