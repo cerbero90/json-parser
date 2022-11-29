@@ -169,14 +169,12 @@ class State
      * Traverse the given object key
      *
      * @param string $key
-     * @return static
+     * @return void
      */
-    public function traverseKey(string $key): static
+    public function traverseKey(string $key): void
     {
         $this->tree->traverseKey($key);
         $this->treeChanged = true;
-
-        return $this;
     }
 
     /**
