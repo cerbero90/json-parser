@@ -21,13 +21,15 @@ class Comma extends Token
     }
 
     /**
-     * Update the given state
+     * Mutate the given state
      *
      * @param State $state
      * @return void
      */
-    protected function updateState(State $state): void
+    public function mutateState(State $state): void
     {
+        parent::mutateState($state);
+
         if ($state->inObject()) {
             $state->expectKey();
         }

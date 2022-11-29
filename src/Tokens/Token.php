@@ -87,19 +87,6 @@ abstract class Token implements Stringable
         if ($state->inRoot() && $state->shouldBufferToken($this)) {
             $state->bufferToken($this);
         }
-
-        $this->updateState($state);
-    }
-
-    /**
-     * Update the given state
-     *
-     * @param State $state
-     * @return void
-     */
-    protected function updateState(State $state): void
-    {
-        return;
     }
 
     /**
