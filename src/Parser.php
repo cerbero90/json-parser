@@ -90,7 +90,6 @@ class Parser implements IteratorAggregate
     {
         if ($this->state->treeChanged() && $this->pointers->count() > 1) {
             $this->state->matchPointer($this->pointers);
-            $this->state->treeDidNotChange();
         }
     }
 
