@@ -76,11 +76,11 @@ abstract class Token implements Stringable
      */
     public function mutateState(State $state): void
     {
-        if ($this->isValue() && !$state->inObject() && $state->treeIsShallow()) {
+        if ($this->isValue() && !$state->inObject() && $state->shouldTrackTree()) {
             $state->traverseArray();
         }
 
-        if ($this->isString() && $state->expectsKey() && $state->treeIsShallow()) {
+        if ($this->isString() && $state->expectsKey() && $state->shouldTrackTree()) {
             $state->traverseKey($this);
         }
 

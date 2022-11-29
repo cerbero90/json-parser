@@ -67,11 +67,11 @@ class State
     }
 
     /**
-     * Determine whether the tree is shallow
+     * Determine whether the tree should be tracked
      *
      * @return bool
      */
-    public function treeIsShallow(): bool
+    public function shouldTrackTree(): bool
     {
         return $this->pointer == ''
             || $this->tree->depth() < $this->pointer->depth();
