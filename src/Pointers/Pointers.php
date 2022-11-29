@@ -70,13 +70,11 @@ class Pointers implements Countable
      * Mark the given pointer as found
      *
      * @param Pointer $pointer
-     * @return static
+     * @return void
      */
-    public function markAsFound(Pointer $pointer): static
+    public function markAsFound(Pointer $pointer): void
     {
         $this->found[(string) $pointer] = true;
-
-        return $this;
     }
 
     /**
@@ -86,8 +84,7 @@ class Pointers implements Countable
      */
     public function wereFound(): bool
     {
-        return $this->count() > 0
-            && $this->count() == count($this->found);
+        return $this->count() > 0 && $this->count() == count($this->found);
     }
 
     /**

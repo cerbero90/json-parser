@@ -112,26 +112,22 @@ class State
     /**
      * Mark the JSON tree as not changed
      *
-     * @return static
+     * @return void
      */
-    public function treeDidNotChange(): static
+    public function treeDidNotChange(): void
     {
         $this->treeChanged = false;
-
-        return $this;
     }
 
     /**
      * Set the JSON pointer matching the tree from the given pointers
      *
      * @param Pointers $pointers
-     * @return static
+     * @return void
      */
-    public function matchPointer(Pointers $pointers): static
+    public function matchPointer(Pointers $pointers): void
     {
         $this->pointer = $pointers->matchTree($this->tree);
-
-        return $this;
     }
 
     /**
@@ -226,13 +222,11 @@ class State
      * Buffer the given token
      *
      * @param Token $token
-     * @return static
+     * @return void
      */
-    public function bufferToken(Token $token): static
+    public function bufferToken(Token $token): void
     {
         $this->buffer .= $token;
-
-        return $this;
     }
 
     /**
@@ -262,25 +256,21 @@ class State
     /**
      * Expect an object key
      *
-     * @return static
+     * @return void
      */
-    public function expectKey(): static
+    public function expectKey(): void
     {
         $this->expectsKey = true;
-
-        return $this;
     }
 
     /**
      * Do not expect any object key
      *
-     * @return static
+     * @return void
      */
-    public function doNotExpectKey(): static
+    public function doNotExpectKey(): void
     {
         $this->expectsKey = false;
-
-        return $this;
     }
 
     /**
