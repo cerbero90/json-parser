@@ -59,16 +59,6 @@ abstract class Token implements Stringable
     }
 
     /**
-     * Determine whether the token is a string
-     *
-     * @return bool
-     */
-    public function isString(): bool
-    {
-        return ($this->type() | Tokens::SCALAR_STRING) == Tokens::SCALAR_STRING;
-    }
-
-    /**
      * Mutate the given state
      *
      * @param State $state
@@ -80,10 +70,6 @@ abstract class Token implements Stringable
 
         if ($this->isValue() && !$state->inObject() && $state->shouldTrackTree()) {
             $state->traverseArray();
-        }
-
-        if ($this->isString() && $state->expectsKey() && $state->shouldTrackTree()) {
-            $state->traverseKey($this);
         }
 
         if ($state->inRoot() && $state->shouldBufferToken($this)) {

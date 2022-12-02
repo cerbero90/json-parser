@@ -15,7 +15,7 @@ class ScalarString extends Token
      *
      * @var bool
      */
-    protected bool $isKey;
+    protected bool $isKey = false;
 
     /**
      * Retrieve the token type
@@ -37,11 +37,15 @@ class ScalarString extends Token
     {
         parent::mutateState($state);
 
-        if (!$this->isKey = $state->expectsKey()) {
-            return;
+        $this->isKey = $state->expectsKey();
+
+        if ($this->isKey && $state->shouldTrackTree()) {
+            $state->traverseKey($this);
         }
 
-        $state->doNotExpectKey();
+        if ($this->isKey) {
+            $state->doNotExpectKey();
+        }
     }
 
     /**
