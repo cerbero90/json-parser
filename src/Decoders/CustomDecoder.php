@@ -8,7 +8,7 @@ use Cerbero\JsonParser\Config;
  * The configurable decoder.
  *
  */
-class ConfigurableDecoder
+class CustomDecoder
 {
     /**
      * Instantiate the class.
