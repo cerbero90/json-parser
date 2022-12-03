@@ -27,6 +27,13 @@ class State
     protected bool $treeChanged = false;
 
     /**
+     * The JSON pointers.
+     *
+     * @var Pointers
+     */
+    protected Pointers $pointers;
+
+    /**
      * The JSON pointer matching the tree.
      *
      * @var Pointer
@@ -73,8 +80,7 @@ class State
      */
     public function shouldTrackTree(): bool
     {
-        return $this->pointer == ''
-            || $this->tree->depth() < $this->pointer->depth();
+        return $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
     }
 
     /**
@@ -100,6 +106,31 @@ class State
     }
 
     /**
+     * Traverse the given object key
+     *
+     * @param string $key
+     * @return void
+     */
+    public function traverseKey(string $key): void
+    {
+        $this->tree->traverseKey($key);
+
+        $this->treeChanged = true;
+    }
+
+    /**
+     * Traverse a JSON array
+     *
+     * @return void
+     */
+    public function traverseArray(): void
+    {
+        $this->tree->traverseArray($this->pointer);
+
+        $this->treeChanged = true;
+    }
+
+    /**
      * Determine whether the tree changed
      *
      * @return bool
@@ -120,14 +151,48 @@ class State
     }
 
     /**
-     * Set the JSON pointer matching the tree from the given pointers
+     * Determine whether the current position is within an object
      *
-     * @param Pointers $pointers
+     * @return bool
+     */
+    public function inObject(): bool
+    {
+        return $this->tree->inObject();
+    }
+
+    /**
+     * Set and match the given pointers
+     *
+     * @param Pointer ...$pointers
      * @return void
      */
-    public function matchPointer(Pointers $pointers): void
+    public function setPointers(Pointer ...$pointers): void
     {
-        $this->pointer = $pointers->matchTree($this->tree);
+        $this->pointers = new Pointers(...$pointers);
+
+        $this->matchPointer();
+    }
+
+    /**
+     * Set the JSON pointer matching the tree
+     *
+     * @return void
+     */
+    public function matchPointer(): void
+    {
+        $this->pointer = $this->pointers->matchTree($this->tree);
+    }
+
+    /**
+     * Set the new matching JSON pointer when the tree changes
+     *
+     * @return void
+     */
+    public function rematchPointer(): void
+    {
+        if ($this->treeChanged && $this->pointers->count() > 1) {
+            $this->matchPointer();
+        }
     }
 
     /**
@@ -141,13 +206,13 @@ class State
     }
 
     /**
-     * Determine whether the tree is within the JSON pointer
+     * Determine whether the parser can stop parsing
      *
      * @return bool
      */
-    public function inPointer(): bool
+    public function canStopParsing(): bool
     {
-        return $this->pointer->includesTree($this->tree);
+        return $this->pointers->wereFound() && !$this->pointer->includesTree($this->tree);
     }
 
     /**
@@ -162,29 +227,6 @@ class State
     }
 
     /**
-     * Traverse the given object key
-     *
-     * @param string $key
-     * @return void
-     */
-    public function traverseKey(string $key): void
-    {
-        $this->tree->traverseKey($key);
-        $this->treeChanged = true;
-    }
-
-    /**
-     * Traverse a JSON array
-     *
-     * @return void
-     */
-    public function traverseArray(): void
-    {
-        $this->tree->traverseArray($this->pointer);
-        $this->treeChanged = true;
-    }
-
-    /**
      * Determine whether the buffer contains tokens
      *
      * @return bool
@@ -195,19 +237,6 @@ class State
     }
 
     /**
-     * Determine whether the given token should be buffered
-     *
-     * @param Token $token
-     * @return bool
-     */
-    public function shouldBufferToken(Token $token): bool
-    {
-        return $this->tree->depth() >= 0
-            && $this->pointerMatchesTree()
-            && ($this->treeIsDeep() || ($token->isValue() && !$this->expectsKey()));
-    }
-
-    /**
      * Buffer the given token
      *
      * @param Token $token
@@ -215,7 +244,14 @@ class State
      */
     public function bufferToken(Token $token): void
     {
-        $this->buffer .= $token;
+        $shouldBuffer = $this->tree->depth() >= 0
+            && $this->pointerMatchesTree()
+            && ($this->treeIsDeep() || ($token->isValue() && !$this->expectsKey()));
+
+        if ($shouldBuffer) {
+            $this->buffer .= $token;
+            $this->pointers->markAsFound($this->pointer);
+        }
     }
 
     /**
@@ -260,15 +296,5 @@ class State
     public function doNotExpectKey(): void
     {
         $this->expectsKey = false;
-    }
-
-    /**
-     * Determine whether the current position is within an object
-     *
-     * @return bool
-     */
-    public function inObject(): bool
-    {
-        return $this->tree->inObject();
     }
 }

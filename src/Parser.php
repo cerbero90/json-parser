@@ -3,7 +3,6 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Decoders\ErrorHandlingDecoder;
-use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Sources\Source;
 use IteratorAggregate;
 use Traversable;
@@ -58,12 +57,10 @@ class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        $this->pointers = new Pointers(...$this->config->pointers);
-        $this->state->matchPointer($this->pointers);
+        $this->state->setPointers(...$this->config->pointers);
 
         foreach ($this->lexer as $token) {
             $token->mutateState($this->state);
-            $this->rematchPointer();
 
             if (!$token->endsChunk() || $this->state->treeIsDeep()) {
                 continue;
@@ -75,35 +72,9 @@ class Parser implements IteratorAggregate
                 yield $this->decoder->decode($this->state->pullBuffer());
             }
 
-            $this->markPointerAsFound();
-
-            if ($this->pointers->wereFound() && !$this->state->inPointer()) {
+            if ($this->state->canStopParsing()) {
                 break;
             }
-        }
-    }
-
-    /**
-     * Set the matching JSON pointer when the tree changes
-     *
-     * @return void
-     */
-    protected function rematchPointer(): void
-    {
-        if ($this->state->treeChanged() && $this->pointers->count() > 1) {
-            $this->state->matchPointer($this->pointers);
-        }
-    }
-
-    /**
-     * Mark the matching JSON pointer as found
-     *
-     * @return void
-     */
-    protected function markPointerAsFound(): void
-    {
-        if ($this->state->pointerMatchesTree()) {
-            $this->pointers->markAsFound($this->state->pointer());
         }
     }
 }
