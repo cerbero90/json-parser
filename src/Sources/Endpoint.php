@@ -26,7 +26,7 @@ class Endpoint extends Source
     /**
      * Retrieve the JSON fragments
      *
-     * @return Traversable
+     * @return Traversable<int, string>
      */
     public function getIterator(): Traversable
     {

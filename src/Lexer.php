@@ -57,7 +57,7 @@ class Lexer implements IteratorAggregate
     /**
      * Retrieve the JSON fragments
      *
-     * @return Generator<int, Token>
+     * @return Traversable<int, Token>
      */
     public function getIterator(): Traversable
     {
@@ -89,7 +89,7 @@ class Lexer implements IteratorAggregate
      * Yield the given character or buffer it
      *
      * @param string $character
-     * @return Generator
+     * @return Generator<int, Token>
      */
     protected function yieldOrBufferCharacter(string $character): Generator
     {

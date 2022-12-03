@@ -53,7 +53,7 @@ class Parser implements IteratorAggregate
     /**
      * Retrieve the JSON fragments
      *
-     * @return Traversable
+     * @return Traversable<string|int, mixed>
      */
     public function getIterator(): Traversable
     {

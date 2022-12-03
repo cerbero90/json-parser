@@ -127,7 +127,7 @@ class JsonParser implements IteratorAggregate
     /**
      * Retrieve the lazily iterable JSON
      *
-     * @return Traversable
+     * @return Traversable<string|int, mixed>
      */
     public function getIterator(): Traversable
     {

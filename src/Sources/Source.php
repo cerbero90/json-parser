@@ -22,7 +22,7 @@ abstract class Source implements IteratorAggregate
     /**
      * Retrieve the JSON fragments
      *
-     * @return Traversable
+     * @return Traversable<int, string>
      */
     abstract public function getIterator(): Traversable;
 

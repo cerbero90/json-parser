@@ -13,14 +13,14 @@ class Tree
     /**
      * The original JSON tree.
      *
-     * @var array
+     * @var array<int, string|int>
      */
     protected array $original = [];
 
     /**
      * The wildcarded JSON tree.
      *
-     * @var array
+     * @var array<int, string|int>
      */
     protected array $wildcarded = [];
 
@@ -34,7 +34,7 @@ class Tree
     /**
      * Retrieve the original JSON tree
      *
-     * @return array
+     * @return array<int, string|int>
      */
     public function original(): array
     {
@@ -44,7 +44,7 @@ class Tree
     /**
      * Retrieve the wildcarded JSON tree
      *
-     * @return array
+     * @return array<int, string|int>
      */
     public function wildcarded(): array
     {

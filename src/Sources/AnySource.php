@@ -39,7 +39,7 @@ class AnySource extends Source
     /**
      * Retrieve the JSON fragments
      *
-     * @return Traversable
+     * @return Traversable<int, string>
      * @throws SourceException
      */
     public function getIterator(): Traversable
