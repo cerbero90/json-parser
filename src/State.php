@@ -202,7 +202,8 @@ class State
      */
     public function shouldBufferToken(Token $token): bool
     {
-        return $this->pointerMatchesTree()
+        return $this->tree->depth() >= 0
+            && $this->pointerMatchesTree()
             && ($this->treeIsDeep() || ($token->isValue() && !$this->expectsKey()));
     }
 
@@ -269,15 +270,5 @@ class State
     public function inObject(): bool
     {
         return $this->tree->inObject();
-    }
-
-    /**
-     * Determine whether the tree is within the JSON root
-     *
-     * @return bool
-     */
-    public function inRoot(): bool
-    {
-        return $this->tree->depth() >= 0;
     }
 }
