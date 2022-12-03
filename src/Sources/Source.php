@@ -3,7 +3,6 @@
 namespace Cerbero\JsonParser\Sources;
 
 use Cerbero\JsonParser\Config;
-use Cerbero\JsonParser\Exceptions\SourceException;
 use IteratorAggregate;
 use Traversable;
 
@@ -13,13 +12,6 @@ use Traversable;
  */
 abstract class Source implements IteratorAggregate
 {
-    /**
-     * The registered custom sources.
-     *
-     * @var array
-     */
-    protected static array $customSources = [];
-
     /**
      * The cached size of the JSON source.
      *
@@ -68,23 +60,6 @@ abstract class Source implements IteratorAggregate
     public static function from(mixed $source, Config $config): static
     {
         return new static($source, $config);
-    }
-
-    /**
-     * Register the given custom sources
-     *
-     * @param string ...$customSource
-     * @return void
-     */
-    public static function register(string ...$customSource): void
-    {
-        foreach ($customSource as $class) {
-            if (!is_subclass_of($class, Source::class)) {
-                throw SourceException::invalid($class);
-            }
-
-            static::$customSources[] = $class;
-        }
     }
 
     /**

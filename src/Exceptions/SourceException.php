@@ -9,17 +9,6 @@ namespace Cerbero\JsonParser\Exceptions;
 class SourceException extends JsonParserException
 {
     /**
-     * Retrieve the exception when the given source is invalid
-     *
-     * @param string $source
-     * @return static
-     */
-    public static function invalid(string $source): static
-    {
-        return new static("[$source] is not a valid source", static::SOURCE_INVALID);
-    }
-
-    /**
      * Retrieve the exception when a JSON source is not supported
      *
      * @return static

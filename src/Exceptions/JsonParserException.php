@@ -10,9 +10,8 @@ use Exception;
  */
 abstract class JsonParserException extends Exception
 {
-    public const SOURCE_INVALID = 0;
-    public const SOURCE_UNSUPPORTED = 1;
-    public const SOURCE_GUZZLE = 2;
+    public const SOURCE_UNSUPPORTED = 0;
+    public const SOURCE_GUZZLE = 1;
 
     public const POINTER_INVALID = 0;
 }

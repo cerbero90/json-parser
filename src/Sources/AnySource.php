@@ -15,7 +15,7 @@ class AnySource extends Source
     /**
      * The supported sources.
      *
-     * @var array
+     * @var string[]
      */
     protected array $supportedSources = [
         CustomSource::class,
@@ -60,10 +60,6 @@ class AnySource extends Source
      */
     protected function sources(): Generator
     {
-        foreach (static::$customSources as $source) {
-            yield $source::from($this->source, $this->config);
-        }
-
         foreach ($this->supportedSources as $source) {
             yield $source::from($this->source, $this->config);
         }
