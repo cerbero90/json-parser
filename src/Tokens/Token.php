@@ -82,11 +82,7 @@ abstract class Token implements Stringable
             $state->traverseArray();
         }
 
-        if ($this->isString() && $state->expectsKey() && $state->shouldTrackTree()) {
-            $state->traverseKey($this);
-        }
-
-        if ($state->inRoot() && $state->shouldBufferToken($this)) {
+        if ($state->shouldBufferToken($this)) {
             $state->bufferToken($this);
         }
     }

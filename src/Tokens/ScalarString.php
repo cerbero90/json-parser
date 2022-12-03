@@ -37,6 +37,10 @@ class ScalarString extends Token
     {
         parent::mutateState($state);
 
+        if ($state->expectsKey() && $state->shouldTrackTree()) {
+            $state->traverseKey($this);
+        }
+
         if ($this->isKey = $state->expectsKey()) {
             $state->doNotExpectKey();
         }
