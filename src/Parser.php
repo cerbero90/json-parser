@@ -2,6 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
+use Cerbero\JsonParser\Decoders\ErrorHandlingDecoder;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Sources\Source;
 use IteratorAggregate;
@@ -21,11 +22,11 @@ class Parser implements IteratorAggregate
     protected State $state;
 
     /**
-     * The JSON pointers collection.
+     * The decoder handling potential errors.
      *
-     * @var Pointers
+     * @var ErrorHandlingDecoder
      */
-    protected Pointers $pointers;
+    protected ErrorHandlingDecoder $decoder;
 
     /**
      * Instantiate the class.
@@ -36,6 +37,7 @@ class Parser implements IteratorAggregate
     public function __construct(protected Lexer $lexer, protected Config $config)
     {
         $this->state = new State();
+        $this->decoder = new ErrorHandlingDecoder($config);
     }
 
     /**
@@ -68,9 +70,9 @@ class Parser implements IteratorAggregate
             }
 
             if ($this->state->hasBuffer() && $this->state->inObject()) {
-                yield $this->decode($this->state->key()) => $this->decode($this->state->pullBuffer());
+                yield $this->decoder->decode($this->state->key()) => $this->decoder->decode($this->state->pullBuffer());
             } elseif ($this->state->hasBuffer() && !$this->state->inObject()) {
-                yield $this->decode($this->state->pullBuffer());
+                yield $this->decoder->decode($this->state->pullBuffer());
             }
 
             $this->markPointerAsFound();
@@ -91,23 +93,6 @@ class Parser implements IteratorAggregate
         if ($this->state->treeChanged() && $this->pointers->count() > 1) {
             $this->state->matchPointer($this->pointers);
         }
-    }
-
-    /**
-     * Retrieve the decoded value of the given JSON fragment
-     *
-     * @param string $json
-     * @return mixed
-     */
-    protected function decode(string $json): mixed
-    {
-        $decoded = $this->config->decoder->decode($json);
-
-        if (!$decoded->succeeded) {
-            call_user_func($this->config->onError, $decoded);
-        }
-
-        return $decoded->value;
     }
 
     /**
