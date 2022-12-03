@@ -28,12 +28,10 @@ class CompoundEnd extends Token
      */
     public function mutateState(State $state): void
     {
-        parent::mutateState($state);
-
         $state->tree()->emerge();
 
         if ($this->value == '}') {
-            $state->doNotExpectKey();
+            $state->expectsKey = false;
         }
     }
 

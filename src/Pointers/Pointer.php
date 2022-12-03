@@ -28,6 +28,13 @@ class Pointer implements ArrayAccess, Stringable
     protected int $depth;
 
     /**
+     * Whether the pointer was found.
+     *
+     * @var bool
+     */
+    public bool $wasFound = false;
+
+    /**
      * Instantiate the class.
      *
      * @param string $pointer

@@ -60,16 +60,16 @@ class Parser implements IteratorAggregate
         $this->state->setPointers(...$this->config->pointers);
 
         foreach ($this->lexer as $token) {
-            $token->mutateState($this->state);
+            $this->state->mutateByToken($token);
 
             if (!$token->endsChunk() || $this->state->treeIsDeep()) {
                 continue;
             }
 
             if ($this->state->hasBuffer() && $this->state->inObject()) {
-                yield $this->decoder->decode($this->state->key()) => $this->decoder->decode($this->state->pullBuffer());
+                yield $this->decoder->decode($this->state->key()) => $this->decoder->decode($this->state->value());
             } elseif ($this->state->hasBuffer() && !$this->state->inObject()) {
-                yield $this->decoder->decode($this->state->pullBuffer());
+                yield $this->decoder->decode($this->state->value());
             }
 
             if ($this->state->canStopParsing()) {

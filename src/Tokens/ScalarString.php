@@ -35,10 +35,8 @@ class ScalarString extends Token
      */
     public function mutateState(State $state): void
     {
-        parent::mutateState($state);
-
-        if ($this->isKey = $state->expectsKey()) {
-            $state->doNotExpectKey();
+        if ($this->isKey = $state->expectsKey) {
+            $state->expectsKey = false;
         }
     }
 

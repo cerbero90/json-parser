@@ -74,7 +74,10 @@ class Pointers implements Countable
      */
     public function markAsFound(Pointer $pointer): void
     {
-        $this->found[(string) $pointer] = true;
+        if (!$pointer->wasFound) {
+            $pointer->wasFound = true;
+            $this->found[(string) $pointer] = true;
+        }
     }
 
     /**

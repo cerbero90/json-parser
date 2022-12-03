@@ -28,10 +28,8 @@ class Comma extends Token
      */
     public function mutateState(State $state): void
     {
-        parent::mutateState($state);
-
         if ($state->inObject()) {
-            $state->expectKey();
+            $state->expectsKey = true;
         }
     }
 }

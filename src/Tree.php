@@ -84,18 +84,6 @@ class Tree implements IteratorAggregate
     }
 
     /**
-     * Determine whether the tree is traversing an object
-     *
-     * @return bool
-     */
-    public function inObject(): bool
-    {
-        $key = $this->original[$this->depth] ?? null;
-
-        return is_string($key);
-    }
-
-    /**
      * Traverse the given object key
      *
      * @param string $key

@@ -28,12 +28,10 @@ class CompoundBegin extends Token
      */
     public function mutateState(State $state): void
     {
-        parent::mutateState($state);
-
         $state->tree()->deepen();
 
         if ($this->value == '{') {
-            $state->expectKey();
+            $state->expectsKey = true;
         }
     }
 }
