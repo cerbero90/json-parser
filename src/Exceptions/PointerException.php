@@ -16,6 +16,6 @@ class PointerException extends JsonParserException
      */
     public static function invalid(string $pointer): static
     {
-        return new static("The string [$pointer] is not a valid JSON pointer", static::CODE_POINTER_INVALID);
+        return new static("The string [$pointer] is not a valid JSON pointer", static::POINTER_INVALID);
     }
 }

@@ -16,7 +16,7 @@ class SourceException extends JsonParserException
      */
     public static function invalid(string $source): static
     {
-        return new static("[$source] is not a valid source", static::CODE_SOURCE_INVALID);
+        return new static("[$source] is not a valid source", static::SOURCE_INVALID);
     }
 
     /**
@@ -26,7 +26,7 @@ class SourceException extends JsonParserException
      */
     public static function unsupported(): static
     {
-        return new static('Unable to load JSON from the provided source', static::CODE_SOURCE_UNSUPPORTED);
+        return new static('Unable to load JSON from the provided source', static::SOURCE_UNSUPPORTED);
     }
 
     /**
@@ -36,6 +36,6 @@ class SourceException extends JsonParserException
      */
     public static function requireGuzzle(): static
     {
-        return new static('Guzzle is required to load JSON from endpoints', static::CODE_SOURCE_GUZZLE);
+        return new static('Guzzle is required to load JSON from endpoints', static::SOURCE_GUZZLE);
     }
 }
