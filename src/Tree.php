@@ -3,14 +3,12 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointer;
-use IteratorAggregate;
-use Traversable;
 
 /**
  * The JSON tree.
  *
  */
-class Tree implements IteratorAggregate
+class Tree
 {
     /**
      * The original JSON tree.
@@ -134,15 +132,5 @@ class Tree implements IteratorAggregate
         $key = $this->original[$this->depth];
 
         return is_string($key) ? "\"$key\"" : $key;
-    }
-
-    /**
-     * Retrieve the original tree iterator
-     *
-     * @return Traversable
-     */
-    public function getIterator(): Traversable
-    {
-        yield from $this->original();
     }
 }
