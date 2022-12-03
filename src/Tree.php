@@ -111,13 +111,14 @@ class Tree
     /**
      * Traverse an array
      *
-     * @param Pointer $pointer
+     * @param string[] $referenceTokens
      * @return void
      */
-    public function traverseArray(Pointer $pointer): void
+    public function traverseArray(array $referenceTokens): void
     {
+        $referenceToken = $referenceTokens[$this->depth] ?? null;
         $this->original[$this->depth] = isset($this->original[$this->depth]) ? $this->original[$this->depth] + 1 : 0;
-        $this->wildcarded[$this->depth] = $pointer[$this->depth] == '-' ? '-' : $this->original[$this->depth];
+        $this->wildcarded[$this->depth] = $referenceToken == '-' ? '-' : $this->original[$this->depth];
 
         $this->trim();
     }

@@ -143,7 +143,7 @@ class State
         $shouldTrackTree = $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
 
         if ($shouldTrackTree && $token->isValue() && !$this->inObject()) {
-            $this->tree->traverseArray($this->pointer);
+            $this->tree->traverseArray($this->pointer->referenceTokens());
             $this->treeChanged = true;
         }
 
