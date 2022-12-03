@@ -147,7 +147,7 @@ class State
             $this->treeChanged = true;
         }
 
-        if ($shouldTrackTree && $token->isString() && $this->expectsKey) {
+        if ($shouldTrackTree && $this->expectsKey) {
             $this->tree->traverseKey($token);
             $this->treeChanged = true;
         }
