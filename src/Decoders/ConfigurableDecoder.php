@@ -5,10 +5,10 @@ namespace Cerbero\JsonParser\Decoders;
 use Cerbero\JsonParser\Config;
 
 /**
- * The decoder handling potential decoding errors.
+ * The configurable decoder.
  *
  */
-class ConfiguredDecoder
+class ConfigurableDecoder
 {
     /**
      * Instantiate the class.
