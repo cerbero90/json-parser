@@ -6,10 +6,10 @@ use Cerbero\JsonParser\Concerns\DetectsEndpoints;
 use Traversable;
 
 /**
- * The JSON string source.
+ * The JSON source.
  *
  */
-class JsonString extends Source
+class Json extends Source
 {
     use DetectsEndpoints;
 

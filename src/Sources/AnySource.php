@@ -22,7 +22,7 @@ class AnySource extends Source
         Endpoint::class,
         Filename::class,
         IterableSource::class,
-        JsonString::class,
+        Json::class,
         LaravelClientResponse::class,
         Psr7Message::class,
         Psr7Stream::class,
@@ -40,6 +40,7 @@ class AnySource extends Source
      * Retrieve the JSON fragments
      *
      * @return Traversable
+     * @throws SourceException
      */
     public function getIterator(): Traversable
     {
@@ -55,7 +56,7 @@ class AnySource extends Source
     /**
      * Retrieve all available sources
      *
-     * @return Source[]
+     * @return Generator<int, Source>
      */
     protected function sources(): Generator
     {
