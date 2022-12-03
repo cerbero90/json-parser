@@ -203,19 +203,7 @@ class State
     public function shouldBufferToken(Token $token): bool
     {
         return $this->pointerMatchesTree()
-            && ($this->treeIsDeep() || (!$this->expectsKey() && ($token->isValue() || $this->expectsToken($token))));
-    }
-
-    /**
-     * Determine whether the given token is expected
-     *
-     * @param Token $token
-     * @return bool
-     */
-    protected function expectsToken(Token $token): bool
-    {
-        return ($this->tree->depth() == $this->pointer->depth() && $token->isValue())
-            || ($this->tree->depth() + 1 == $this->pointer->depth() && $token->isScalar());
+            && ($this->treeIsDeep() || ($token->isValue() && !$this->expectsKey()));
     }
 
     /**
