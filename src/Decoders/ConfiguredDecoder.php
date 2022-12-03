@@ -8,7 +8,7 @@ use Cerbero\JsonParser\Config;
  * The decoder handling potential decoding errors.
  *
  */
-class ErrorHandlingDecoder
+class ConfiguredDecoder
 {
     /**
      * Instantiate the class.
