@@ -3,13 +3,12 @@
 namespace Cerbero\JsonParser\Pointers;
 
 use Cerbero\JsonParser\Tree;
-use Countable;
 
 /**
  * The JSON pointers collection.
  *
  */
-class Pointers implements Countable
+class Pointers
 {
     /**
      * The JSON pointers collection.
@@ -17,13 +16,6 @@ class Pointers implements Countable
      * @var Pointer[]
      */
     protected array $pointers;
-
-    /**
-     * The default pointer.
-     *
-     * @var Pointer
-     */
-    protected Pointer $defaultPointer;
 
     /**
      * The list of pointers that were found within the JSON.
@@ -40,7 +32,6 @@ class Pointers implements Countable
     public function __construct(Pointer ...$pointers)
     {
         $this->pointers = $pointers;
-        $this->defaultPointer = new Pointer('');
     }
 
     /**
@@ -63,7 +54,7 @@ class Pointers implements Countable
             }
         }
 
-        return end($pointers) ?: $this->pointers[0] ?? $this->defaultPointer;
+        return end($pointers) ?: $this->pointers[0];
     }
 
     /**
@@ -87,7 +78,7 @@ class Pointers implements Countable
      */
     public function wereFound(): bool
     {
-        return $this->count() > 0 && $this->count() == count($this->found);
+        return $this->count() == count($this->found);
     }
 
     /**
