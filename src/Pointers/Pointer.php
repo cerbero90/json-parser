@@ -109,11 +109,12 @@ class Pointer implements Stringable
      */
     public function includesTree(Tree $tree): bool
     {
-        if (($firstNest = array_search('-', $this->referenceTokens)) === false) {
-            return false;
+        if ($this->pointer == '') {
+            return true;
         }
 
-        return array_slice($this->referenceTokens, 0, $firstNest) == array_slice($tree->original(), 0, $firstNest);
+        return (($firstNest = array_search('-', $this->referenceTokens)) !== false)
+            && array_slice($this->referenceTokens, 0, $firstNest) == array_slice($tree->original(), 0, $firstNest);
     }
 
     /**

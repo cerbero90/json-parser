@@ -2,6 +2,7 @@
 
 return [
     'complex_array' => [
+        '' => require __DIR__ . '/../parsing/complex_array.php',
         '/-' => [
             [
                 "id" => "0001",
@@ -248,6 +249,7 @@ return [
         '/-/batters/batter/-/id' => ['id' => ["1001", "1002", "1003", "1004", "1001", "1001", "1002"]],
     ],
     'complex_object' => [
+        '' => require __DIR__ . '/../parsing/complex_object.php',
         '/id' => ['id' => '0001'],
         '/batters' => [
             'batters' => [
@@ -312,19 +314,21 @@ return [
         '/batters/batter/-/id' => ['id' => ["1001", "1002", "1003", "1004"]],
     ],
     'empty_array' => [
+        '' => [],
         '/-' => [],
         '/-1' => [],
         '/0' => [],
         '/foo' => [],
     ],
     'empty_object' => [
+        '' => [],
         '/-' => [],
         '/-1' => [],
         '/0' => [],
         '/foo' => [],
     ],
     'simple_array' => [
-        // '' => [1, '', 'foo', '"bar"', 'hej då', 3.14, false, null, [], []],
+        '' => require __DIR__ . '/../parsing/simple_array.php',
         '/-' => [1, '', 'foo', '"bar"', 'hej då', 3.14, false, null, [], []],
         '/-1' => [],
         '/0' => [1],
@@ -341,6 +345,7 @@ return [
         '/foo' => [],
     ],
     'simple_object' => [
+        '' => require __DIR__ . '/../parsing/simple_object.php',
         '/-' => [],
         '/-1' => [],
         '/int' => ['int' => 1],

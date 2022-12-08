@@ -20,13 +20,6 @@ class State
     protected Tree $tree;
 
     /**
-     * Whether the tree changed.
-     *
-     * @var bool
-     */
-    protected bool $treeChanged = false;
-
-    /**
      * The JSON pointers.
      *
      * @var Pointers
@@ -139,22 +132,22 @@ class State
      */
     public function mutateByToken(Token $token): void
     {
-        $this->treeChanged = false;
+        $treeChanged = false;
         $shouldTrackTree = $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
 
         if ($shouldTrackTree && $token->isValue() && !$this->inObject()) {
             $this->tree->traverseArray($this->pointer->referenceTokens());
-            $this->treeChanged = true;
+            $treeChanged = true;
         }
 
         if ($shouldTrackTree && $this->expectsKey) {
             $this->tree->traverseKey($token);
-            $this->treeChanged = true;
+            $treeChanged = true;
         }
 
         $this->bufferToken($token);
 
-        if ($this->treeChanged && $this->pointers->count() > 1) {
+        if ($treeChanged && $this->pointers->count() > 1) {
             $this->pointer = $this->pointers->matchTree($this->tree);
         }
 
@@ -186,8 +179,7 @@ class State
      */
     protected function pointerMatchesTree(): bool
     {
-        return $this->pointer == ''
-            || in_array($this->pointer->referenceTokens(), [$this->tree->original(), $this->tree->wildcarded()]);
+        return in_array($this->pointer->referenceTokens(), [[], $this->tree->original(), $this->tree->wildcarded()]);
     }
 
     /**
