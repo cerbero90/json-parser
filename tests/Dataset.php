@@ -43,6 +43,16 @@ class Dataset
     }
 
     /**
+     * Retrieve the dataset to test invalid pointers
+     *
+     * @return Generator
+     */
+    public static function forInvalidPointers(): Generator
+    {
+        yield from ['abc', '/foo~2', '/~', ' '];
+    }
+
+    /**
      * Retrieve the dataset to test single pointers
      *
      * @return Generator
@@ -61,12 +71,20 @@ class Dataset
     }
 
     /**
-     * Retrieve the dataset to test invalid pointers
+     * Retrieve the dataset to test multiple pointers
      *
      * @return Generator
      */
-    public static function forInvalidPointers(): Generator
+    public static function forMultiplePointers(): Generator
     {
-        yield from ['abc', '/foo~2', '/~', ' '];
+        $multiplePointers = require __DIR__ . '/fixtures/pointers/multiple_pointers.php';
+
+        foreach ($multiplePointers as $fixture => $valueByPointers) {
+            $json = file_get_contents(__DIR__ . "/fixtures/json/{$fixture}.json");
+
+            foreach ($valueByPointers as $pointers => $value) {
+                yield [$json, explode(',', $pointers), $value];
+            }
+        }
     }
 }
