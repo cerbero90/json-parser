@@ -145,11 +145,11 @@ class State
             $treeChanged = true;
         }
 
-        $this->bufferToken($token);
-
         if ($treeChanged && $this->pointers->count() > 1) {
             $this->pointer = $this->pointers->matchTree($this->tree);
         }
+
+        $this->bufferToken($token);
 
         $token->mutateState($this);
     }
