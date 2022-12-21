@@ -2,137 +2,8 @@
 
 return [
     'complex_array' => [
-        '' => require __DIR__ . '/../parsing/complex_array.php',
-        '/-' => [
-            [
-                "id" => "0001",
-                "type" => "donut",
-                "name" => "Cake",
-                "ppu" => 0.55,
-                "batters" => [
-                    "batter" => [
-                        [
-                            "id" => "1001",
-                            "type" => "Regular",
-                        ],
-                        [
-                            "id" => "1002",
-                            "type" => "Chocolate",
-                        ],
-                        [
-                            "id" => "1003",
-                            "type" => "Blueberry",
-                        ],
-                        [
-                            "id" => "1004",
-                            "type" => "Devil's Food",
-                        ],
-                    ],
-                ],
-                "topping" => [
-                    [
-                        "id" => "5001",
-                        "type" => "None",
-                    ],
-                    [
-                        "id" => "5002",
-                        "type" => "Glazed",
-                    ],
-                    [
-                        "id" => "5005",
-                        "type" => "Sugar",
-                    ],
-                    [
-                        "id" => "5007",
-                        "type" => "Powdered Sugar",
-                    ],
-                    [
-                        "id" => "5006",
-                        "type" => "Chocolate with Sprinkles",
-                    ],
-                    [
-                        "id" => "5003",
-                        "type" => "Chocolate",
-                    ],
-                    [
-                        "id" => "5004",
-                        "type" => "Maple",
-                    ],
-                ],
-            ],
-            [
-                "id" => "0002",
-                "type" => "donut",
-                "name" => "Raised",
-                "ppu" => 0.55,
-                "batters" => [
-                    "batter" => [
-                        [
-                            "id" => "1001",
-                            "type" => "Regular",
-                        ],
-                    ],
-                ],
-                "topping" => [
-                    [
-                        "id" => "5001",
-                        "type" => "None",
-                    ],
-                    [
-                        "id" => "5002",
-                        "type" => "Glazed",
-                    ],
-                    [
-                        "id" => "5005",
-                        "type" => "Sugar",
-                    ],
-                    [
-                        "id" => "5003",
-                        "type" => "Chocolate",
-                    ],
-                    [
-                        "id" => "5004",
-                        "type" => "Maple",
-                    ],
-                ],
-            ],
-            [
-                "id" => "0003",
-                "type" => "donut",
-                "name" => "Old Fashioned",
-                "ppu" => 0.55,
-                "batters" => [
-                    "batter" => [
-                        [
-                            "id" => "1001",
-                            "type" => "Regular",
-                        ],
-                        [
-                            "id" => "1002",
-                            "type" => "Chocolate",
-                        ],
-                    ],
-                ],
-                "topping" => [
-                    [
-                        "id" => "5001",
-                        "type" => "None",
-                    ],
-                    [
-                        "id" => "5002",
-                        "type" => "Glazed",
-                    ],
-                    [
-                        "id" => "5003",
-                        "type" => "Chocolate",
-                    ],
-                    [
-                        "id" => "5004",
-                        "type" => "Maple",
-                    ],
-                ],
-            ],
-        ],
+        '' => $complexArray = require __DIR__ . '/../parsing/complex_array.php',
+        '/-' => $complexArray,
         '/-/id' => ['id' => ['0001', '0002', '0003']],
         '/-/batters' => [
             'batters' => [
@@ -250,6 +121,7 @@ return [
     ],
     'complex_object' => [
         '' => require __DIR__ . '/../parsing/complex_object.php',
+        '/-' => [],
         '/id' => ['id' => '0001'],
         '/batters' => [
             'batters' => [
@@ -328,8 +200,8 @@ return [
         '/foo' => [],
     ],
     'simple_array' => [
-        '' => require __DIR__ . '/../parsing/simple_array.php',
-        '/-' => [1, '', 'foo', '"bar"', 'hej då', 3.14, false, null, [], []],
+        '' => $simpleArray = require __DIR__ . '/../parsing/simple_array.php',
+        '/-' => $simpleArray,
         '/-1' => [],
         '/0' => [1],
         '/1' => [''],
