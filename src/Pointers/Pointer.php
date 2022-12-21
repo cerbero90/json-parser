@@ -114,7 +114,7 @@ class Pointer implements Stringable
         }
 
         return (($firstNest = array_search('-', $this->referenceTokens)) !== false)
-            && array_slice($this->referenceTokens, 0, $firstNest) == array_slice($tree->original(), 0, $firstNest);
+            && array_slice($this->referenceTokens, 0, $firstNest) === array_slice($tree->original(), 0, $firstNest);
     }
 
     /**
