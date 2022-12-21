@@ -66,8 +66,7 @@ class Pointers
     public function markAsFound(Pointer $pointer): void
     {
         if (!$pointer->wasFound) {
-            $pointer->wasFound = true;
-            $this->found[(string) $pointer] = true;
+            $this->found[(string) $pointer] = $pointer->wasFound = true;
         }
     }
 
