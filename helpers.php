@@ -1,6 +1,6 @@
 <?php
 
-use Cerbero\JsonParser\JsonParser;
+namespace Cerbero\JsonParser;
 
 if (!function_exists('parseJson')) {
     /**
