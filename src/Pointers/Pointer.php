@@ -102,6 +102,17 @@ class Pointer implements Stringable
     }
 
     /**
+     * Determine whether the pointer matches the given tree
+     *
+     * @param Tree $tree
+     * @return bool
+     */
+    public function matchesTree(Tree $tree): bool
+    {
+        return in_array($this->referenceTokens, [[], $tree->original(), $tree->wildcarded()]);
+    }
+
+    /**
      * Determine whether the pointer includes the given tree
      *
      * @param Tree $tree

@@ -163,23 +163,13 @@ class State
     protected function bufferToken(Token $token): void
     {
         $shouldBuffer = $this->tree->depth() >= 0
-            && $this->pointerMatchesTree()
+            && $this->pointer->matchesTree($this->tree)
             && ($this->treeIsDeep() || ($token->isValue() && !$this->expectsKey));
 
         if ($shouldBuffer) {
             $this->buffer .= $token;
             $this->pointers->markAsFound($this->pointer);
         }
-    }
-
-    /**
-     * Determine whether the tree matches the JSON pointer
-     *
-     * @return bool
-     */
-    protected function pointerMatchesTree(): bool
-    {
-        return in_array($this->pointer->referenceTokens(), [[], $this->tree->original(), $this->tree->wildcarded()]);
     }
 
     /**
