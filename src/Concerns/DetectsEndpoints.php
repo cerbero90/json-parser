@@ -20,6 +20,6 @@ trait DetectsEndpoints
             return false;
         }
 
-        return in_array($url['scheme'] ?? null, ['http', 'https']) && isset($url['host']);
+        return isset($url['host']) && in_array($url['scheme'] ?? null, ['http', 'https']);
     }
 }
