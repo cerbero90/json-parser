@@ -99,7 +99,7 @@ class Tokens
     /**
      * The tokens class map.
      *
-     * @var array
+     * @var array<int, class-string<Token>>
      */
     public const MAP = [
         self::COMMA => Comma::class,

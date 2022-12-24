@@ -15,7 +15,7 @@ class AnySource extends Source
     /**
      * The supported sources.
      *
-     * @var string[]
+     * @var class-string<Source>[]
      */
     protected array $supportedSources = [
         CustomSource::class,
