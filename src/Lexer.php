@@ -18,13 +18,6 @@ use Traversable;
 final class Lexer implements IteratorAggregate
 {
     /**
-     * The tokenizer.
-     *
-     * @var Tokenizer
-     */
-    private Tokenizer $tokenizer;
-
-    /**
      * The buffer to yield.
      *
      * @var string
@@ -52,7 +45,6 @@ final class Lexer implements IteratorAggregate
      */
     public function __construct(private Source $source)
     {
-        $this->tokenizer = new Tokenizer();
     }
 
     /**
@@ -100,12 +92,12 @@ final class Lexer implements IteratorAggregate
         }
 
         if ($this->buffer != '') {
-            yield $this->tokenizer->toToken($this->buffer);
+            yield Tokenizer::instance()->toToken($this->buffer);
             $this->buffer = '';
         }
 
         if (isset(Tokens::DELIMITERS[$character])) {
-            yield $this->tokenizer->toToken($character);
+            yield Tokenizer::instance()->toToken($character);
         }
     }
 }

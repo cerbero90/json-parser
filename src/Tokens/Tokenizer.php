@@ -9,35 +9,50 @@ namespace Cerbero\JsonParser\Tokens;
 final class Tokenizer
 {
     /**
+     * The singleton instance.
+     *
+     * @var static
+     */
+    private static self $instance;
+
+    /**
      * The map of token instances by type.
      *
      * @var array<int, Token>
      */
-    private static array $tokensMap;
+    private array $tokensMap;
 
     /**
      * Instantiate the class.
      *
      */
-    public function __construct()
+    private function __construct()
     {
-        static::$tokensMap ??= $this->hydrateTokensMap();
+        $this->setTokensMap();
     }
 
     /**
-     * Retrieve the hydrated tokens map
+     * Retrieve the singleton instance
      *
-     * @return array<int, Token>
+     * @return static
      */
-    private function hydrateTokensMap(): array
+    public static function instance(): static
     {
-        $map = $instances = [];
+        return static::$instance ??= new static();
+    }
+
+    /**
+     * Set the tokens map
+     *
+     * @return void
+     */
+    private function setTokensMap(): void
+    {
+        $instances = [];
 
         foreach (Tokens::MAP as $type => $class) {
-            $map[$type] = $instances[$class] ??= new $class();
+            $this->tokensMap[$type] = $instances[$class] ??= new $class();
         }
-
-        return $map;
     }
 
     /**
@@ -51,6 +66,6 @@ final class Tokenizer
         $character = $value[0];
         $type = Tokens::TYPES[$character];
 
-        return static::$tokensMap[$type]->setValue($value);
+        return $this->tokensMap[$type]->setValue($value);
     }
 }
