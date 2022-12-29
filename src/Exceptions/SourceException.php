@@ -2,12 +2,17 @@
 
 namespace Cerbero\JsonParser\Exceptions;
 
+use Exception;
+
 /**
  * The exception thrown when a source-related error occurs.
  *
  */
-final class SourceException extends JsonParserException
+final class SourceException extends Exception implements JsonParserException
 {
+    public const CODE_UNSUPPORTED = 0;
+    public const CODE_GUZZLE = 1;
+
     /**
      * Retrieve the exception when a JSON source is not supported
      *
@@ -15,7 +20,7 @@ final class SourceException extends JsonParserException
      */
     public static function unsupported(): static
     {
-        return new static('Unable to load JSON from the provided source', static::SOURCE_UNSUPPORTED);
+        return new static('Unable to load JSON from the provided source', static::CODE_UNSUPPORTED);
     }
 
     /**
@@ -25,6 +30,6 @@ final class SourceException extends JsonParserException
      */
     public static function requireGuzzle(): static
     {
-        return new static('Guzzle is required to load JSON from endpoints', static::SOURCE_GUZZLE);
+        return new static('Guzzle is required to load JSON from endpoints', static::CODE_GUZZLE);
     }
 }

@@ -2,16 +2,12 @@
 
 namespace Cerbero\JsonParser\Exceptions;
 
-use Exception;
+use Throwable;
 
 /**
  * Any exception thrown by JSON Parser.
  *
  */
-abstract class JsonParserException extends Exception
+interface JsonParserException extends Throwable
 {
-    public const SOURCE_UNSUPPORTED = 0;
-    public const SOURCE_GUZZLE = 1;
-
-    public const POINTER_INVALID = 0;
 }
