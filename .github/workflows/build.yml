@@ -85,7 +85,7 @@ jobs:
     static:
         runs-on: ubuntu-latest
 
-        name: Coding style
+        name: Static analysis
 
         steps:
             - name: Checkout code
