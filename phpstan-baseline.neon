@@ -1,0 +1,16 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Generator expects key type int\\|string, mixed given\\.$#"
+			count: 1
+			path: src/Parser.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of method Cerbero\\\\JsonParser\\\\Decoders\\\\ConfigurableDecoder\\:\\:decode\\(\\) expects string, int\\|string given\\.$#"
+			count: 1
+			path: src/Parser.php
+
+		-
+			message: "#^Binary operation \"\\+\" between int\\|string and 1 results in an error\\.$#"
+			count: 1
+			path: src/Tree.php
