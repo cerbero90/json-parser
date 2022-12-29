@@ -8,6 +8,7 @@ use Traversable;
 /**
  * The PSR-7 message source.
  *
+ * @property-read MessageInterface $source
  */
 class Psr7Message extends Source
 {
@@ -18,7 +19,7 @@ class Psr7Message extends Source
      */
     public function getIterator(): Traversable
     {
-        return Psr7Stream::from($this->source->getBody(), $this->config);
+        return new Psr7Stream($this->source->getBody(), $this->config);
     }
 
     /**

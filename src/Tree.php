@@ -2,34 +2,32 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Pointers\Pointer;
-
 /**
  * The JSON tree.
  *
  */
-class Tree
+final class Tree
 {
     /**
      * The original JSON tree.
      *
      * @var array<int, string|int>
      */
-    protected array $original = [];
+    private array $original = [];
 
     /**
      * The wildcarded JSON tree.
      *
      * @var array<int, string|int>
      */
-    protected array $wildcarded = [];
+    private array $wildcarded = [];
 
     /**
      * The JSON tree depth.
      *
      * @var int
      */
-    protected int $depth = -1;
+    private int $depth = -1;
 
     /**
      * Retrieve the original JSON tree
@@ -102,7 +100,7 @@ class Tree
      *
      * @return void
      */
-    protected function trim(): void
+    private function trim(): void
     {
         array_splice($this->original, $this->depth + 1);
         array_splice($this->wildcarded, $this->depth + 1);

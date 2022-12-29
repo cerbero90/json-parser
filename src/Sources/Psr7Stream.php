@@ -8,6 +8,7 @@ use Traversable;
 /**
  * The PSR-7 stream source.
  *
+ * @property-read StreamInterface $source
  */
 class Psr7Stream extends Source
 {
@@ -26,7 +27,7 @@ class Psr7Stream extends Source
             StreamWrapper::NAME => ['stream' => $this->source],
         ]));
 
-        return Resource::from($stream, $this->config);
+        return new JsonResource($stream, $this->config);
     }
 
     /**

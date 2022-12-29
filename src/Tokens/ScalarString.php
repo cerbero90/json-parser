@@ -8,14 +8,14 @@ use Cerbero\JsonParser\State;
  * The scalar string token.
  *
  */
-class ScalarString extends Token
+final class ScalarString extends Token
 {
     /**
      * Whether this token is an object key.
      *
      * @var bool
      */
-    protected bool $isKey = false;
+    private bool $isKey = false;
 
     /**
      * Retrieve the token type

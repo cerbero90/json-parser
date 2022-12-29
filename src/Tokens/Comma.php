@@ -8,7 +8,7 @@ use Cerbero\JsonParser\State;
  * The comma token.
  *
  */
-class Comma extends Token
+final class Comma extends Token
 {
     /**
      * Retrieve the token type
@@ -28,8 +28,6 @@ class Comma extends Token
      */
     public function mutateState(State $state): void
     {
-        if ($state->inObject()) {
-            $state->expectsKey = true;
-        }
+        $state->expectsKey = $state->inObject();
     }
 }

@@ -7,6 +7,7 @@ use Traversable;
 /**
  * The custom source.
  *
+ * @property-read Source $source
  */
 class CustomSource extends Source
 {

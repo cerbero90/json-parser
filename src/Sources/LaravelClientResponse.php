@@ -8,6 +8,7 @@ use Traversable;
 /**
  * The Laravel client response source.
  *
+ * @property-read Response $source
  */
 class LaravelClientResponse extends Source
 {
@@ -18,7 +19,7 @@ class LaravelClientResponse extends Source
      */
     public function getIterator(): Traversable
     {
-        return Psr7Message::from($this->source->toPsrResponse(), $this->config);
+        return new Psr7Message($this->source->toPsrResponse(), $this->config);
     }
 
     /**

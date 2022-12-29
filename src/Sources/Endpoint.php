@@ -11,6 +11,7 @@ use Traversable;
 /**
  * The endpoint source.
  *
+ * @property-read string $source
  */
 class Endpoint extends Source
 {
@@ -19,9 +20,9 @@ class Endpoint extends Source
     /**
      * The endpoint response.
      *
-     * @var ResponseInterface
+     * @var ResponseInterface|null
      */
-    protected ResponseInterface $response;
+    protected ?ResponseInterface $response;
 
     /**
      * Retrieve the JSON fragments
@@ -41,7 +42,7 @@ class Endpoint extends Source
             ],
         ]);
 
-        return Psr7Message::from($this->response, $this->config);
+        return new Psr7Message($this->response, $this->config);
     }
 
     /**

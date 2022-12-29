@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Decoders\CustomDecoder;
+use Cerbero\JsonParser\Decoders\ConfigurableDecoder;
 use Cerbero\JsonParser\Sources\Source;
 use IteratorAggregate;
 use Traversable;
@@ -10,22 +10,23 @@ use Traversable;
 /**
  * The JSON parser.
  *
+ * @implements IteratorAggregate<string|int, mixed>
  */
-class Parser implements IteratorAggregate
+final class Parser implements IteratorAggregate
 {
     /**
      * The JSON parsing state.
      *
      * @var State
      */
-    protected State $state;
+    private State $state;
 
     /**
      * The decoder handling potential errors.
      *
-     * @var CustomDecoder
+     * @var ConfigurableDecoder
      */
-    protected CustomDecoder $decoder;
+    private ConfigurableDecoder $decoder;
 
     /**
      * Instantiate the class.
@@ -33,10 +34,10 @@ class Parser implements IteratorAggregate
      * @param Lexer $lexer
      * @param Config $config
      */
-    public function __construct(protected Lexer $lexer, protected Config $config)
+    public function __construct(private Lexer $lexer, private Config $config)
     {
         $this->state = new State();
-        $this->decoder = new CustomDecoder($config);
+        $this->decoder = new ConfigurableDecoder($config);
     }
 
     /**

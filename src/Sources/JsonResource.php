@@ -7,8 +7,9 @@ use Traversable;
 /**
  * The resource source.
  *
+ * @property-read resource $source
  */
-class Resource extends Source
+class JsonResource extends Source
 {
     /**
      * Retrieve the JSON fragments
@@ -18,7 +19,9 @@ class Resource extends Source
     public function getIterator(): Traversable
     {
         while (!feof($this->source)) {
-            yield fread($this->source, $this->config->bytes);
+            if (is_string($chunk = fread($this->source, $this->config->bytes))) {
+                yield $chunk;
+            }
         }
     }
 
@@ -29,7 +32,7 @@ class Resource extends Source
      */
     public function matches(): bool
     {
-        return is_resource($this->source) || get_resource_type($this->source) == 'stream';
+        return is_resource($this->source);
     }
 
     /**

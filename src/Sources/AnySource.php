@@ -23,18 +23,18 @@ class AnySource extends Source
         Filename::class,
         IterableSource::class,
         Json::class,
+        JsonResource::class,
         LaravelClientResponse::class,
         Psr7Message::class,
         Psr7Stream::class,
-        Resource::class,
     ];
 
     /**
      * The matching source.
      *
-     * @var Source
+     * @var Source|null
      */
-    protected Source $matchingSource;
+    protected ?Source $matchingSource;
 
     /**
      * Retrieve the JSON fragments
@@ -61,7 +61,7 @@ class AnySource extends Source
     protected function sources(): Generator
     {
         foreach ($this->supportedSources as $source) {
-            yield $source::from($this->source, $this->config);
+            yield new $source($this->source, $this->config);
         }
     }
 

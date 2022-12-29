@@ -8,7 +8,7 @@ use Cerbero\JsonParser\State;
  * The token that begins compound data (JSON arrays or objects).
  *
  */
-class CompoundBegin extends Token
+final class CompoundBegin extends Token
 {
     /**
      * Retrieve the token type
@@ -30,8 +30,6 @@ class CompoundBegin extends Token
     {
         $state->tree()->deepen();
 
-        if ($this->value == '{') {
-            $state->expectsKey = true;
-        }
+        $state->expectsKey = $this->value == '{';
     }
 }

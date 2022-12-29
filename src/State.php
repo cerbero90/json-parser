@@ -10,35 +10,35 @@ use Cerbero\JsonParser\Tokens\Token;
  * The JSON parsing state.
  *
  */
-class State
+final class State
 {
     /**
      * The JSON tree.
      *
      * @var Tree
      */
-    protected Tree $tree;
+    private Tree $tree;
 
     /**
      * The JSON pointers.
      *
      * @var Pointers
      */
-    protected Pointers $pointers;
+    private Pointers $pointers;
 
     /**
      * The JSON pointer matching the tree.
      *
      * @var Pointer
      */
-    protected Pointer $pointer;
+    private Pointer $pointer;
 
     /**
      * The JSON buffer.
      *
      * @var string
      */
-    protected string $buffer = '';
+    private string $buffer = '';
 
     /**
      * Whether an object key is expected.
@@ -81,9 +81,9 @@ class State
     /**
      * Retrieve the current key of the JSON tree
      *
-     * @return string
+     * @return string|int
      */
-    public function key(): string
+    public function key(): string|int
     {
         return $this->tree->currentKey();
     }
@@ -160,7 +160,7 @@ class State
      * @param Token $token
      * @return void
      */
-    protected function bufferToken(Token $token): void
+    private function bufferToken(Token $token): void
     {
         $shouldBuffer = $this->tree->depth() >= 0
             && $this->pointer->matchesTree($this->tree)

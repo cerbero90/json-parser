@@ -13,43 +13,44 @@ use Traversable;
 /**
  * The JSON lexer.
  *
+ * @implements IteratorAggregate<int, Token>
  */
-class Lexer implements IteratorAggregate
+final class Lexer implements IteratorAggregate
 {
     /**
      * The tokenizer.
      *
      * @var Tokenizer
      */
-    protected Tokenizer $tokenizer;
+    private Tokenizer $tokenizer;
 
     /**
      * The buffer to yield.
      *
      * @var string
      */
-    protected string $buffer = '';
+    private string $buffer = '';
 
     /**
      * Whether the current character is escaped.
      *
      * @var bool
      */
-    protected bool $isEscaping = false;
+    private bool $isEscaping = false;
 
     /**
      * Whether the current character belongs to a string.
      *
      * @var bool
      */
-    protected bool $inString = false;
+    private bool $inString = false;
 
     /**
      * Instantiate the class.
      *
      * @param Source $source
      */
-    public function __construct(protected Source $source)
+    public function __construct(private Source $source)
     {
         $this->tokenizer = new Tokenizer();
     }
@@ -78,7 +79,7 @@ class Lexer implements IteratorAggregate
      * @param string $character
      * @return bool
      */
-    protected function inString(string $character): bool
+    private function inString(string $character): bool
     {
         return ($character == '"' && $this->inString && $this->isEscaping)
             || ($character != '"' && $this->inString)
@@ -91,7 +92,7 @@ class Lexer implements IteratorAggregate
      * @param string $character
      * @return Generator<int, Token>
      */
-    protected function yieldOrBufferCharacter(string $character): Generator
+    private function yieldOrBufferCharacter(string $character): Generator
     {
         if ($this->inString || !isset(Tokens::BOUNDARIES[$character])) {
             $this->buffer .= $character;

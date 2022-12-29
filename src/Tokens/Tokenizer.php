@@ -6,14 +6,14 @@ namespace Cerbero\JsonParser\Tokens;
  * The tokenizer.
  *
  */
-class Tokenizer
+final class Tokenizer
 {
     /**
      * The map of token instances by type.
      *
      * @var array<int, Token>
      */
-    protected static array $tokensMap;
+    private static array $tokensMap;
 
     /**
      * Instantiate the class.
@@ -29,7 +29,7 @@ class Tokenizer
      *
      * @return array<int, Token>
      */
-    protected function hydrateTokensMap(): array
+    private function hydrateTokensMap(): array
     {
         $map = $instances = [];
 

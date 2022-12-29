@@ -6,7 +6,7 @@ namespace Cerbero\JsonParser\Exceptions;
  * The exception thrown when a pointer-related error occurs.
  *
  */
-class PointerException extends JsonParserException
+final class PointerException extends JsonParserException
 {
     /**
      * Retrieve the exception when the given pointer is invalid

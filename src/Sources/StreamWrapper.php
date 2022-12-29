@@ -9,7 +9,7 @@ use Psr\Http\Message\StreamInterface;
  *
  * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
  */
-class StreamWrapper
+final class StreamWrapper
 {
     /**
      * The name of the stream wrapper.
@@ -23,14 +23,14 @@ class StreamWrapper
      *
      * @var resource
      */
-    public $context;
+    public mixed $context;
 
     /**
      * The PSR-7 stream.
      *
      * @var StreamInterface
      */
-    protected $stream;
+    private $stream;
 
     /**
      * Open the stream

@@ -6,7 +6,7 @@ namespace Cerbero\JsonParser\Tokens;
  * The tokens related information.
  *
  */
-class Tokens
+final class Tokens
 {
     public const SCALAR_CONST = 1 << 0;
     public const SCALAR_STRING = 1 << 1;
@@ -35,7 +35,7 @@ class Tokens
     /**
      * The token types.
      *
-     * @var array
+     * @var array<string|int, int>
      */
     public const TYPES = [
         'n' => self::SCALAR_CONST,
@@ -64,7 +64,7 @@ class Tokens
     /**
      * The token boundaries.
      *
-     * @var array
+     * @var array<string, bool>
      */
     public const BOUNDARIES = [
         "\xEF" => true,
@@ -85,7 +85,7 @@ class Tokens
     /**
      * The structural boundaries.
      *
-     * @var array
+     * @var array<string, bool>
      */
     public const DELIMITERS = [
         '{' => true,

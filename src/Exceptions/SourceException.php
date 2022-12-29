@@ -6,7 +6,7 @@ namespace Cerbero\JsonParser\Exceptions;
  * The exception thrown when a source-related error occurs.
  *
  */
-class SourceException extends JsonParserException
+final class SourceException extends JsonParserException
 {
     /**
      * Retrieve the exception when a JSON source is not supported

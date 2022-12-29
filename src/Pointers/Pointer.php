@@ -10,21 +10,21 @@ use Stringable;
  * The JSON pointer.
  *
  */
-class Pointer implements Stringable
+final class Pointer implements Stringable
 {
     /**
      * The reference tokens.
      *
      * @var string[]
      */
-    protected array $referenceTokens;
+    private array $referenceTokens;
 
     /**
      * The pointer depth.
      *
      * @var int
      */
-    protected int $depth;
+    private int $depth;
 
     /**
      * Whether the pointer was found.
@@ -38,7 +38,7 @@ class Pointer implements Stringable
      *
      * @param string $pointer
      */
-    public function __construct(protected string $pointer)
+    public function __construct(private string $pointer)
     {
         $this->referenceTokens = $this->toReferenceTokens();
         $this->depth = count($this->referenceTokens);
@@ -49,7 +49,7 @@ class Pointer implements Stringable
      *
      * @return string[]
      */
-    protected function toReferenceTokens(): array
+    private function toReferenceTokens(): array
     {
         if (preg_match('#^(?:/(?:(?:[^/~])|(?:~[01]))*)*$#', $this->pointer) === 0) {
             throw PointerException::invalid($this->pointer);
@@ -85,20 +85,15 @@ class Pointer implements Stringable
      * Determine whether the reference token at the given depth matches the provided key
      *
      * @param int $depth
-     * @param mixed $key
+     * @param string|int $key
      * @return bool
      */
-    public function depthMatchesKey(int $depth, mixed $key): bool
+    public function depthMatchesKey(int $depth, string|int $key): bool
     {
-        if (!isset($this->referenceTokens[$depth])) {
-            return false;
-        }
+        $referenceToken = $this->referenceTokens[$depth] ?? null;
 
-        if ($this->referenceTokens[$depth] === (string) $key) {
-            return true;
-        }
-
-        return is_int($key) && $this->referenceTokens[$depth] === '-';
+        return $referenceToken === (string) $key
+            || (is_int($key) && $referenceToken === '-');
     }
 
     /**
@@ -124,7 +119,7 @@ class Pointer implements Stringable
             return true;
         }
 
-        return (($firstNest = array_search('-', $this->referenceTokens)) !== false)
+        return is_int($firstNest = array_search('-', $this->referenceTokens))
             && array_slice($this->referenceTokens, 0, $firstNest) === array_slice($tree->original(), 0, $firstNest);
     }
 

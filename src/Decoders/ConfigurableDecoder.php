@@ -8,14 +8,14 @@ use Cerbero\JsonParser\Config;
  * The configurable decoder.
  *
  */
-class CustomDecoder
+final class ConfigurableDecoder
 {
     /**
      * Instantiate the class.
      *
      * @param Config $config
      */
-    public function __construct(protected Config $config)
+    public function __construct(private Config $config)
     {
     }
 

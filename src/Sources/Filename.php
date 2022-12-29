@@ -7,6 +7,7 @@ use Traversable;
 /**
  * The filename source.
  *
+ * @property-read string $source
  */
 class Filename extends Source
 {
@@ -20,9 +21,9 @@ class Filename extends Source
         $handle = fopen($this->source, 'rb');
 
         try {
-            yield from Resource::from($handle, $this->config);
+            yield from new JsonResource($handle, $this->config);
         } finally {
-            fclose($handle);
+            $handle && fclose($handle);
         }
     }
 

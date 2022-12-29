@@ -13,22 +13,23 @@ use Traversable;
 /**
  * The JSON parser entry-point.
  *
+ * @implements IteratorAggregate<string|int, mixed>
  */
-class JsonParser implements IteratorAggregate
+final class JsonParser implements IteratorAggregate
 {
     /**
      * The configuration.
      *
      * @var Config
      */
-    protected Config $config;
+    private Config $config;
 
     /**
      * The parser.
      *
      * @var Parser
      */
-    protected Parser $parser;
+    private Parser $parser;
 
     /**
      * Instantiate the class.
@@ -38,7 +39,7 @@ class JsonParser implements IteratorAggregate
     public function __construct(mixed $source)
     {
         $this->config = new Config();
-        $this->parser = Parser::for(AnySource::from($source, $this->config));
+        $this->parser = Parser::for(new AnySource($source, $this->config));
     }
 
     /**
@@ -91,7 +92,7 @@ class JsonParser implements IteratorAggregate
     /**
      * The number of bytes to read in each chunk
      *
-     * @param int $bytes
+     * @param int<1, max> $bytes
      * @return static
      */
     public function bytes(int $bytes): static

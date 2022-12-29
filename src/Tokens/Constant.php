@@ -6,7 +6,7 @@ namespace Cerbero\JsonParser\Tokens;
  * The constant token, includes colons for convenience.
  *
  */
-class Constant extends Token
+final class Constant extends Token
 {
     /**
      * Retrieve the token type

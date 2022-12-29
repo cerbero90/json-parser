@@ -7,6 +7,7 @@ use Traversable;
 /**
  * The iterable source.
  *
+ * @property-read iterable $source
  */
 class IterableSource extends Source
 {
@@ -37,6 +38,6 @@ class IterableSource extends Source
      */
     protected function calculateSize(): ?int
     {
-        return iterator_count(clone $this->source);
+        return is_array($this->source) ? count($this->source) : iterator_count(clone $this->source);
     }
 }

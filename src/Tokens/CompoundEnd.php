@@ -8,7 +8,7 @@ use Cerbero\JsonParser\State;
  * The token that ends compound data (JSON arrays or objects).
  *
  */
-class CompoundEnd extends Token
+final class CompoundEnd extends Token
 {
     /**
      * Retrieve the token type
@@ -29,10 +29,6 @@ class CompoundEnd extends Token
     public function mutateState(State $state): void
     {
         $state->tree()->emerge();
-
-        if ($this->value == '}') {
-            $state->expectsKey = false;
-        }
     }
 
     /**

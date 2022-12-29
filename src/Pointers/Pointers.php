@@ -8,21 +8,21 @@ use Cerbero\JsonParser\Tree;
  * The JSON pointers collection.
  *
  */
-class Pointers
+final class Pointers
 {
     /**
      * The JSON pointers collection.
      *
      * @var Pointer[]
      */
-    protected array $pointers;
+    private array $pointers;
 
     /**
      * The list of pointers that were found within the JSON.
      *
-     * @var array
+     * @var array<string, bool>
      */
-    protected array $found = [];
+    private array $found = [];
 
     /**
      * Instantiate the class.

@@ -12,7 +12,7 @@ use Closure;
  * The configuration.
  *
  */
-class Config
+final class Config
 {
     /**
      * The JSON decoder.
@@ -31,7 +31,7 @@ class Config
     /**
      * The number of bytes to read in each chunk.
      *
-     * @var int
+     * @var int<1, max>
      */
     public int $bytes = 1024 * 8;
 

@@ -8,6 +8,7 @@ use Traversable;
 /**
  * The JSON source.
  *
+ * @property-read string $source
  */
 class Json extends Source
 {

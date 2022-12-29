@@ -9,17 +9,15 @@ namespace Cerbero\JsonParser\Concerns;
 trait DetectsEndpoints
 {
     /**
-     * Determine whether the given string points to an endpoint
+     * Determine whether the given value points to an endpoint
      *
-     * @param string $string
+     * @param string $value
      * @return bool
      */
-    public function isEndpoint(string $string): bool
+    public function isEndpoint(string $value): bool
     {
-        if (($url = parse_url($string)) === false) {
-            return false;
-        }
-
-        return isset($url['host']) && in_array($url['scheme'] ?? null, ['http', 'https']);
+        return is_array($url = parse_url($value))
+            && in_array($url['scheme'] ?? null, ['http', 'https'])
+            && isset($url['host']);
     }
 }

@@ -9,6 +9,7 @@ use Traversable;
 /**
  * The JSON source.
  *
+ * @implements IteratorAggregate<int, string>
  */
 abstract class Source implements IteratorAggregate
 {
@@ -17,7 +18,7 @@ abstract class Source implements IteratorAggregate
      *
      * @var int|null
      */
-    protected int $size;
+    protected ?int $size;
 
     /**
      * Retrieve the JSON fragments
@@ -46,20 +47,8 @@ abstract class Source implements IteratorAggregate
      * @param mixed $source
      * @param Config $config
      */
-    protected function __construct(protected mixed $source, protected Config $config)
+    final public function __construct(protected mixed $source, protected Config $config)
     {
-    }
-
-    /**
-     * Instantiate the class statically
-     *
-     * @param mixed $source
-     * @param Config $config
-     * @return static
-     */
-    public static function from(mixed $source, Config $config): static
-    {
-        return new static($source, $config);
     }
 
     /**

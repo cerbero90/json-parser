@@ -8,14 +8,14 @@ use JsonException;
  * The decoded value.
  *
  */
-class DecodedValue
+final class DecodedValue
 {
     /**
      * Instantiate the class.
      *
      * @param mixed $value
      */
-    protected function __construct(
+    private function __construct(
         public bool $succeeded,
         public mixed $value = null,
         public ?string $error = null,
