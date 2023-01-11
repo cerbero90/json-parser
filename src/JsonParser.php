@@ -85,7 +85,7 @@ final class JsonParser implements IteratorAggregate
     public function pointers(array $pointers): static
     {
         foreach ($pointers as $pointer => $callback) {
-            is_callable($callback) ? $this->pointer($pointer, $callback) : $this->pointer($callback);
+            $callback instanceof Closure ? $this->pointer($pointer, $callback) : $this->pointer($callback);
         }
 
         return $this;
