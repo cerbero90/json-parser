@@ -109,7 +109,7 @@ final class State
      */
     public function setPointers(Pointer ...$pointers): void
     {
-        $this->pointers = new Pointers(...$pointers);
+        $this->pointers = new Pointers(...$pointers ?: [new Pointer('')]);
 
         $this->pointer = $this->pointers->matchTree($this->tree);
     }

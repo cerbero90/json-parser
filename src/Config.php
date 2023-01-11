@@ -49,7 +49,6 @@ final class Config
     public function __construct()
     {
         $this->decoder = new ArrayDecoder();
-        $this->pointers[] = new Pointer('');
         $this->onError = fn (DecodedValue $decoded) => throw $decoded->exception;
     }
 }

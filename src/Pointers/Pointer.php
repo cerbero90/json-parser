@@ -4,6 +4,7 @@ namespace Cerbero\JsonParser\Pointers;
 
 use Cerbero\JsonParser\Exceptions\PointerException;
 use Cerbero\JsonParser\Tree;
+use Closure;
 use Stringable;
 
 /**
@@ -27,6 +28,13 @@ final class Pointer implements Stringable
     private int $depth;
 
     /**
+     * The pointer callback.
+     *
+     * @var Closure
+     */
+    private Closure $callback;
+
+    /**
      * Whether the pointer was found.
      *
      * @var bool
@@ -37,11 +45,13 @@ final class Pointer implements Stringable
      * Instantiate the class.
      *
      * @param string $pointer
+     * @param Closure|null $callback
      */
-    public function __construct(private string $pointer)
+    public function __construct(private string $pointer, Closure $callback = null)
     {
         $this->referenceTokens = $this->toReferenceTokens();
         $this->depth = count($this->referenceTokens);
+        $this->callback = $callback ?: fn (mixed $value) => $value;
     }
 
     /**
@@ -79,6 +89,18 @@ final class Pointer implements Stringable
     public function depth(): int
     {
         return $this->depth;
+    }
+
+    /**
+     * Call the pointer callback
+     *
+     * @param mixed $value
+     * @param mixed $key
+     * @return mixed
+     */
+    public function call(mixed $value, mixed $key): mixed
+    {
+        return call_user_func($this->callback, $value, $key);
     }
 
     /**

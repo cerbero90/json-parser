@@ -15,5 +15,5 @@ it('supports single JSON pointers', function (string $json, string $pointer, arr
 })->with(Dataset::forSinglePointers());
 
 it('supports multiple JSON pointers', function (string $json, array $pointers, array $parsed) {
-    expect(JsonParser::parse($json)->pointer(...$pointers))->toPointTo($parsed);
+    expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
 })->with(Dataset::forMultiplePointers());

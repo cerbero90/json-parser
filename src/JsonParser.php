@@ -79,12 +79,28 @@ final class JsonParser implements IteratorAggregate
     /**
      * Set the JSON pointers
      *
-     * @param string ...$pointers
+     * @param string[]|array<string, Closure> $pointers
      * @return static
      */
-    public function pointer(string ...$pointers): static
+    public function pointers(array $pointers): static
     {
-        $this->config->pointers = array_map(fn (string $pointer) => new Pointer($pointer), $pointers);
+        foreach ($pointers as $pointer => $callback) {
+            is_callable($callback) ? $this->pointer($pointer, $callback) : $this->pointer($callback);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set a JSON pointer
+     *
+     * @param string $pointer
+     * @param Closure|null $callback
+     * @return static
+     */
+    public function pointer(string $pointer, Closure $callback = null): static
+    {
+        $this->config->pointers[] = new Pointer($pointer, $callback);
 
         return $this;
     }
