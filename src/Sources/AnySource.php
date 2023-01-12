@@ -26,6 +26,7 @@ class AnySource extends Source
         JsonResource::class,
         LaravelClientResponse::class,
         Psr7Message::class,
+        Psr7Request::class,
         Psr7Stream::class,
     ];
 

@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser\Sources;
 
 use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
 use Traversable;
 
 /**
@@ -29,7 +30,7 @@ class Psr7Message extends Source
      */
     public function matches(): bool
     {
-        return $this->source instanceof MessageInterface;
+        return $this->source instanceof MessageInterface && !$this->source instanceof RequestInterface;
     }
 
     /**

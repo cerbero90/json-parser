@@ -2,20 +2,18 @@
 
 namespace Cerbero\JsonParser\Sources;
 
-use Cerbero\JsonParser\Concerns\DetectsEndpoints;
 use Cerbero\JsonParser\Concerns\GuzzleAware;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 use Traversable;
 
 /**
- * The endpoint source.
+ * The PSR-7 request source.
  *
- * @property-read UriInterface|string $source
+ * @property-read RequestInterface $source
  */
-class Endpoint extends Source
+class Psr7Request extends Source
 {
-    use DetectsEndpoints;
     use GuzzleAware;
 
     /**
@@ -35,7 +33,7 @@ class Endpoint extends Source
     {
         $this->requireGuzzle();
 
-        $this->response = $this->getJson($this->source);
+        $this->response = $this->sendRequest($this->source);
 
         return new Psr7Message($this->response, $this->config);
     }
@@ -47,8 +45,7 @@ class Endpoint extends Source
      */
     public function matches(): bool
     {
-        // @phpstan-ignore-next-line
-        return (is_string($this->source) || $this->source instanceof UriInterface) && $this->isEndpoint($this->source);
+        return $this->source instanceof RequestInterface;
     }
 
     /**
