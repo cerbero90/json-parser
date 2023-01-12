@@ -33,9 +33,7 @@ class Json extends Source
      */
     public function matches(): bool
     {
-        return is_string($this->source)
-            && !is_file($this->source)
-            && !$this->isEndpoint($this->source);
+        return is_string($this->source) && !is_file($this->source) && !$this->isEndpoint($this->source);
     }
 
     /**
