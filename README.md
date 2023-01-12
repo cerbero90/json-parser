@@ -8,10 +8,11 @@
 [![PHPStan Level][ico-phpstan]][link-phpstan]
 [![Latest Version][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
+[![PSR-7][ico-psr7]][link-psr7]
 [![PSR-12][ico-psr12]][link-psr12]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Zero-dependencies pull parser to read big JSON from any source in a memory-efficient way.
+Zero-dependencies pull parser to read large JSON from any source in a memory-efficient way.
 
 
 ## 📦 Install
@@ -24,7 +25,51 @@ composer require cerbero/json-parser
 
 ## 🔮 Usage
 
-work in progress... :)
+* [Sources](#sources)
+
+JSON Parser provides a minimal API to read large JSON from any source:
+
+```php
+use Cerbero\JsonParser\JsonParser;
+
+// the JSON source in this example is an API endpoint
+$source = 'https://randomuser.me/api/1.4?seed=json-parser&results=5';
+
+foreach (new JsonParser($source) as $key => $value) {
+    // instead of loading the whole JSON, we keep in memory only one key and value at a time
+}
+```
+
+Depending on our taste, we can instantiate the parser in 3 different ways:
+
+```php
+use Cerbero\JsonParser\JsonParser;
+
+// classic object instantiation
+new JsonParser($source);
+
+// static instantiation, facilitates methods chaining
+JsonParser::parse($source);
+
+// namespaced function
+use function Cerbero\JsonParser\parseJson;
+
+parseJson($source);
+```
+
+### Sources
+
+A wide range of JSON sources is supported, here is the full list:
+- strings, e.g. `{"foo":"bar"}`
+- iterables, i.e. arrays or instances of `Traversable`
+- files, e.g. `/path/to/large_file.json`
+- resources, e.g. streams
+- API endpoint URLs, e.g. `https://endpoint.json` or any instance of `Psr\Http\Message\UriInterface`
+- PSR-7 compliant requests, i.e. any instance of `Psr\Http\Message\RequestInterface`
+- PSR-7 compliant messages, i.e. any instance of `Psr\Http\Message\MessageInterface`
+- PSR-7 compliant streams, i.e. any instance of `Psr\Http\Message\StreamInterface`
+- responses from the Laravel HTTP client, i.e. any instance of `Illuminate\Http\Client\Response`
+- user-defined sources, i.e. any instance of `Cerbero\JsonParser\Sources\Source`
 
 ## 📆 Change log
 
@@ -58,6 +103,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-version]: https://img.shields.io/packagist/v/cerbero/json-parser.svg?label=version&style=flat-square
 [ico-actions]: https://img.shields.io/github/actions/workflow/status/cerbero90/json-parser/workflows/build.yml?branch=master&style=flat-square&logo=github
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-psr7]: https://img.shields.io/static/v1?label=compliance&message=PSR-7&color=blue&style=flat-square
 [ico-psr12]: https://img.shields.io/static/v1?label=compliance&message=PSR-12&color=blue&style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/cerbero90/json-parser.svg?style=flat-square&logo=scrutinizer
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/cerbero90/json-parser.svg?style=flat-square&logo=scrutinizer
@@ -68,6 +114,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-php]: https://www.php.net
 [link-packagist]: https://packagist.org/packages/cerbero/json-parser
 [link-actions]: https://github.com/cerbero90/json-parser/actions?query=workflow%3Abuild
+[link-psr7]: https://www.php-fig.org/psr/psr-7/
 [link-psr12]: https://www.php-fig.org/psr/psr-12/
 [link-scrutinizer]: https://scrutinizer-ci.com/g/cerbero90/json-parser/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/cerbero90/json-parser
