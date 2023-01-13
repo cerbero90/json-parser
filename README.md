@@ -71,6 +71,46 @@ A wide range of JSON sources is supported, here is the full list:
 - responses from the Laravel HTTP client, i.e. any instance of `Illuminate\Http\Client\Response`
 - user-defined sources, i.e. any instance of `Cerbero\JsonParser\Sources\Source`
 
+If the source we need to parse is not supported by default, we can implement our own custom source.
+
+<details><summary>Click here to see how to implement a custom source.</summary>
+
+To implement a custom source, we need to extend `Source` and implement 3 methods:
+
+```php
+use Cerbero\JsonParser\Sources\Source;
+use Traversable;
+
+class CustomSource extends Source
+{
+    public function getIterator(): Traversable
+    {
+        // return a Traversable holding the JSON source, e.g. a Generator yielding chunks of JSON
+    }
+
+    public function matches(): bool
+    {
+        // return TRUE if this class can handle the JSON source
+    }
+
+    protected function calculateSize(): ?int
+    {
+        // return the size of the JSON in bytes or NULL if it can't be calculated
+    }
+}
+```
+
+The parent class `Source` gives us access to 2 properties:
+- `$source`: the JSON source we pass to the parser, i.e.: `new JsonParser($source)`
+- `$config`: the configuration we set by chaining methods, e.g.: `$parser->pointer('/foo')`
+
+The method `getIterator()` defines the logic to read the JSON source in a memory-efficient way. It feeds the parser with small pieces of JSON. Please refer to the [already existing sources](https://github.com/cerbero90/json-parser/tree/master/src/Sources) to see some implementations.
+
+The method `matches()` determines whether the JSON source passed to the parser can be handled by our custom implementation. In other words, we are telling the parser if it should use our class for the JSON to parse.
+
+Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the parsing progress, however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
+</details>
+
 ## 📆 Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
