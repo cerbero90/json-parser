@@ -100,7 +100,7 @@ final class Pointer implements Stringable
      */
     public function call(mixed $value, mixed $key): mixed
     {
-        return call_user_func($this->callback, $value, $key);
+        return call_user_func($this->callback, $value, $key) ?? $value;
     }
 
     /**

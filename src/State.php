@@ -125,6 +125,18 @@ final class State
     }
 
     /**
+     * Call the current pointer callback
+     *
+     * @param mixed $value
+     * @param mixed $key
+     * @return mixed
+     */
+    public function callPointer(mixed $value, mixed $key): mixed
+    {
+        return $this->pointer->call($value, $key);
+    }
+
+    /**
      * Mutate state depending on the given token
      *
      * @param Token $token

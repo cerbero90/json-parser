@@ -67,10 +67,11 @@ final class Parser implements IteratorAggregate
                 continue;
             }
 
-            if ($this->state->hasBuffer() && $this->state->inObject()) {
-                yield $this->decoder->decode($this->state->key()) => $this->decoder->decode($this->state->value());
-            } elseif ($this->state->hasBuffer() && !$this->state->inObject()) {
-                yield $this->decoder->decode($this->state->value());
+            if ($this->state->hasBuffer()) {
+                $key = $this->decoder->decode($this->state->key());
+                $value = $this->decoder->decode($this->state->value());
+
+                yield $key => $this->state->callPointer($value, $key);
             }
 
             if ($this->state->canStopParsing()) {
