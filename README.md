@@ -60,20 +60,20 @@ parseJson($source);
 ### Sources
 
 A wide range of JSON sources is supported, here is the full list:
-- strings, e.g. `{"foo":"bar"}`
-- iterables, i.e. arrays or instances of `Traversable`
-- files, e.g. `/path/to/large_file.json`
-- resources, e.g. streams
-- API endpoint URLs, e.g. `https://endpoint.json` or any instance of `Psr\Http\Message\UriInterface`
-- PSR-7 compliant requests, i.e. any instance of `Psr\Http\Message\RequestInterface`
-- PSR-7 compliant messages, i.e. any instance of `Psr\Http\Message\MessageInterface`
-- PSR-7 compliant streams, i.e. any instance of `Psr\Http\Message\StreamInterface`
-- responses from the Laravel HTTP client, i.e. any instance of `Illuminate\Http\Client\Response`
-- user-defined sources, i.e. any instance of `Cerbero\JsonParser\Sources\Source`
+- **strings**, e.g. `{"foo":"bar"}`
+- **iterables**, i.e. arrays or instances of `Traversable`
+- **files**, e.g. `/path/to/large_file.json`
+- **resources**, e.g. streams
+- **API endpoint URLs**, e.g. `https://endpoint.json` or any instance of `Psr\Http\Message\UriInterface`
+- **PSR-7 requests**, i.e. any instance of `Psr\Http\Message\RequestInterface`
+- **PSR-7 messages**, i.e. any instance of `Psr\Http\Message\MessageInterface`
+- **PSR-7 streams**, i.e. any instance of `Psr\Http\Message\StreamInterface`
+- **Laravel HTTP client responses**, i.e. any instance of `Illuminate\Http\Client\Response`
+- **user-defined sources**, i.e. any instance of `Cerbero\JsonParser\Sources\Source`
 
 If the source we need to parse is not supported by default, we can implement our own custom source.
 
-<details><summary>Click here to see how to implement a custom source.</summary>
+<details><summary><b>Click here to see how to implement a custom source.</b></summary>
 
 To implement a custom source, we need to extend `Source` and implement 3 methods:
 
