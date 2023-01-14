@@ -10,8 +10,7 @@ expect()->extend('toParseTo', function (array $expected) {
     $actual = [];
 
     foreach ($this->value as $parsedKey => $parsedValue) {
-        expect($expected)->toHaveKey($parsedKey);
-        expect($expected[$parsedKey])->toBe($parsedValue);
+        expect($expected)->toHaveKey($parsedKey, $parsedValue);
 
         $actual[$parsedKey] = $parsedValue;
     }
