@@ -169,13 +169,49 @@ foreach ($json as $key => $value) {
 }
 ```
 
+> ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
+
 The same can also be achieved by chaining the method `pointer()` multiple times:
 
 ```php
 $json = JsonParser::parse($source)
     ->pointer('/-/gender', fn (string $gender, string $key) => new Gender($gender))
     ->pointer('/-/location/country', fn (string $country, string $key) => new Country($country));
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'gender', $value instanceof Gender
+    // 2nd iteration: $key === 'country', $value instanceof Country
+    // and so on for all the objects in the array...
+}
 ```
+
+If the callbacks are enough to handle the pointers and we don't need to run any common logic for all pointers, we can avoid to manually call `foreach()` by chaining the method `traverse()`:
+
+```php
+JsonParser::parse($source)
+    ->pointer('/-/gender', $this->storeGender(...))
+    ->pointer('/-/location/country', $this->storeCountry(...))
+    ->traverse();
+
+// no foreach needed
+```
+
+Otherwise if some common logic for all pointers is needed and we prefer methods chaining to manual loops, we can pass a callback to the `traverse()` method:
+
+```php
+JsonParser::parse($source)
+    ->pointer('/-/gender', fn (string $gender, string $key) => new Gender($gender))
+    ->pointer('/-/location/country', fn (string $country, string $key) => new Country($country))
+    ->traverse(function (Gender|Country $value, string $key) {
+        // 1st iteration: $key === 'gender', $value instanceof Gender
+        // 2nd iteration: $key === 'country', $value instanceof Country
+        // and so on for all the objects in the array...
+    });
+
+// no foreach needed
+```
+
+> ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
 
 ## 📆 Change log
 
