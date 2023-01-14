@@ -142,6 +142,21 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
+     * Traverse the lazily iterable JSON
+     *
+     * @param Closure|null $callback
+     * @return void
+     */
+    public function traverse(Closure $callback = null): void
+    {
+        $callback ??= fn () => true;
+
+        foreach ($this as $key => $value) {
+            $callback($value, $key);
+        }
+    }
+
+    /**
      * Retrieve the lazily iterable JSON
      *
      * @return Traversable<string|int, mixed>
