@@ -127,7 +127,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-JSON Parser takes advantage of the `-` character to define any array index, so we can extract all the genders with the `/-/gender` pointer:
+JSON Parser takes advantage of the `-` character to point to any array index, so we can extract all the genders with the `/-/gender` pointer:
 
 ```php
 $json = JsonParser::parse($source)->pointer('/-/gender');
@@ -153,6 +153,8 @@ foreach ($json as $key => $value) {
     // and so on for all the objects in the array...
 }
 ```
+
+> ⚠️ Please avoid intersecting pointers (e.g. setting both `/foo` and `/foo/bar`) as the deeper pointer won't be found and will force the parser to parse the whole JSON.
 
 We can also specify a callback to execute when JSON pointers are found. This is handy when we have different pointers and we need to run custom logic for each of them:
 
@@ -196,7 +198,7 @@ JsonParser::parse($source)
 // no foreach needed
 ```
 
-Otherwise if some common logic for all pointers is needed and we prefer methods chaining to manual loops, we can pass a callback to the `traverse()` method:
+Otherwise if some common logic for all pointers is needed but we prefer methods chaining to manual loops, we can pass a callback to the `traverse()` method:
 
 ```php
 JsonParser::parse($source)
