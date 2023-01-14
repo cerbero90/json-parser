@@ -115,7 +115,7 @@ Finally, `calculateSize()` computes the whole size of the JSON source. It's used
 
 ### Pointers
 
-A JSON pointer is a [standard](https://www.rfc-editor.org/rfc/rfc6901) used to point to nodes within a JSON. This package leverages JSON pointers to extract only some sub-trees from a large JSON.
+A JSON pointer is a [standard](https://www.rfc-editor.org/rfc/rfc6901) used to point to nodes within a JSON. This package leverages JSON pointers to extract only some sub-trees from large JSONs.
 
 Consider [this JSON](https://randomuser.me/api/1.4?seed=json-parser&results=5) for example. To extract only the first gender and avoid parsing the rest of the JSON, we can set the `/0/gender` pointer:
 
@@ -154,7 +154,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-We can also specify a callback to execute when JSON pointers are found. This is handy when we have multiple pointers and we need to run custom logic for each of them:
+We can also specify a callback to execute when JSON pointers are found. This is handy when we have different pointers and we need to run custom logic for each of them:
 
 ```php
 $json = JsonParser::parse($source)->pointers([
@@ -167,6 +167,14 @@ foreach ($json as $key => $value) {
     // 2nd iteration: $key === 'country', $value instanceof Country
     // and so on for all the objects in the array...
 }
+```
+
+The same can also be achieved by chaining the method `pointer()` multiple times:
+
+```php
+$json = JsonParser::parse($source)
+    ->pointer('/-/gender', fn (string $gender, string $key) => new Gender($gender))
+    ->pointer('/-/location/country', fn (string $country, string $key) => new Country($country));
 ```
 
 ## 📆 Change log
