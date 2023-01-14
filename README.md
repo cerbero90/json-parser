@@ -26,6 +26,7 @@ composer require cerbero/json-parser
 ## 🔮 Usage
 
 * [Sources](#sources)
+* [Pointers](#pointers)
 
 JSON Parser provides a minimal API to read large JSON from any source:
 
@@ -110,6 +111,63 @@ The method `matches()` determines whether the JSON source passed to the parser c
 
 Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the parsing progress, however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
 </details>
+
+
+### Pointers
+
+A JSON pointer is a [standard](https://www.rfc-editor.org/rfc/rfc6901) used to point to nodes within a JSON. This package leverages JSON pointers to extract only some sub-trees from a large JSON.
+
+Consider [this JSON](https://randomuser.me/api/1.4?seed=json-parser&results=5) for example. To extract only the first gender and avoid parsing the rest of the JSON, we can set the `/0/gender` pointer:
+
+```php
+$json = JsonParser::parse($source)->pointer('/0/gender');
+
+foreach ($json as $key => $value) {
+    // 1st and only iteration: $key === 'gender', $value === 'female'
+}
+```
+
+JSON Parser takes advantage of the `-` character to define any array index, so we can extract all the genders with the `/-/gender` pointer:
+
+```php
+$json = JsonParser::parse($source)->pointer('/-/gender');
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'gender', $value === 'female'
+    // 2nd iteration: $key === 'gender', $value === 'female'
+    // 3rd iteration: $key === 'gender', $value === 'male'
+    // and so on for all the objects in the array...
+}
+```
+
+If we want to extract more sub-trees, we can set multiple pointers. Let's extract all genders and countries:
+
+```php
+$json = JsonParser::parse($source)->pointers(['/-/gender', '/-/location/country']);
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'gender', $value === 'female'
+    // 2nd iteration: $key === 'country', $value === 'Germany'
+    // 3rd iteration: $key === 'gender', $value === 'female'
+    // 4th iteration: $key === 'country', $value === 'Mexico'
+    // and so on for all the objects in the array...
+}
+```
+
+We can also specify a callback to execute when JSON pointers are found. This is handy when we have multiple pointers and we need to run custom logic for each of them:
+
+```php
+$json = JsonParser::parse($source)->pointers([
+    '/-/gender' => fn (string $gender, string $key) => new Gender($gender),
+    '/-/location/country' => fn (string $country, string $key) => new Country($country),
+]);
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'gender', $value instanceof Gender
+    // 2nd iteration: $key === 'country', $value instanceof Country
+    // and so on for all the objects in the array...
+}
+```
 
 ## 📆 Change log
 
