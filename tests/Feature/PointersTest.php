@@ -6,7 +6,7 @@ use Cerbero\JsonParser\JsonParser;
 
 
 it('throws an exception when providing an invalid JSON pointer', function (string $pointer) {
-    expect(fn () => iterator_to_array(JsonParser::parse('{}')->pointer($pointer)))
+    expect(fn () => JsonParser::parse('{}')->pointer($pointer)->traverse())
         ->toThrow(PointerException::class, "The string [$pointer] is not a valid JSON pointer");
 })->with(Dataset::forInvalidPointers());
 
