@@ -20,14 +20,14 @@ final class ConfigurableDecoder
     }
 
     /**
-     * Decode the given JSON.
+     * Decode the given value.
      *
-     * @param string $json
+     * @param string|int $value
      * @return mixed
      */
-    public function decode(string $json): mixed
+    public function decode(string|int $value): mixed
     {
-        $decoded = $this->config->decoder->decode($json);
+        $decoded = $this->config->decoder->decode((string) $value);
 
         if (!$decoded->succeeded) {
             call_user_func($this->config->onError, $decoded);

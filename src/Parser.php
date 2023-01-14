@@ -68,6 +68,7 @@ final class Parser implements IteratorAggregate
             }
 
             if ($this->state->hasBuffer()) {
+                /** @var string|int $key */
                 $key = $this->decoder->decode($this->state->key());
                 $value = $this->decoder->decode($this->state->value());
 

@@ -115,7 +115,9 @@ final class Tree
     public function traverseArray(array $referenceTokens): void
     {
         $referenceToken = $referenceTokens[$this->depth] ?? null;
-        $this->original[$this->depth] = isset($this->original[$this->depth]) ? $this->original[$this->depth] + 1 : 0;
+        $index = $this->original[$this->depth] ?? null;
+
+        $this->original[$this->depth] = is_int($index) ? $index + 1 : 0;
         $this->wildcarded[$this->depth] = $referenceToken == '-' ? '-' : $this->original[$this->depth];
 
         $this->trim();
