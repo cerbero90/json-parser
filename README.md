@@ -191,8 +191,8 @@ If the callbacks are enough to handle the pointers and we don't need to run any 
 
 ```php
 JsonParser::parse($source)
-    ->pointer('/-/gender', $this->storeGender(...))
-    ->pointer('/-/location/country', $this->storeCountry(...))
+    ->pointer('/-/gender', $this->handleGender(...))
+    ->pointer('/-/location/country', $this->handleCountry(...))
     ->traverse();
 
 // no foreach needed
@@ -204,7 +204,7 @@ Otherwise if some common logic for all pointers is needed but we prefer methods 
 JsonParser::parse($source)
     ->pointer('/-/gender', fn (string $gender, string $key) => new Gender($gender))
     ->pointer('/-/location/country', fn (string $country, string $key) => new Country($country))
-    ->traverse(function (Gender|Country $value, string $key) {
+    ->traverse(function (Gender|Country $value, string $key, JsonParser $parser) {
         // 1st iteration: $key === 'gender', $value instanceof Gender
         // 2nd iteration: $key === 'country', $value instanceof Country
         // and so on for all the objects in the array...
