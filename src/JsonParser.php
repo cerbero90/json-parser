@@ -152,7 +152,7 @@ final class JsonParser implements IteratorAggregate
         $callback ??= fn () => true;
 
         foreach ($this as $key => $value) {
-            $callback($value, $key);
+            $callback($value, $key, $this);
         }
     }
 
