@@ -23,11 +23,13 @@
     "require-dev": {
         "guzzlehttp/guzzle": "^7.2",
         "illuminate/http": ">=6.20",
-        "pestphp/pest": "^1.21",
+        "pestphp/pest": "^2.0",
         "phpstan/phpstan": "^1.9",
         "scrutinizer/ocular": "^1.8",
         "squizlabs/php_codesniffer": "^3.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "suggest": {
         "guzzlehttp/guzzle": "Required to load JSON from endpoints (^7.2)."
     },
