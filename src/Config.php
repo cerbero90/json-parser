@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Decoders\ArrayDecoder;
+use Cerbero\JsonParser\Decoders\JsonDecoder;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Pointers\Pointer;
@@ -48,7 +48,7 @@ final class Config
      */
     public function __construct()
     {
-        $this->decoder = new ArrayDecoder();
+        $this->decoder = new JsonDecoder();
         $this->onError = fn (DecodedValue $decoded) => throw $decoded->exception;
     }
 }

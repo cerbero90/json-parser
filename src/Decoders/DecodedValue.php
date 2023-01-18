@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser\Decoders;
 
-use JsonException;
+use Throwable;
 
 /**
  * The decoded value.
@@ -20,7 +20,7 @@ final class DecodedValue
         public mixed $value = null,
         public ?string $error = null,
         public ?int $code = null,
-        public ?JsonException $exception = null,
+        public ?Throwable $exception = null,
         public ?string $json = null,
     ) {
     }
@@ -39,11 +39,11 @@ final class DecodedValue
     /**
      * Retrieve a value failed to be decoded
      *
-     * @param JsonException $e
+     * @param Throwable $e
      * @param string $json
      * @return static
      */
-    public static function failed(JsonException $e, string $json): static
+    public static function failed(Throwable $e, string $json): static
     {
         return new static(false, null, $e->getMessage(), $e->getCode(), $e, $json);
     }

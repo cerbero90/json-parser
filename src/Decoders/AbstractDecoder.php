@@ -2,20 +2,21 @@
 
 namespace Cerbero\JsonParser\Decoders;
 
-use JsonException;
+use Throwable;
 
 /**
- * The decoder to turn a JSON into an associative array.
+ * The abstract implementation of a JSON decoder.
  *
  */
-class ArrayDecoder implements Decoder
+abstract class AbstractDecoder implements Decoder
 {
     /**
-     * Whether to decode the JSON into an associative array.
+     * Retrieve the decoded value of the given JSON
      *
-     * @var bool
+     * @param string $json
+     * @return mixed
      */
-    protected bool $decodesToArray = true;
+    abstract protected function decodeJson(string $json): mixed;
 
     /**
      * Decode the given JSON.
@@ -26,8 +27,8 @@ class ArrayDecoder implements Decoder
     public function decode(string $json): DecodedValue
     {
         try {
-            $value = json_decode($json, $this->decodesToArray, flags: JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
+            $value = $this->decodeJson($json);
+        } catch (Throwable $e) {
             return DecodedValue::failed($e, $json);
         }
 

@@ -3,7 +3,7 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Decoders\Decoder;
-use Cerbero\JsonParser\Decoders\ObjectDecoder;
+use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Sources\AnySource;
 use Closure;
@@ -54,13 +54,14 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the JSON decoder to turn a JSON into objects
+     * Set the simdjson decoder
      *
+     * @param bool $decodesToArray
      * @return static
      */
-    public function toObjects(): static
+    public function simdjson(bool $decodesToArray = true): static
     {
-        return $this->decoder(new ObjectDecoder());
+        return $this->decoder(new SimdjsonDecoder($decodesToArray));
     }
 
     /**
