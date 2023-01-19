@@ -27,6 +27,7 @@ composer require cerbero/json-parser
 
 * [Sources](#sources)
 * [Pointers](#pointers)
+* [Decoders](#decoders)
 
 JSON Parser provides a minimal API to read large JSON from any source:
 
@@ -214,6 +215,70 @@ JsonParser::parse($source)
 ```
 
 > ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
+
+
+### Decoders
+
+By default JSON Parser uses the built-in PHP function `json_decode()` to decode one key and value at a time.
+
+Normally it decodes values to associative arrays but, if we prefer to decode values to objects, we can set a custom decoder:
+
+```php
+use Cerbero\JsonParser\Decoders\JsonDecoder;
+
+JsonParser::parse($source)->decoder(new JsonDecoder(decodesToArray: false));
+```
+
+JSON Parser also provides a convenient method to set the [simdjson](https://github.com/crazyxman/simdjson_php#simdjson_php) decoder:
+
+```php
+JsonParser::parse($source)->simdjson(); // decode JSON to associative arrays using simdjson
+
+JsonParser::parse($source)->simdjson(decodesToArray: false); // decode JSON to objects using simdjson
+```
+
+[Simdjson is faster](https://github.com/crazyxman/simdjson_php/tree/master/benchmark#run-phpbench-benchmark) than `json_decode()` and can be installed via `pecl install simdjson` if your server satisfies [the requirements](https://github.com/crazyxman/simdjson_php#requirement).
+
+If we need a decoder that is not supported by default, we can implement our custom one.
+
+<details><summary><b>Click here to see how to implement a custom decoder.</b></summary>
+
+To create a custom decoder, we need to implement the `Decoder` interface and implement 1 method:
+
+```php
+use Cerbero\JsonParser\Decoders\Decoder;
+use Cerbero\JsonParser\Decoders\DecodedValue;
+
+class CustomDecoder implements Decoder
+{
+    public function decode(string $json): DecodedValue
+    {
+        // return an instance of DecodedValue both in case of success or failure
+    }
+}
+```
+
+The method `decode()` defines the logic to decode the given JSON value and it needs to return an instance of `DecodedValue` both in case of success or failure.
+
+To make custom decoder implementations even easier, JSON Parser provides an [abstract decoder](https://github.com/cerbero90/json-parser/tree/master/src/Decoders/AbstractDecoder.php) that hydrates `DecodedValue` for us so that we just need to define how a JSON value should be decoded:
+
+```php
+use Cerbero\JsonParser\Decoders\AbstractDecoder;
+
+class CustomDecoder extends AbstractDecoder
+{
+    protected function decodeJson(string $json): mixed
+    {
+        // decode the given JSON or throw an exception on failure
+        return json_decode($json, flags: JSON_THROW_ON_ERROR);
+    }
+}
+```
+
+> ⚠️ Please make sure to throw an exception in `decodeJson()` if the decoding process fails.
+
+To see some implementation examples, please refer to the [already existing decoders](https://github.com/cerbero90/json-parser/tree/master/src/Decoders).
+</details>
 
 ## 📆 Change log
 
