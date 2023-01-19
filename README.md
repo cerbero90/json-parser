@@ -111,6 +111,16 @@ The method `getIterator()` defines the logic to read the JSON source in a memory
 The method `matches()` determines whether the JSON source passed to the parser can be handled by our custom implementation. In other words, we are telling the parser if it should use our class for the JSON to parse.
 
 Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the parsing progress, however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
+
+Now that we have implemented our custom source, we can pass it to the parser:
+
+```php
+$json = JsonParser::parse(new CustomSource($source));
+
+foreach ($json as $key => $value) {
+    // process one key and value of $source at a time
+}
+```
 </details>
 
 
@@ -237,7 +247,7 @@ JsonParser::parse($source)->simdjson(); // decode JSON to associative arrays usi
 JsonParser::parse($source)->simdjson(decodesToArray: false); // decode JSON to objects using simdjson
 ```
 
-[Simdjson is faster](https://github.com/crazyxman/simdjson_php/tree/master/benchmark#run-phpbench-benchmark) than `json_decode()` and can be installed via `pecl install simdjson` if your server satisfies [the requirements](https://github.com/crazyxman/simdjson_php#requirement).
+[Simdjson is faster](https://github.com/crazyxman/simdjson_php/tree/master/benchmark#run-phpbench-benchmark) than `json_decode()` and can be installed via `pecl install simdjson` if your server satisfies the [requirements](https://github.com/crazyxman/simdjson_php#requirement).
 
 If we need a decoder that is not supported by default, we can implement our custom one.
 
@@ -276,6 +286,12 @@ class CustomDecoder extends AbstractDecoder
 ```
 
 > ⚠️ Please make sure to throw an exception in `decodeJson()` if the decoding process fails.
+
+Now that we have implemented our custom decoder, we can set it like this:
+
+```php
+JsonParser::parse($source)->decoder(new CustomDecoder());
+```
 
 To see some implementation examples, please refer to the [already existing decoders](https://github.com/cerbero90/json-parser/tree/master/src/Decoders).
 </details>
