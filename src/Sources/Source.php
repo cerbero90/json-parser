@@ -45,10 +45,11 @@ abstract class Source implements IteratorAggregate
      * Enforce the factory method to instantiate the class.
      *
      * @param mixed $source
-     * @param Config $config
+     * @param Config|null $config
      */
-    final public function __construct(protected mixed $source, protected Config $config)
+    final public function __construct(protected mixed $source, protected Config $config = null)
     {
+        $this->config ??= new Config();
     }
 
     /**
