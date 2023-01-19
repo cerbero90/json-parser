@@ -25,9 +25,13 @@ composer require cerbero/json-parser
 
 ## 🔮 Usage
 
+* [Intro](#intro)
 * [Sources](#sources)
 * [Pointers](#pointers)
 * [Decoders](#decoders)
+
+
+### Intro
 
 JSON Parser provides a minimal API to read large JSON from any source:
 
@@ -58,6 +62,18 @@ use function Cerbero\JsonParser\parseJson;
 
 parseJson($source);
 ```
+
+If we don't want to use `foreach()` to loop through each key and value, we can chain the `traverse()` method:
+
+```php
+JsonParser::parse($source)->traverse(function (mixed $value, string|int $key, JsonParser $parser) {
+    // lazily load one key and value at a time, we can also access the parser if needed
+});
+
+// no foreach needed
+```
+
+> ⚠️ Please note the parameters order of the callback: the value is passed before the key.
 
 ### Sources
 
