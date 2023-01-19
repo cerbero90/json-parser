@@ -3,17 +3,17 @@
 namespace Cerbero\JsonParser\Decoders;
 
 /**
- * The decoder using the default JSON decoder.
+ * The decoder using the built-in JSON decoder.
  *
  */
-class JsonDecoder extends AbstractDecoder
+final class JsonDecoder extends AbstractDecoder
 {
     /**
      * Instantiate the class.
      *
      * @param bool $decodesToArray
      */
-    public function __construct(protected bool $decodesToArray = true)
+    public function __construct(private bool $decodesToArray = true)
     {
     }
 
@@ -22,6 +22,7 @@ class JsonDecoder extends AbstractDecoder
      *
      * @param string $json
      * @return mixed
+     * @throws \Throwable
      */
     protected function decodeJson(string $json): mixed
     {
