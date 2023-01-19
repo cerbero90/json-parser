@@ -121,6 +121,8 @@ foreach ($json as $key => $value) {
     // process one key and value of $source at a time
 }
 ```
+
+If you find yourself implementing the same custom source in different projects, feel free to send a PR and we will consider to support your custom source by default. Thank you in advance for any contribution!
 </details>
 
 
@@ -294,6 +296,8 @@ JsonParser::parse($source)->decoder(new CustomDecoder());
 ```
 
 To see some implementation examples, please refer to the [already existing decoders](https://github.com/cerbero90/json-parser/tree/master/src/Decoders).
+
+If you find yourself implementing the same custom decoder in different projects, feel free to send a PR and we will consider to support your custom decoder by default. Thank you in advance for any contribution!
 </details>
 
 ## 📆 Change log
