@@ -25,13 +25,13 @@ composer require cerbero/json-parser
 
 ## 🔮 Usage
 
-* [Intro](#intro)
+* [Basics](#basics)
 * [Sources](#sources)
 * [Pointers](#pointers)
 * [Decoders](#decoders)
 
 
-### Intro
+### Basics
 
 JSON Parser provides a minimal API to read large JSON from any source:
 
