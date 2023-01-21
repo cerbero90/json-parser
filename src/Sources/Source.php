@@ -84,7 +84,7 @@ abstract class Source implements IteratorAggregate
      */
     public function size(): ?int
     {
-        if(!$this->sizeWasSet) {
+        if (!$this->sizeWasSet) {
             $this->size = $this->calculateSize();
             $this->sizeWasSet = true;
         }
