@@ -28,6 +28,14 @@ abstract class Source implements IteratorAggregate
     protected ?int $size;
 
     /**
+     * Whether the size was already calculated.
+     * Avoid re-calculations when the size is NULL (not computable).
+     *
+     * @var bool
+     */
+    protected bool $sizeWasSet = false;
+
+    /**
      * Retrieve the JSON fragments
      *
      * @return Traversable<int, string>
@@ -76,6 +84,11 @@ abstract class Source implements IteratorAggregate
      */
     public function size(): ?int
     {
-        return $this->size ??= $this->calculateSize();
+        if(!$this->sizeWasSet) {
+            $this->size = $this->calculateSize();
+            $this->sizeWasSet = true;
+        }
+
+        return $this->size;
     }
 }
