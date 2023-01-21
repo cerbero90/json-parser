@@ -45,6 +45,21 @@ class AnySource extends Source
      */
     public function getIterator(): Traversable
     {
+        return $this->matchingSource();
+    }
+
+    /**
+     * Retrieve the matching source
+     *
+     * @return Source
+     * @throws SourceException
+     */
+    protected function matchingSource(): Source
+    {
+        if (isset($this->matchingSource)) {
+            return $this->matchingSource;
+        }
+
         foreach ($this->sources() as $source) {
             if ($source->matches()) {
                 return $this->matchingSource = $source;
@@ -83,6 +98,6 @@ class AnySource extends Source
      */
     protected function calculateSize(): ?int
     {
-        return $this->matchingSource?->size();
+        return $this->matchingSource()->size();
     }
 }
