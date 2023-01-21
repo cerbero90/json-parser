@@ -54,27 +54,13 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the simdjson decoder
+     * Retrieve the lazily iterable JSON
      *
-     * @param bool $decodesToArray
-     * @return static
+     * @return Traversable<string|int, mixed>
      */
-    public function simdjson(bool $decodesToArray = true): static
+    public function getIterator(): Traversable
     {
-        return $this->decoder(new SimdjsonDecoder($decodesToArray));
-    }
-
-    /**
-     * Set the JSON decoder
-     *
-     * @param Decoder $decoder
-     * @return static
-     */
-    public function decoder(Decoder $decoder): static
-    {
-        $this->config->decoder = $decoder;
-
-        return $this;
+        return $this->parser;
     }
 
     /**
@@ -104,6 +90,55 @@ final class JsonParser implements IteratorAggregate
         $this->config->pointers[] = new Pointer($pointer, $callback);
 
         return $this;
+    }
+
+    /**
+     * Traverse the lazily iterable JSON
+     *
+     * @param Closure|null $callback
+     * @return void
+     */
+    public function traverse(Closure $callback = null): void
+    {
+        $callback ??= fn () => true;
+
+        foreach ($this as $key => $value) {
+            $callback($value, $key, $this);
+        }
+    }
+
+    /**
+     * Set the simdjson decoder
+     *
+     * @param bool $decodesToArray
+     * @return static
+     */
+    public function simdjson(bool $decodesToArray = true): static
+    {
+        return $this->decoder(new SimdjsonDecoder($decodesToArray));
+    }
+
+    /**
+     * Set the JSON decoder
+     *
+     * @param Decoder $decoder
+     * @return static
+     */
+    public function decoder(Decoder $decoder): static
+    {
+        $this->config->decoder = $decoder;
+
+        return $this;
+    }
+
+    /**
+     * Retrieve the parsing progress
+     *
+     * @return Progress
+     */
+    public function progress(): Progress
+    {
+        return $this->parser->progress();
     }
 
     /**
@@ -140,30 +175,5 @@ final class JsonParser implements IteratorAggregate
         $this->config->onError = $callback;
 
         return $this;
-    }
-
-    /**
-     * Traverse the lazily iterable JSON
-     *
-     * @param Closure|null $callback
-     * @return void
-     */
-    public function traverse(Closure $callback = null): void
-    {
-        $callback ??= fn () => true;
-
-        foreach ($this as $key => $value) {
-            $callback($value, $key, $this);
-        }
-    }
-
-    /**
-     * Retrieve the lazily iterable JSON
-     *
-     * @return Traversable<string|int, mixed>
-     */
-    public function getIterator(): Traversable
-    {
-        return $this->parser;
     }
 }

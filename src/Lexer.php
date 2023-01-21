@@ -18,6 +18,13 @@ use Traversable;
 final class Lexer implements IteratorAggregate
 {
     /**
+     * The parsing progress.
+     *
+     * @var Progress
+     */
+    private Progress $progress;
+
+    /**
      * The buffer to yield.
      *
      * @var string
@@ -45,6 +52,7 @@ final class Lexer implements IteratorAggregate
      */
     public function __construct(private Source $source)
     {
+        $this->progress = new Progress();
     }
 
     /**
@@ -55,7 +63,7 @@ final class Lexer implements IteratorAggregate
     public function getIterator(): Traversable
     {
         foreach ($this->source as $chunk) {
-            for ($i = 0, $size = strlen($chunk); $i < $size; $i++) {
+            for ($i = 0, $size = strlen($chunk); $i < $size; $i++, $this->progress->advance()) {
                 $character = $chunk[$i];
                 $this->inString = $this->inString($character);
                 $this->isEscaping = $character == '\\' && !$this->isEscaping;
@@ -99,5 +107,15 @@ final class Lexer implements IteratorAggregate
         if (isset(Tokens::DELIMITERS[$character])) {
             yield Tokenizer::instance()->toToken($character);
         }
+    }
+
+    /**
+     * Retrieve the parsing progress
+     *
+     * @return Progress
+     */
+    public function progress(): Progress
+    {
+        return $this->progress->setTotal($this->source->size());
     }
 }

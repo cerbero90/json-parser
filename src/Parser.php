@@ -80,4 +80,14 @@ final class Parser implements IteratorAggregate
             }
         }
     }
+
+    /**
+     * Retrieve the parsing progress
+     *
+     * @return Progress
+     */
+    public function progress(): Progress
+    {
+        return $this->lexer->progress();
+    }
 }
