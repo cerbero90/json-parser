@@ -32,7 +32,7 @@ final class Pointer implements Stringable
      *
      * @var Closure
      */
-    private Closure $callback;
+    private ?Closure $callback;
 
     /**
      * Whether the pointer was found.
@@ -51,7 +51,7 @@ final class Pointer implements Stringable
     {
         $this->referenceTokens = $this->toReferenceTokens();
         $this->depth = count($this->referenceTokens);
-        $this->callback = $callback ?: fn (mixed $value) => $value;
+        $this->callback = $callback;
     }
 
     /**
@@ -100,6 +100,10 @@ final class Pointer implements Stringable
      */
     public function call(mixed $value, mixed $key): mixed
     {
+        if ($this->callback === null) {
+            return $value;
+        }
+
         return call_user_func($this->callback, $value, $key) ?? $value;
     }
 
@@ -126,7 +130,9 @@ final class Pointer implements Stringable
      */
     public function matchesTree(Tree $tree): bool
     {
-        return in_array($this->referenceTokens, [[], $tree->original(), $tree->wildcarded()]);
+        return $this->referenceTokens == []
+            || $this->referenceTokens == $tree->original()
+            || $this->referenceTokens == $tree->wildcarded();
     }
 
     /**

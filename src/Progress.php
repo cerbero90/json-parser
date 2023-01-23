@@ -23,13 +23,14 @@ final class Progress
     private ?int $total = null;
 
     /**
-     * Advance the progress
+     * Set the current progress
      *
+     * @param int $current
      * @return static
      */
-    public function advance(): static
+    public function setCurrent(int $current): static
     {
-        $this->current++;
+        $this->current = $current;
 
         return $this;
     }

@@ -6,7 +6,6 @@ use Cerbero\JsonParser\Sources\Source;
 use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Tokenizer;
 use Cerbero\JsonParser\Tokens\Tokens;
-use Generator;
 use IteratorAggregate;
 use Traversable;
 
@@ -25,25 +24,11 @@ final class Lexer implements IteratorAggregate
     private Progress $progress;
 
     /**
-     * The buffer to yield.
+     * The current position.
      *
-     * @var string
+     * @var int
      */
-    private string $buffer = '';
-
-    /**
-     * Whether the current character is escaped.
-     *
-     * @var bool
-     */
-    private bool $isEscaping = false;
-
-    /**
-     * Whether the current character belongs to a string.
-     *
-     * @var bool
-     */
-    private bool $inString = false;
+    private int $position = 0;
 
     /**
      * Instantiate the class.
@@ -62,50 +47,31 @@ final class Lexer implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
+        $buffer = '';
+        $inString = $isEscaping = false;
+
         foreach ($this->source as $chunk) {
-            for ($i = 0, $size = strlen($chunk); $i < $size; $i++, $this->progress->advance()) {
+            for ($i = 0, $size = strlen($chunk); $i < $size; $i++, $this->position++) {
                 $character = $chunk[$i];
-                $this->inString = $this->inString($character);
-                $this->isEscaping = $character == '\\' && !$this->isEscaping;
+                $inString = ($character == '"' && $inString && $isEscaping)
+                    || ($character != '"' && $inString)
+                    || ($character == '"' && !$inString);
+                $isEscaping = $character == '\\' && !$isEscaping;
 
-                yield from $this->yieldOrBufferCharacter($character);
+                if ($inString || !isset(Tokens::BOUNDARIES[$character])) {
+                    $buffer .= $character;
+                    continue;
+                }
+
+                if ($buffer != '') {
+                    yield Tokenizer::instance()->toToken($buffer);
+                    $buffer = '';
+                }
+
+                if (isset(Tokens::DELIMITERS[$character])) {
+                    yield Tokenizer::instance()->toToken($character);
+                }
             }
-        }
-    }
-
-    /**
-     * Determine whether the given character is within a string
-     *
-     * @param string $character
-     * @return bool
-     */
-    private function inString(string $character): bool
-    {
-        return ($character == '"' && $this->inString && $this->isEscaping)
-            || ($character != '"' && $this->inString)
-            || ($character == '"' && !$this->inString);
-    }
-
-    /**
-     * Yield the given character or buffer it
-     *
-     * @param string $character
-     * @return Generator<int, Token>
-     */
-    private function yieldOrBufferCharacter(string $character): Generator
-    {
-        if ($this->inString || !isset(Tokens::BOUNDARIES[$character])) {
-            $this->buffer .= $character;
-            return;
-        }
-
-        if ($this->buffer != '') {
-            yield Tokenizer::instance()->toToken($this->buffer);
-            $this->buffer = '';
-        }
-
-        if (isset(Tokens::DELIMITERS[$character])) {
-            yield Tokenizer::instance()->toToken($character);
         }
     }
 
@@ -116,6 +82,6 @@ final class Lexer implements IteratorAggregate
      */
     public function progress(): Progress
     {
-        return $this->progress->setTotal($this->source->size());
+        return $this->progress->setCurrent($this->position)->setTotal($this->source->size());
     }
 }

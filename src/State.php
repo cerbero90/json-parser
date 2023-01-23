@@ -146,8 +146,9 @@ final class State
     {
         $treeChanged = false;
         $shouldTrackTree = $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
+        $tokenIsValue = $token->isValue();
 
-        if ($shouldTrackTree && $token->isValue() && !$this->inObject()) {
+        if ($shouldTrackTree && $tokenIsValue && !$this->inObject()) {
             $this->tree->traverseArray($this->pointer->referenceTokens());
             $treeChanged = true;
         }
@@ -161,27 +162,16 @@ final class State
             $this->pointer = $this->pointers->matchTree($this->tree);
         }
 
-        $this->bufferToken($token);
-
-        $token->mutateState($this);
-    }
-
-    /**
-     * Buffer the given token
-     *
-     * @param Token $token
-     * @return void
-     */
-    private function bufferToken(Token $token): void
-    {
         $shouldBuffer = $this->tree->depth() >= 0
             && $this->pointer->matchesTree($this->tree)
-            && ($this->treeIsDeep() || ($token->isValue() && !$this->expectsKey));
+            && (($tokenIsValue && !$this->expectsKey) || $this->treeIsDeep());
 
         if ($shouldBuffer) {
             $this->buffer .= $token;
             $this->pointers->markAsFound($this->pointer);
         }
+
+        $token->mutateState($this);
     }
 
     /**

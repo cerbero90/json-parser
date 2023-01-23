@@ -92,16 +92,6 @@ final class Tree
         $this->original[$this->depth] = $trimmedKey;
         $this->wildcarded[$this->depth] = $trimmedKey;
 
-        $this->trim();
-    }
-
-    /**
-     * Trim the tree after the latest traversed key
-     *
-     * @return void
-     */
-    private function trim(): void
-    {
         array_splice($this->original, $this->depth + 1);
         array_splice($this->wildcarded, $this->depth + 1);
     }
@@ -120,7 +110,8 @@ final class Tree
         $this->original[$this->depth] = is_int($index) ? $index + 1 : 0;
         $this->wildcarded[$this->depth] = $referenceToken == '-' ? '-' : $this->original[$this->depth];
 
-        $this->trim();
+        array_splice($this->original, $this->depth + 1);
+        array_splice($this->wildcarded, $this->depth + 1);
     }
 
     /**

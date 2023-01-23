@@ -23,15 +23,6 @@ final class Tokenizer
     private array $tokensMap;
 
     /**
-     * Instantiate the class.
-     *
-     */
-    private function __construct()
-    {
-        $this->setTokensMap();
-    }
-
-    /**
      * Retrieve the singleton instance
      *
      * @return static
@@ -39,6 +30,15 @@ final class Tokenizer
     public static function instance(): static
     {
         return static::$instance ??= new static();
+    }
+
+    /**
+     * Instantiate the class.
+     *
+     */
+    private function __construct()
+    {
+        $this->setTokensMap();
     }
 
     /**
