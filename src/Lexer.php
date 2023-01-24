@@ -4,10 +4,11 @@ namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Sources\Source;
 use Cerbero\JsonParser\Tokens\Token;
-use Cerbero\JsonParser\Tokens\Tokenizer;
 use Cerbero\JsonParser\Tokens\Tokens;
 use IteratorAggregate;
 use Traversable;
+
+use function strlen;
 
 /**
  * The JSON lexer.
@@ -24,6 +25,13 @@ final class Lexer implements IteratorAggregate
     private Progress $progress;
 
     /**
+     * The map of token instances by type.
+     *
+     * @var array<int, Token>
+     */
+    private array $tokensMap;
+
+    /**
      * The current position.
      *
      * @var int
@@ -38,6 +46,21 @@ final class Lexer implements IteratorAggregate
     public function __construct(private Source $source)
     {
         $this->progress = new Progress();
+        $this->setTokensMap();
+    }
+
+    /**
+     * Set the tokens map
+     *
+     * @return void
+     */
+    private function setTokensMap(): void
+    {
+        $instances = [];
+
+        foreach (Tokens::MAP as $type => $class) {
+            $this->tokensMap[$type] = $instances[$class] ??= new $class();
+        }
     }
 
     /**
@@ -64,12 +87,14 @@ final class Lexer implements IteratorAggregate
                 }
 
                 if ($buffer != '') {
-                    yield Tokenizer::instance()->toToken($buffer);
+                    $type = Tokens::TYPES[$buffer[0]];
+                    yield $this->tokensMap[$type]->setValue($buffer);
                     $buffer = '';
                 }
 
                 if (isset(Tokens::DELIMITERS[$character])) {
-                    yield Tokenizer::instance()->toToken($character);
+                    $type = Tokens::TYPES[$character];
+                    yield $this->tokensMap[$type]->setValue($character);
                 }
             }
         }
