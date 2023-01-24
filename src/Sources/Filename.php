@@ -4,6 +4,8 @@ namespace Cerbero\JsonParser\Sources;
 
 use Traversable;
 
+use function is_string;
+
 /**
  * The filename source.
  *

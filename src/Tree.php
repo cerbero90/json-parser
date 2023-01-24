@@ -2,6 +2,9 @@
 
 namespace Cerbero\JsonParser;
 
+use function is_int;
+use function is_string;
+
 /**
  * The JSON tree.
  *

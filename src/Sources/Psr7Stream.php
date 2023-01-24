@@ -5,6 +5,8 @@ namespace Cerbero\JsonParser\Sources;
 use Psr\Http\Message\StreamInterface;
 use Traversable;
 
+use function in_array;
+
 /**
  * The PSR-7 stream source.
  *

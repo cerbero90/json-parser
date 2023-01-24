@@ -5,6 +5,9 @@ namespace Cerbero\JsonParser\Sources;
 use Cerbero\JsonParser\Concerns\DetectsEndpoints;
 use Traversable;
 
+use function is_string;
+use function strlen;
+
 /**
  * The JSON source.
  *

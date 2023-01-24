@@ -6,6 +6,8 @@ use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
 
+use function is_string;
+
 /**
  * The JSON parsing state.
  *

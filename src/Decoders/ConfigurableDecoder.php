@@ -4,6 +4,8 @@ namespace Cerbero\JsonParser\Decoders;
 
 use Cerbero\JsonParser\Config;
 
+use function call_user_func;
+
 /**
  * The configurable decoder.
  *

@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Traversable;
 
+use function is_string;
+
 /**
  * The endpoint source.
  *

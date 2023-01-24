@@ -2,6 +2,8 @@
 
 namespace Cerbero\JsonParser;
 
+use function is_null;
+
 /**
  * The parsing progress.
  *

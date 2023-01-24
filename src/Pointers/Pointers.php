@@ -4,6 +4,8 @@ namespace Cerbero\JsonParser\Pointers;
 
 use Cerbero\JsonParser\Tree;
 
+use function count;
+
 /**
  * The JSON pointers collection.
  *

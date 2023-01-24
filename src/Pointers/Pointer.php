@@ -7,6 +7,11 @@ use Cerbero\JsonParser\Tree;
 use Closure;
 use Stringable;
 
+use function count;
+use function call_user_func;
+use function is_int;
+use function array_slice;
+
 /**
  * The JSON pointer.
  *
