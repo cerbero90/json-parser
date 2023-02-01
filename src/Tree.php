@@ -2,9 +2,6 @@
 
 namespace Cerbero\JsonParser;
 
-use function is_int;
-use function is_string;
-
 /**
  * The JSON tree.
  *
@@ -94,9 +91,6 @@ final class Tree
 
         $this->original[$this->depth] = $trimmedKey;
         $this->wildcarded[$this->depth] = $trimmedKey;
-
-        array_splice($this->original, $this->depth + 1);
-        array_splice($this->wildcarded, $this->depth + 1);
     }
 
     /**
@@ -113,8 +107,10 @@ final class Tree
         $this->original[$this->depth] = is_int($index) ? $index + 1 : 0;
         $this->wildcarded[$this->depth] = $referenceToken == '-' ? '-' : $this->original[$this->depth];
 
-        array_splice($this->original, $this->depth + 1);
-        array_splice($this->wildcarded, $this->depth + 1);
+        if (count($this->original) > $this->depth) {
+            array_splice($this->original, $this->depth + 1);
+            array_splice($this->wildcarded, $this->depth + 1);
+        }
     }
 
     /**
