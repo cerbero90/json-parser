@@ -29,6 +29,7 @@ composer require cerbero/json-parser
 * [Sources](#sources)
 * [Pointers](#pointers)
 * [Decoders](#decoders)
+* [Progress](#progress)
 
 
 ### Basics
@@ -126,7 +127,7 @@ The method `getIterator()` defines the logic to read the JSON source in a memory
 
 The method `matches()` determines whether the JSON source passed to the parser can be handled by our custom implementation. In other words, we are telling the parser if it should use our class for the JSON to parse.
 
-Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the parsing progress, however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
+Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the [parsing progress](#progress), however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
 
 Now that we have implemented our custom source, we can pass it to the parser:
 
@@ -315,6 +316,32 @@ To see some implementation examples, please refer to the [already existing decod
 
 If you find yourself implementing the same custom decoder in different projects, feel free to send a PR and we will consider to support your custom decoder by default. Thank you in advance for any contribution!
 </details>
+
+
+### Progress
+
+When processing large JSONs, we may need to know the parsing progress. JSON Parser offers convenient methods to access all the progress details:
+
+```php
+$json = new JsonParser($source);
+
+$json->progress(); // <Cerbero\JsonParser\Progress>
+$json->progress()->current(); // the already parsed bytes e.g. 86759341
+$json->progress()->total(); // the total bytes to parse e.g. 182332642
+$json->progress()->fraction(); // the completed fraction e.g. 0.47583
+$json->progress()->percentage(); // the completed percentage e.g. 47.583
+$json->progress()->format(); // the formatted progress e.g. 47.5%
+```
+
+The total size of a JSON is calculated differently depending on the [source](#sources). It is not always possible to determine how large a JSON is, in these cases only the current progress is known:
+
+```php
+$json->progress()->current(); // 86759341
+$json->progress()->total(); // null
+$json->progress()->fraction(); // null
+$json->progress()->percentage(); // null
+$json->progress()->format(); // null
+```
 
 ## 📆 Change log
 
