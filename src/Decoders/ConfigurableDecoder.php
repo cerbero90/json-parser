@@ -29,7 +29,11 @@ final class ConfigurableDecoder
      */
     public function decode(string|int $value): mixed
     {
-        $decoded = $this->config->decoder->decode((string) $value);
+        if (is_int($value)) {
+            return $value;
+        }
+
+        $decoded = $this->config->decoder->decode($value);
 
         if (!$decoded->succeeded) {
             call_user_func($this->config->onError, $decoded);
