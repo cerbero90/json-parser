@@ -148,9 +148,8 @@ final class State
     {
         $treeChanged = false;
         $shouldTrackTree = $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
-        $tokenIsValue = $token->isValue();
 
-        if ($shouldTrackTree && $tokenIsValue && !$this->inObject()) {
+        if ($shouldTrackTree && $token->isValue() && !$this->inObject()) {
             $this->tree->traverseArray($this->pointer->referenceTokens());
             $treeChanged = true;
         }
@@ -166,7 +165,7 @@ final class State
 
         $shouldBuffer = $this->tree->depth() >= 0
             && $this->pointer->matchesTree($this->tree)
-            && (($tokenIsValue && !$this->expectsKey) || $this->treeIsDeep());
+            && ((!$this->expectsKey && $token->isValue()) || $this->treeIsDeep());
 
         if ($shouldBuffer) {
             $this->buffer .= $token;
