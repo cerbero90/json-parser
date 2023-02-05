@@ -30,8 +30,8 @@ expect()->extend('toPointTo', function (array $expected) {
     foreach ($this->value as $parsedKey => $parsedValue) {
         $itemsCount[$parsedKey] = empty($itemsCount[$parsedKey]) ? 1 : $itemsCount[$parsedKey] + 1;
 
-        // the following match is required as we may deal with parsed values that are arrays
-        // and unpacking a parsed value that is an array may lead to unexpected results
+        // associate $parsedKey to $parsedValue if $parsedKey occurs once
+        // associate $parsedKey to an array of $parsedValue if $parsedKey occurs multiple times
         $actual[$parsedKey] = match ($itemsCount[$parsedKey]) {
             1 => $parsedValue,
             2 => [$actual[$parsedKey], $parsedValue],
