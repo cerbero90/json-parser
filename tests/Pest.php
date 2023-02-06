@@ -1,5 +1,18 @@
 <?php
 
+if (!function_exists('fixture')) {
+    /**
+     * Retrieve the absolute path of the given fixture
+     *
+     * @param string $fixture
+     * @return string
+     */
+    function fixture(string $fixture): string
+    {
+        return __DIR__ . "/fixtures/{$fixture}";
+    }
+}
+
 /**
  * Expect that keys and values are parsed correctly
  *

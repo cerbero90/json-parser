@@ -23,7 +23,7 @@ class Dataset
 
             yield [
                 file_get_contents($fixture->getRealPath()),
-                require __DIR__ . "/fixtures/parsing/{$name}.php",
+                require fixture("parsing/{$name}.php"),
             ];
         }
     }
@@ -35,7 +35,7 @@ class Dataset
      */
     protected static function fixtures(): Generator
     {
-        foreach (new DirectoryIterator(__DIR__ . '/fixtures/json') as $file) {
+        foreach (new DirectoryIterator(fixture('json')) as $file) {
             if (!$file->isDot()) {
                 yield $file;
             }
@@ -59,10 +59,10 @@ class Dataset
      */
     public static function forSinglePointers(): Generator
     {
-        $singlePointers = require __DIR__ . '/fixtures/pointers/single_pointer.php';
+        $singlePointers = require fixture('pointers/single_pointer.php');
 
         foreach ($singlePointers as $fixture => $pointers) {
-            $json = file_get_contents(__DIR__ . "/fixtures/json/{$fixture}.json");
+            $json = file_get_contents(fixture("json/{$fixture}.json"));
 
             foreach ($pointers as $pointer => $value) {
                 yield [$json, $pointer, $value];
@@ -77,10 +77,10 @@ class Dataset
      */
     public static function forMultiplePointers(): Generator
     {
-        $multiplePointers = require __DIR__ . '/fixtures/pointers/multiple_pointers.php';
+        $multiplePointers = require fixture('pointers/multiple_pointers.php');
 
         foreach ($multiplePointers as $fixture => $valueByPointers) {
-            $json = file_get_contents(__DIR__ . "/fixtures/json/{$fixture}.json");
+            $json = file_get_contents(fixture("json/{$fixture}.json"));
 
             foreach ($valueByPointers as $pointers => $value) {
                 yield [$json, explode(',', $pointers), $value];
