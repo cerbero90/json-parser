@@ -25,12 +25,12 @@ composer require cerbero/json-parser
 
 ## 🔮 Usage
 
-* [👣 Basics](#basics)
-* [💧 Sources](#sources)
-* [🎯 Pointers](#pointers)
-* [⚙️ Decoders](#decoders)
-* [💢 Errors](#errors)
-* [⏳ Progress](#progress)
+* [👣 Basics](#-basics)
+* [💧 Sources](#-sources)
+* [🎯 Pointers](#-pointers)
+* [⚙️ Decoders](#-decoders)
+* [💢 Errors](#-errors)
+* [⏳ Progress](#-progress)
 
 
 ### 👣 Basics
