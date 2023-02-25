@@ -2,9 +2,6 @@
 
 namespace Cerbero\JsonParser\Tokens;
 
-use Cerbero\JsonParser\Exceptions\ParserException;
-use Cerbero\JsonParser\Exceptions\SyntaxException;
-
 /**
  * The tokenizer.
  *
@@ -62,18 +59,11 @@ final class Tokenizer
      * Turn the given value into a token
      *
      * @param string $value
-     * @param int $position
      * @return Token
      */
-    public function toToken(string $value, int $position): Token
+    public function toToken(string $value): Token
     {
-        $character = $value[0];
-
-        if (!isset(Tokens::TYPES[$character])) {
-            throw new SyntaxException($value, $position);
-        }
-
-        $type = Tokens::TYPES[$character];
+        $type = Tokens::TYPES[$value[0]];
 
         return $this->tokensMap[$type]->setValue($value);
     }
