@@ -35,11 +35,20 @@ class Endpoint extends Source
      */
     public function getIterator(): Traversable
     {
+        return new Psr7Message($this->response(), $this->config);
+    }
+
+    /**
+     * Retrieve the endpoint response
+     *
+     * @return ResponseInterface
+     * @throws \Cerbero\JsonParser\Exceptions\GuzzleRequiredException
+     */
+    protected function response(): ResponseInterface
+    {
         $this->requireGuzzle();
 
-        $this->response = $this->getJson($this->source);
-
-        return new Psr7Message($this->response, $this->config);
+        return $this->response ??= $this->getJson($this->source);
     }
 
     /**
@@ -57,9 +66,10 @@ class Endpoint extends Source
      * Retrieve the calculated size of the JSON source
      *
      * @return int|null
+     * @throws \Cerbero\JsonParser\Exceptions\GuzzleRequiredException
      */
     protected function calculateSize(): ?int
     {
-        return $this->response?->getBody()->getSize();
+        return $this->response()->getBody()->getSize();
     }
 }

@@ -31,11 +31,20 @@ class Psr7Request extends Source
      */
     public function getIterator(): Traversable
     {
+        return new Psr7Message($this->response(), $this->config);
+    }
+
+    /**
+     * Retrieve the response of the PSR-7 request
+     *
+     * @return ResponseInterface
+     * @throws \Cerbero\JsonParser\Exceptions\GuzzleRequiredException
+     */
+    protected function response(): ResponseInterface
+    {
         $this->requireGuzzle();
 
-        $this->response = $this->sendRequest($this->source);
-
-        return new Psr7Message($this->response, $this->config);
+        return $this->response ??= $this->sendRequest($this->source);
     }
 
     /**
@@ -55,6 +64,6 @@ class Psr7Request extends Source
      */
     protected function calculateSize(): ?int
     {
-        return $this->response?->getBody()->getSize();
+        return $this->response()->getBody()->getSize();
     }
 }
