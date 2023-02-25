@@ -25,21 +25,20 @@ composer require cerbero/json-parser
 
 ## 🔮 Usage
 
-* [Basics](#basics)
-* [Sources](#sources)
-* [Pointers](#pointers)
-* [Decoders](#decoders)
-* [Progress](#progress)
+* [👣 Basics](#basics)
+* [💧 Sources](#sources)
+* [🎯 Pointers](#pointers)
+* [⚙️ Decoders](#decoders)
+* [💢 Errors](#errors)
+* [⏳ Progress](#progress)
 
 
-### Basics
+### 👣 Basics
 
 JSON Parser provides a minimal API to read large JSON from any source:
 
 ```php
-use Cerbero\JsonParser\JsonParser;
-
-// the JSON source in this example is an API endpoint
+// a source is anything that can provide a JSON, in this case an endpoint
 $source = 'https://randomuser.me/api/1.4?seed=json-parser&results=5';
 
 foreach (new JsonParser($source) as $key => $value) {
@@ -47,20 +46,20 @@ foreach (new JsonParser($source) as $key => $value) {
 }
 ```
 
-Depending on our taste, we can instantiate the parser in 3 different ways:
+Depending on our code style, we can instantiate the parser in 3 different ways:
 
 ```php
 use Cerbero\JsonParser\JsonParser;
+use function Cerbero\JsonParser\parseJson;
+
 
 // classic object instantiation
 new JsonParser($source);
 
-// static instantiation, facilitates methods chaining
+// static instantiation
 JsonParser::parse($source);
 
 // namespaced function
-use function Cerbero\JsonParser\parseJson;
-
 parseJson($source);
 ```
 
@@ -76,12 +75,12 @@ JsonParser::parse($source)->traverse(function (mixed $value, string|int $key, Js
 
 > ⚠️ Please note the parameters order of the callback: the value is passed before the key.
 
-### Sources
+### 💧 Sources
 
 A wide range of JSON sources is supported, here is the full list:
 - **strings**, e.g. `{"foo":"bar"}`
 - **iterables**, i.e. arrays or instances of `Traversable`
-- **files**, e.g. `/path/to/large_file.json`
+- **file paths**, e.g. `/path/to/large.json`
 - **resources**, e.g. streams
 - **API endpoint URLs**, e.g. `https://endpoint.json` or any instance of `Psr\Http\Message\UriInterface`
 - **PSR-7 requests**, i.e. any instance of `Psr\Http\Message\RequestInterface`
@@ -143,7 +142,7 @@ If you find yourself implementing the same custom source in different projects, 
 </details>
 
 
-### Pointers
+### 🎯 Pointers
 
 A JSON pointer is a [standard](https://www.rfc-editor.org/rfc/rfc6901) used to point to nodes within a JSON. This package leverages JSON pointers to extract only some sub-trees from large JSONs.
 
@@ -246,7 +245,7 @@ JsonParser::parse($source)
 > ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
 
 
-### Decoders
+### ⚙️ Decoders
 
 By default JSON Parser uses the built-in PHP function `json_decode()` to decode one key and value at a time.
 
@@ -318,7 +317,62 @@ If you find yourself implementing the same custom decoder in different projects,
 </details>
 
 
-### Progress
+### 💢 Errors
+
+Not all JSONs are valid, some may present syntax errors due to an incorrect structure (e.g. `[}`) or decoding errors when values can't be decoded properly (e.g. `[1a]`). JSON Parser allows us to intervene and define the logic to run when these issues occur:
+
+```php
+use Cerbero\JsonParser\Decoders\DecodedValue;
+use Cerbero\JsonParser\Exceptions\SyntaxException;
+
+$json = JsonParser::parse($source)
+    ->onSyntaxError(fn (SyntaxException $e) => $this->handleSyntaxError($e))
+    ->onDecodingError(fn (DecodedValue $decoded) => $this->handleDecodingError($decoded));
+```
+
+We can even replace invalid values with placeholders to avoid that the entire JSON parsing fails because of them:
+
+```php
+// instead of failing, replace invalid values with NULL
+$json = JsonParser::parse($source)->patchDecodingError();
+
+// instead of failing, replace invalid values with '<invalid>'
+$json = JsonParser::parse($source)->patchDecodingError('<invalid>');
+```
+
+For more advanced decoding errors patching, we can pass a closure that has access to the `DecodedValue` instance:
+
+```php
+use Cerbero\JsonParser\Decoders\DecodedValue;
+
+$patches = ['1a' => 1, '2b' => 2];
+$json = JsonParser::parse($source)
+    ->patchDecodingError(fn (DecodedValue $decoded) => $patches[$decoded->json] ?? null);
+```
+
+Any exception thrown by this package implements the `JsonParserException` interface, which makes it easy to handle all exceptions in one catch:
+
+```php
+use Cerbero\JsonParser\Exceptions\JsonParserException;
+
+try {
+    JsonParser::parse($source)->traverse();
+} catch (JsonParserException) {
+    // handle any exception thrown by JSON Parser
+}
+```
+
+For reference, here is a comprehensive table of all the exceptions thrown by this package:
+|`Cerbero\JsonParser\Exceptions\`|thrown when|
+|---|---|
+|`DecodingException`|a value in the JSON can't be decoded|
+|`GuzzleRequiredException`|Guzzle is not installed and the JSON source is an endpoint|
+|`InvalidPointerException`|a JSON pointer syntax is not valid|
+|`SyntaxException`|the JSON structure is not valid|
+|`UnsupportedSourceException`|a JSON source is not supported|
+
+
+### ⏳ Progress
 
 When processing large JSONs, we may need to know the parsing progress. JSON Parser offers convenient methods to access all the progress details:
 
