@@ -28,7 +28,7 @@ abstract class Source implements IteratorAggregate
     protected ?int $size;
 
     /**
-     * Whether the size was already calculated.
+     * Whether the JSON size has already been calculated.
      * Avoid re-calculations when the size is NULL (not computable).
      *
      * @var bool
