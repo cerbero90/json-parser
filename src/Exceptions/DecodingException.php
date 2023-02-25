@@ -18,6 +18,6 @@ final class DecodingException extends Exception implements JsonParserException
      */
     public function __construct(public DecodedValue $decoded)
     {
-        parent::__construct('Decoding error: ' . $decoded->error, $decoded->code);
+        parent::__construct('Decoding error: ' . $decoded->error, (int) $decoded->code);
     }
 }
