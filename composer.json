@@ -23,6 +23,7 @@
     "require-dev": {
         "guzzlehttp/guzzle": "^7.2",
         "illuminate/http": ">=6.20",
+        "mockery/mockery": "^1.5",
         "pestphp/pest": "^1.22",
         "phpstan/phpstan": "^1.9",
         "scrutinizer/ocular": "^1.8",
