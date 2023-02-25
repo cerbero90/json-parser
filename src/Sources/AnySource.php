@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser\Sources;
 
-use Cerbero\JsonParser\Exceptions\SourceException;
+use Cerbero\JsonParser\Exceptions\UnsupportedSourceException;
 use Generator;
 use Traversable;
 
@@ -41,7 +41,7 @@ class AnySource extends Source
      * Retrieve the JSON fragments
      *
      * @return Traversable<int, string>
-     * @throws SourceException
+     * @throws UnsupportedSourceException
      */
     public function getIterator(): Traversable
     {
@@ -52,7 +52,7 @@ class AnySource extends Source
      * Retrieve the matching source
      *
      * @return Source
-     * @throws SourceException
+     * @throws UnsupportedSourceException
      */
     protected function matchingSource(): Source
     {
@@ -66,7 +66,7 @@ class AnySource extends Source
             }
         }
 
-        throw SourceException::unsupported();
+        throw new UnsupportedSourceException($this->source);
     }
 
     /**

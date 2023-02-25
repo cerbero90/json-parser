@@ -5,7 +5,7 @@ namespace Cerbero\JsonParser\Exceptions;
 use Exception;
 
 /**
- * The syntax exception.
+ * The exception thrown when the JSON syntax is not valid.
  *
  */
 final class SyntaxException extends Exception implements JsonParserException
@@ -18,6 +18,6 @@ final class SyntaxException extends Exception implements JsonParserException
      */
     public function __construct(public string $value, public int $position)
     {
-        parent::__construct("Syntax error: unexpected [$value] at position {$position}");
+        parent::__construct("Syntax error: unexpected '$value' at position {$position}");
     }
 }

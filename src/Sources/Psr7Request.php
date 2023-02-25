@@ -27,7 +27,7 @@ class Psr7Request extends Source
      * Retrieve the JSON fragments
      *
      * @return Traversable<int, string>
-     * @throws \Cerbero\JsonParser\Exceptions\SourceException
+     * @throws \Cerbero\JsonParser\Exceptions\GuzzleRequiredException
      */
     public function getIterator(): Traversable
     {
