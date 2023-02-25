@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser\Concerns;
 
-use Cerbero\JsonParser\Exceptions\SourceException;
+use Cerbero\JsonParser\Exceptions\GuzzleRequiredException;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
@@ -18,13 +18,23 @@ trait GuzzleAware
      * Abort if Guzzle is not loaded
      *
      * @return void
-     * @throws SourceException
+     * @throws GuzzleRequiredException
      */
     protected function requireGuzzle(): void
     {
-        if (!class_exists(Client::class)) {
-            throw SourceException::requireGuzzle();
+        if (!$this->guzzleIsInstalled()) {
+            throw new GuzzleRequiredException();
         }
+    }
+
+    /**
+     * Determine whether Guzzle is installed
+     *
+     * @return bool
+     */
+    protected function guzzleIsInstalled(): bool
+    {
+        return class_exists(Client::class);
     }
 
     /**
