@@ -2,11 +2,15 @@
 
 namespace Cerbero\JsonParser;
 
+use Cerbero\JsonParser\Decoders\DecodedValue;
+use Cerbero\JsonParser\Sources\Endpoint;
+use Cerbero\JsonParser\Sources\Psr7Request;
 use DirectoryIterator;
 use Generator;
+use Mockery;
 
 /**
- * The datasets entry-point.
+ * The dataset provider.
  *
  */
 class Dataset
@@ -85,6 +89,56 @@ class Dataset
             foreach ($valueByPointers as $pointers => $value) {
                 yield [$json, explode(',', $pointers), $value];
             }
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test syntax errors
+     *
+     * @return Generator
+     */
+    public static function forSyntaxErrors(): Generator
+    {
+        yield from require fixture('errors/syntax.php');
+    }
+
+    /**
+     * Retrieve the dataset to test decoding errors patching
+     *
+     * @return Generator
+     */
+    public static function forDecodingErrorsPatching(): Generator
+    {
+        $patches = [null, 'baz', 123];
+        $json = '[1a, ""b, "foo", 3.1c4, falsed, null, [1, 2e], {"bar": 1, "baz"f: 2}]';
+        $patchJson = fn (mixed $patch) => [$patch, $patch, 'foo', $patch, $patch, null, $patch, $patch];
+
+        foreach ($patches as $patch) {
+            yield [$json, $patch, $patchJson($patch)];
+        }
+
+        $patch = fn (DecodedValue $decoded) => strrev($decoded->json);
+        $patched = ['a1', 'b""', 'foo', '4c1.3', 'deslaf', null, ']e2,1[', '}2:f"zab",1:"rab"{'];
+
+        yield [$json, fn () => $patch, $patched];
+    }
+
+    /**
+     * Retrieve the dataset to test sources requiring Guzzle
+     *
+     * @return Generator
+     */
+    public static function forSourcesRequiringGuzzle(): Generator
+    {
+        $sources = [Endpoint::class, Psr7Request::class];
+
+        foreach ($sources as $source) {
+            yield Mockery::mock($source)
+                ->makePartial()
+                ->shouldAllowMockingProtectedMethods()
+                ->shouldReceive('guzzleIsInstalled')
+                ->andReturn(false)
+                ->getMock();
         }
     }
 }
