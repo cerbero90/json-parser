@@ -31,6 +31,7 @@ composer require cerbero/json-parser
 * [⚙️ Decoders](#-decoders)
 * [💢 Errors](#-errors)
 * [⏳ Progress](#-progress)
+* [🛠 Settings](#-settings)
 
 
 ### 👣 Basics
@@ -395,6 +396,15 @@ $json->progress()->total(); // null
 $json->progress()->fraction(); // null
 $json->progress()->percentage(); // null
 $json->progress()->format(); // null
+```
+
+
+### 🛠 Settings
+
+JSON Parser also provides other settings to fine-tune the parsing process. For example we can set the number of bytes to read when parsing JSON strings or streams:
+
+```php
+$json = JsonParser::parse($source)->bytes(1024 * 16); // read JSON chunks of 16KB
 ```
 
 ## 📆 Change log
