@@ -19,11 +19,23 @@ abstract class Token implements Stringable
     protected string $value;
 
     /**
-     * Retrieve the token type
+     * Mutate the given state
      *
-     * @return int
+     * @param State $state
+     * @return void
      */
-    abstract public function type(): int;
+    abstract public function mutateState(State $state): void;
+
+    /**
+     * Determine whether this token matches the given type
+     *
+     * @param int $type
+     * @return bool
+     */
+    public function matches(int $type): bool
+    {
+        return (Tokens::TYPES[$this->value[0]] & $type) != 0;
+    }
 
     /**
      * Set the token value
@@ -45,18 +57,7 @@ abstract class Token implements Stringable
      */
     public function isValue(): bool
     {
-        return ($this->type() | Tokens::VALUE_ANY) == Tokens::VALUE_ANY;
-    }
-
-    /**
-     * Mutate the given state
-     *
-     * @param State $state
-     * @return void
-     */
-    public function mutateState(State $state): void
-    {
-        return;
+        return (Tokens::TYPES[$this->value[0]] | Tokens::VALUE_ANY) == Tokens::VALUE_ANY;
     }
 
     /**

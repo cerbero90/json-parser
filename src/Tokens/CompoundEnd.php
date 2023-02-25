@@ -11,16 +11,6 @@ use Cerbero\JsonParser\State;
 final class CompoundEnd extends Token
 {
     /**
-     * Retrieve the token type
-     *
-     * @return int
-     */
-    public function type(): int
-    {
-        return Tokens::COMPOUND_END;
-    }
-
-    /**
      * Mutate the given state
      *
      * @param State $state
@@ -29,6 +19,8 @@ final class CompoundEnd extends Token
     public function mutateState(State $state): void
     {
         $state->tree()->emerge();
+
+        $state->expectedToken = $state->tree()->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
     }
 
     /**

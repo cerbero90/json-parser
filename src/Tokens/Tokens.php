@@ -67,19 +67,19 @@ final class Tokens
      * @var array<string, bool>
      */
     public const BOUNDARIES = [
-        "\xEF" => true,
-        "\xBB" => true,
-        "\xBF" => true,
-        "\n" => true,
-        "\r" => true,
-        "\t" => true,
-        ' ' => true,
         '{' => true,
         '}' => true,
         '[' => true,
         ']' => true,
-        ':' => true,
         ',' => true,
+        ':' => true,
+        ' ' => true,
+        "\n" => true,
+        "\r" => true,
+        "\t" => true,
+        "\xEF" => true,
+        "\xBB" => true,
+        "\xBF" => true,
     ];
 
     /**
@@ -92,8 +92,8 @@ final class Tokens
         '}' => true,
         '[' => true,
         ']' => true,
-        ':' => true,
         ',' => true,
+        ':' => true,
     ];
 
     /**
@@ -107,7 +107,7 @@ final class Tokens
         self::ARRAY_BEGIN => CompoundBegin::class,
         self::OBJECT_END => CompoundEnd::class,
         self::ARRAY_END => CompoundEnd::class,
-        self::COLON => Constant::class,
+        self::COLON => Colon::class,
         self::SCALAR_CONST => Constant::class,
         self::SCALAR_STRING => ScalarString::class,
     ];

@@ -18,16 +18,6 @@ final class ScalarString extends Token
     private bool $isKey = false;
 
     /**
-     * Retrieve the token type
-     *
-     * @return int
-     */
-    public function type(): int
-    {
-        return Tokens::SCALAR_STRING;
-    }
-
-    /**
      * Mutate the given state
      *
      * @param State $state
@@ -37,7 +27,11 @@ final class ScalarString extends Token
     {
         if ($this->isKey = $state->expectsKey) {
             $state->expectsKey = false;
+            $state->expectedToken = Tokens::COLON;
+            return;
         }
+
+        $state->expectedToken = $state->tree()->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
     }
 
     /**

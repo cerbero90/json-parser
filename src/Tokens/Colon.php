@@ -5,10 +5,10 @@ namespace Cerbero\JsonParser\Tokens;
 use Cerbero\JsonParser\State;
 
 /**
- * The comma token.
+ * The colon token.
  *
  */
-final class Comma extends Token
+final class Colon extends Token
 {
     /**
      * Mutate the given state
@@ -18,7 +18,6 @@ final class Comma extends Token
      */
     public function mutateState(State $state): void
     {
-        $state->expectsKey = $state->tree()->inObject();
-        $state->expectedToken = $state->expectsKey ? Tokens::SCALAR_STRING : Tokens::VALUE_ANY;
+        $state->expectedToken = Tokens::VALUE_ANY;
     }
 }

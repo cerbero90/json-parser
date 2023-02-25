@@ -2,20 +2,23 @@
 
 namespace Cerbero\JsonParser\Tokens;
 
+use Cerbero\JsonParser\State;
+
 /**
- * The constant token, includes colons for convenience.
+ * The constant token.
  *
  */
 final class Constant extends Token
 {
     /**
-     * Retrieve the token type
+     * Mutate the given state
      *
-     * @return int
+     * @param State $state
+     * @return void
      */
-    public function type(): int
+    public function mutateState(State $state): void
     {
-        return $this->value == ':' ? Tokens::COLON : Tokens::SCALAR_CONST;
+        $state->expectedToken = $state->tree()->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
     }
 
     /**
@@ -25,6 +28,6 @@ final class Constant extends Token
      */
     public function endsChunk(): bool
     {
-        return $this->value != ':';
+        return true;
     }
 }
