@@ -25,11 +25,25 @@ final class Tree
     private array $wildcarded = [];
 
     /**
+     * Whether a depth is within an object.
+     *
+     * @var array<int, bool>
+     */
+    private array $inObjectByDepth = [];
+
+    /**
      * The JSON tree depth.
      *
      * @var int
      */
     private int $depth = -1;
+
+    /**
+     * Whether the tree changed.
+     *
+     * @var bool
+     */
+    public bool $changed = false;
 
     /**
      * Retrieve the original JSON tree
@@ -52,6 +66,16 @@ final class Tree
     }
 
     /**
+     * Determine whether the current depth is within an object
+     *
+     * @return bool
+     */
+    public function inObject(): bool
+    {
+        return $this->inObjectByDepth[$this->depth] ?? false;
+    }
+
+    /**
      * Retrieve the JSON tree depth
      *
      * @return int
@@ -62,13 +86,15 @@ final class Tree
     }
 
     /**
-     * Increase the tree depth
+     * Increase the tree depth by entering an object or an array
      *
+     * @param bool $inObject
      * @return void
      */
-    public function deepen(): void
+    public function deepen(bool $inObject): void
     {
         $this->depth++;
+        $this->inObjectByDepth[$this->depth] = $inObject;
     }
 
     /**
@@ -93,6 +119,7 @@ final class Tree
 
         $this->original[$this->depth] = $trimmedKey;
         $this->wildcarded[$this->depth] = $trimmedKey;
+        $this->changed = true;
     }
 
     /**
@@ -108,8 +135,9 @@ final class Tree
 
         $this->original[$this->depth] = is_int($index) ? $index + 1 : 0;
         $this->wildcarded[$this->depth] = $referenceToken == '-' ? '-' : $this->original[$this->depth];
+        $this->changed = true;
 
-        if (count($this->original) > $this->depth) {
+        if (count($this->original) > $this->depth + 1) {
             array_splice($this->original, $this->depth + 1);
             array_splice($this->wildcarded, $this->depth + 1);
         }

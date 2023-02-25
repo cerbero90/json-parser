@@ -5,8 +5,7 @@ namespace Cerbero\JsonParser;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
-
-use function is_string;
+use Cerbero\JsonParser\Tokens\Tokens;
 
 /**
  * The JSON parsing state.
@@ -50,6 +49,13 @@ final class State
     public bool $expectsKey = false;
 
     /**
+     * The expected token.
+     *
+     * @var int
+     */
+    public int $expectedToken = Tokens::COMPOUND_BEGIN;
+
+    /**
      * Instantiate the class.
      *
      */
@@ -88,19 +94,6 @@ final class State
     public function key(): string|int
     {
         return $this->tree->currentKey();
-    }
-
-    /**
-     * Determine whether the current position is within an object
-     *
-     * @return bool
-     */
-    public function inObject(): bool
-    {
-        $tree = $this->tree->original();
-        $depth = $this->tree->depth();
-
-        return is_string($tree[$depth] ?? null);
     }
 
     /**
@@ -146,20 +139,16 @@ final class State
      */
     public function mutateByToken(Token $token): void
     {
-        $treeChanged = false;
+        $this->tree->changed = false;
         $shouldTrackTree = $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
-
-        if ($shouldTrackTree && $token->isValue() && !$this->inObject()) {
-            $this->tree->traverseArray($this->pointer->referenceTokens());
-            $treeChanged = true;
-        }
 
         if ($shouldTrackTree && $this->expectsKey) {
             $this->tree->traverseKey($token);
-            $treeChanged = true;
+        } elseif ($shouldTrackTree && $token->isValue() && !$this->tree->inObject()) {
+            $this->tree->traverseArray($this->pointer->referenceTokens());
         }
 
-        if ($treeChanged && $this->pointers->count() > 1) {
+        if ($this->tree->changed && $this->pointers->count() > 1) {
             $this->pointer = $this->pointers->matchTree($this->tree);
         }
 
