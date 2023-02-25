@@ -2,8 +2,10 @@
 
 namespace Cerbero\JsonParser;
 
+use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
+use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Sources\AnySource;
 use Closure;
@@ -60,7 +62,11 @@ final class JsonParser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        return $this->parser;
+        try {
+            yield from $this->parser;
+        } catch (SyntaxException $e) {
+            call_user_func($this->config->onSyntaxError, $e);
+        }
     }
 
     /**
@@ -155,24 +161,40 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Silence errors while parsing
+     * Set the patch to apply during a decoding error
      *
+     * @param mixed $patch
      * @return static
      */
-    public function ignoreErrors(): static
+    public function patchDecodingError(mixed $patch = null): static
     {
-        return $this->onError(fn () => true);
+        return $this->onDecodingError(function (DecodedValue $decoded) use ($patch) {
+            $decoded->value = is_callable($patch) ? $patch($decoded) : $patch;
+        });
     }
 
     /**
-     * Set the logic to run during parsing errors
+     * Set the logic to run during a decoding error
      *
      * @param Closure $callback
      * @return static
      */
-    public function onError(Closure $callback): static
+    public function onDecodingError(Closure $callback): static
     {
-        $this->config->onError = $callback;
+        $this->config->onDecodingError = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Set the logic to run during a syntax error
+     *
+     * @param Closure $callback
+     * @return static
+     */
+    public function onSyntaxError(Closure $callback): static
+    {
+        $this->config->onSyntaxError = $callback;
 
         return $this;
     }

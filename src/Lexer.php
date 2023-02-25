@@ -2,6 +2,7 @@
 
 namespace Cerbero\JsonParser;
 
+use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Sources\Source;
 use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Tokenizer;
@@ -30,7 +31,7 @@ final class Lexer implements IteratorAggregate
      *
      * @var int
      */
-    private int $position = 0;
+    private int $position = 1;
 
     /**
      * Instantiate the class.
@@ -59,22 +60,37 @@ final class Lexer implements IteratorAggregate
                     || ($character != '"' && $inString)
                     || ($character == '"' && !$inString);
                 $isEscaping = $character == '\\' && !$isEscaping;
+                $shouldBuffer = $inString || !isset(Tokens::BOUNDARIES[$character]);
 
-                if ($inString || !isset(Tokens::BOUNDARIES[$character])) {
+                if ($shouldBuffer && $buffer == '' && !isset(Tokens::TYPES[$character])) {
+                    throw new SyntaxException($character, $this->position);
+                }
+
+                if ($shouldBuffer) {
                     $buffer .= $character;
                     continue;
                 }
 
                 if ($buffer != '') {
-                    yield Tokenizer::instance()->toToken($buffer, $this->position);
+                    yield Tokenizer::instance()->toToken($buffer);
                     $buffer = '';
                 }
 
                 if (isset(Tokens::DELIMITERS[$character])) {
-                    yield Tokenizer::instance()->toToken($character, $this->position);
+                    yield Tokenizer::instance()->toToken($character);
                 }
             }
         }
+    }
+
+    /**
+     * Retrieve the current position
+     *
+     * @return int
+     */
+    public function position(): int
+    {
+        return $this->position;
     }
 
     /**

@@ -36,7 +36,7 @@ final class ConfigurableDecoder
         $decoded = $this->config->decoder->decode($value);
 
         if (!$decoded->succeeded) {
-            call_user_func($this->config->onError, $decoded);
+            call_user_func($this->config->onDecodingError, $decoded);
         }
 
         return $decoded->value;

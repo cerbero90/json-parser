@@ -5,6 +5,8 @@ namespace Cerbero\JsonParser;
 use Cerbero\JsonParser\Decoders\JsonDecoder;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
+use Cerbero\JsonParser\Exceptions\DecodingException;
+use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Closure;
 
@@ -36,11 +38,18 @@ final class Config
     public int $bytes = 1024 * 8;
 
     /**
-     * The callback to run during a parsing error.
+     * The callback to run during a decoding error.
      *
      * @var Closure
      */
-    public Closure $onError;
+    public Closure $onDecodingError;
+
+    /**
+     * The callback to run during a syntax error.
+     *
+     * @var Closure
+     */
+    public Closure $onSyntaxError;
 
     /**
      * Instantiate the class
@@ -49,6 +58,7 @@ final class Config
     public function __construct()
     {
         $this->decoder = new JsonDecoder();
-        $this->onError = fn (DecodedValue $decoded) => throw $decoded->exception;
+        $this->onDecodingError = fn (DecodedValue $decoded) => throw new DecodingException($decoded);
+        $this->onSyntaxError = fn (SyntaxException $e) => throw $e;
     }
 }

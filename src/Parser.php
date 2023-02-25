@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Decoders\ConfigurableDecoder;
+use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Sources\Source;
 use IteratorAggregate;
 use Traversable;
@@ -61,6 +62,10 @@ final class Parser implements IteratorAggregate
         $this->state->setPointers(...$this->config->pointers);
 
         foreach ($this->lexer as $token) {
+            if (!$token->matches($this->state->expectedToken)) {
+                throw new SyntaxException($token, $this->lexer->position());
+            }
+
             $this->state->mutateByToken($token);
 
             if (!$token->endsChunk() || $this->state->treeIsDeep()) {
