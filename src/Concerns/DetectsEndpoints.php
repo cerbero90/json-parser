@@ -17,7 +17,7 @@ trait DetectsEndpoints
      * @param string $value
      * @return bool
      */
-    public function isEndpoint(string $value): bool
+    protected function isEndpoint(string $value): bool
     {
         return is_array($url = parse_url($value))
             && in_array($url['scheme'] ?? null, ['http', 'https'])
