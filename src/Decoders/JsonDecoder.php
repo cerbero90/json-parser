@@ -12,8 +12,9 @@ final class JsonDecoder extends AbstractDecoder
      * Instantiate the class.
      *
      * @param bool $decodesToArray
+     * @param int $depth
      */
-    public function __construct(private bool $decodesToArray = true)
+    public function __construct(private bool $decodesToArray = true, private int $depth = 512)
     {
     }
 
@@ -26,6 +27,6 @@ final class JsonDecoder extends AbstractDecoder
      */
     protected function decodeJson(string $json): mixed
     {
-        return json_decode($json, $this->decodesToArray, flags: JSON_THROW_ON_ERROR);
+        return json_decode($json, $this->decodesToArray, $this->depth, JSON_THROW_ON_ERROR);
     }
 }
