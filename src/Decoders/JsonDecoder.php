@@ -12,7 +12,7 @@ final class JsonDecoder extends AbstractDecoder
      * Instantiate the class.
      *
      * @param bool $decodesToArray
-     * @param int $depth
+     * @param int<1, max> $depth
      */
     public function __construct(private bool $decodesToArray = true, private int $depth = 512)
     {
