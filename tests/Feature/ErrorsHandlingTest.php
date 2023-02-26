@@ -25,7 +25,7 @@ it('lets the user handle syntax errors', function () {
 
 it('throws a decoding exception if unable to decode a JSON fragment', function () {
     JsonParser::parse(fixture('errors/decoding.json'))->traverse();
-})->throws(DecodingException::class, 'Decoding error: Syntax error');
+})->throws(DecodingException::class, 'Decoding error: Problem while parsing a number');
 
 it('lets the user handle decoding errors', function () {
     $decodingErrors = [];
