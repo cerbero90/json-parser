@@ -48,7 +48,17 @@ class Endpoint extends Source
     {
         $this->requireGuzzle();
 
-        return $this->response ??= $this->getJson($this->source);
+        return $this->response ??= $this->fetchResponse();
+    }
+
+    /**
+     * Retrieve the fetched HTTP response
+     *
+     * @return ResponseInterface
+     */
+    protected function fetchResponse(): ResponseInterface
+    {
+        return $this->getJson($this->source);
     }
 
     /**
