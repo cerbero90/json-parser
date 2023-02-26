@@ -28,7 +28,7 @@ composer require cerbero/json-parser
 * [👣 Basics](#-basics)
 * [💧 Sources](#-sources)
 * [🎯 Pointers](#-pointers)
-* [⚙️ Decoders](#-decoders)
+* [⚙️ Decoders](#%EF%B8%8F-decoders)
 * [💢 Errors](#-errors)
 * [⏳ Progress](#-progress)
 * [🛠 Settings](#-settings)
@@ -258,15 +258,7 @@ use Cerbero\JsonParser\Decoders\JsonDecoder;
 JsonParser::parse($source)->decoder(new JsonDecoder(decodesToArray: false));
 ```
 
-JSON Parser also provides a convenient method to set the [simdjson](https://github.com/crazyxman/simdjson_php#simdjson_php) decoder:
-
-```php
-JsonParser::parse($source)->simdjson(); // decode JSON to associative arrays using simdjson
-
-JsonParser::parse($source)->simdjson(decodesToArray: false); // decode JSON to objects using simdjson
-```
-
-[Simdjson is faster](https://github.com/crazyxman/simdjson_php/tree/master/benchmark#run-phpbench-benchmark) than `json_decode()` and can be installed via `pecl install simdjson` if your server satisfies the [requirements](https://github.com/crazyxman/simdjson_php#requirement).
+The [simdjson extension](https://github.com/crazyxman/simdjson_php#simdjson_php) offers a decoder [faster](https://github.com/crazyxman/simdjson_php/tree/master/benchmark#run-phpbench-benchmark) than `json_decode()` that can be installed via `pecl install simdjson` if your server satisfies the [requirements](https://github.com/crazyxman/simdjson_php#requirement). JSON Parser leverages the simdjson decoder by default if the extension is loaded.
 
 If we need a decoder that is not supported by default, we can implement our custom one.
 
