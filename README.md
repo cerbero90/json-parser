@@ -78,7 +78,7 @@ JsonParser::parse($source)->traverse(function (mixed $value, string|int $key, Js
 
 ### 💧 Sources
 
-A wide range of JSON sources is supported, here is the full list:
+A JSON source is any data point that provides a JSON. A wide range of sources is supported by default:
 - **strings**, e.g. `{"foo":"bar"}`
 - **iterables**, i.e. arrays or instances of `Traversable`
 - **file paths**, e.g. `/path/to/large.json`
@@ -87,6 +87,7 @@ A wide range of JSON sources is supported, here is the full list:
 - **PSR-7 requests**, i.e. any instance of `Psr\Http\Message\RequestInterface`
 - **PSR-7 messages**, i.e. any instance of `Psr\Http\Message\MessageInterface`
 - **PSR-7 streams**, i.e. any instance of `Psr\Http\Message\StreamInterface`
+- **Laravel HTTP client requests**, i.e. any instance of `Illuminate\Http\Client\Request`
 - **Laravel HTTP client responses**, i.e. any instance of `Illuminate\Http\Client\Response`
 - **user-defined sources**, i.e. any instance of `Cerbero\JsonParser\Sources\Source`
 
