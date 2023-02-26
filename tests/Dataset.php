@@ -13,7 +13,7 @@ use Mockery;
  * The dataset provider.
  *
  */
-class Dataset
+final class Dataset
 {
     /**
      * Retrieve the dataset to test parsing
@@ -139,6 +139,24 @@ class Dataset
                 ->shouldReceive('guzzleIsInstalled')
                 ->andReturn(false)
                 ->getMock();
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test decoders
+     *
+     * @return Generator
+     */
+    public static function forDecoders(): Generator
+    {
+        $json = '{"foo":"bar"}';
+        $values = [
+            true => ['foo' => 'bar'],
+            false => (object) ['foo' => 'bar'],
+        ];
+
+        foreach ([true, false] as $decodesToArray) {
+            yield [$decodesToArray, $json, $values[$decodesToArray]];
         }
     }
 }
