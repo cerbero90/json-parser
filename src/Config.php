@@ -5,6 +5,7 @@ namespace Cerbero\JsonParser;
 use Cerbero\JsonParser\Decoders\JsonDecoder;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
+use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
 use Cerbero\JsonParser\Exceptions\DecodingException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Pointers\Pointer;
@@ -57,7 +58,7 @@ final class Config
      */
     public function __construct()
     {
-        $this->decoder = new JsonDecoder();
+        $this->decoder = extension_loaded('simdjson') ? new SimdjsonDecoder() : new JsonDecoder();
         $this->onDecodingError = fn (DecodedValue $decoded) => throw new DecodingException($decoded);
         $this->onSyntaxError = fn (SyntaxException $e) => throw $e;
     }
