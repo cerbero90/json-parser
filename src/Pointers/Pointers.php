@@ -103,12 +103,15 @@ final class Pointers
     }
 
     /**
-     * Determine whether all pointers were found within the JSON
+     * Determine whether all pointers were found in the given tree
      *
+     * @param Tree $tree
      * @return bool
      */
-    public function wereFound(): bool
+    public function wereFoundInTree(Tree $tree): bool
     {
-        return count($this->pointers) == count($this->found) && !empty($this->pointers);
+        return count($this->pointers) == count($this->found)
+            && !empty($this->pointers)
+            && !$this->matching->includesTree($tree);
     }
 }

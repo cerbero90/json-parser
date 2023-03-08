@@ -2,7 +2,6 @@
 
 namespace Cerbero\JsonParser;
 
-use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Tokens;
@@ -62,18 +61,6 @@ final class State
     }
 
     /**
-     * Determine whether the tree is deep
-     *
-     * @return bool
-     */
-    public function treeIsDeep(): bool
-    {
-        return $this->pointers->matching() == ''
-            ? $this->tree->depth() > $this->pointers->matching()->depth()
-            : $this->tree->depth() >= $this->pointers->matching()->depth();
-    }
-
-    /**
      * Retrieve the current key of the JSON tree
      *
      * @return string|int
@@ -90,7 +77,7 @@ final class State
      */
     public function canStopParsing(): bool
     {
-        return $this->pointers->wereFound() && !$this->pointers->matching()->includesTree($this->tree);
+        return $this->pointers->wereFoundInTree($this->tree);
     }
 
     /**
@@ -113,8 +100,7 @@ final class State
      */
     public function mutateByToken(Token $token): void
     {
-        $pointer = $this->pointers->matching();
-        $shouldTrackTree = $pointer == '' || $this->tree->depth() < $pointer->depth();
+        $shouldTrackTree = $this->tree->shouldBeTracked();
 
         if ($shouldTrackTree && $this->expectsKey) {
             $this->tree->traverseKey($token);
@@ -122,11 +108,7 @@ final class State
             $this->tree->traverseArray();
         }
 
-        $shouldBuffer = $this->tree->depth() >= 0
-            && $this->pointers->matching()->matchesTree($this->tree)
-            && ((!$this->expectsKey && $token->isValue()) || $this->treeIsDeep());
-
-        if ($shouldBuffer) {
+        if ($this->tree->isMatched() && ((!$this->expectsKey && $token->isValue()) || $this->tree->isDeep())) {
             $this->buffer .= $token;
             $this->pointers->markAsFound();
         }

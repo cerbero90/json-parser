@@ -112,6 +112,40 @@ final class Tree
     }
 
     /**
+     * Determine whether the tree is deep
+     *
+     * @return bool
+     */
+    public function isDeep(): bool
+    {
+        $pointer = $this->pointers->matching();
+
+        return $pointer == '' ? $this->depth > $pointer->depth() : $this->depth >= $pointer->depth();
+    }
+
+    /**
+     * Determine whether the tree should be tracked
+     *
+     * @return bool
+     */
+    public function shouldBeTracked(): bool
+    {
+        $pointer = $this->pointers->matching();
+
+        return $pointer == '' || $this->depth() < $pointer->depth();
+    }
+
+    /**
+     * Determine whether the tree is matched by the JSON pointer
+     *
+     * @return bool
+     */
+    public function isMatched(): bool
+    {
+        return $this->depth >= 0 && $this->pointers->matching()->matchesTree($this);
+    }
+
+    /**
      * Traverse the given object key
      *
      * @param string $key

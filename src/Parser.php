@@ -60,7 +60,7 @@ final class Parser implements IteratorAggregate
 
             $state->mutateByToken($token);
 
-            if (!$token->endsChunk() || $state->treeIsDeep()) {
+            if (!$token->endsChunk() || $state->tree()->isDeep()) {
                 continue;
             }
 
