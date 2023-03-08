@@ -37,11 +37,11 @@ final class Parser implements IteratorAggregate
      * Instantiate the class statically
      *
      * @param Source $source
-     * @return static
+     * @return self
      */
-    public static function for(Source $source): static
+    public static function for(Source $source): self
     {
-        return new static(new Lexer($source), $source->config());
+        return new self(new Lexer($source), $source->config());
     }
 
     /**

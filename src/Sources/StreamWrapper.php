@@ -47,7 +47,7 @@ final class StreamWrapper
     {
         $options = stream_context_get_options($this->context);
 
-        $this->stream = $options[static::NAME]['stream'] ?? null;
+        $this->stream = $options[self::NAME]['stream'] ?? null;
 
         return $this->stream instanceof StreamInterface && $this->stream->isReadable();
     }

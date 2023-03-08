@@ -29,11 +29,11 @@ final class DecodedValue
      * Retrieve a successfully decoded value
      *
      * @param mixed $value
-     * @return static
+     * @return self
      */
-    public static function succeeded(mixed $value): static
+    public static function succeeded(mixed $value): self
     {
-        return new static(true, $value);
+        return new self(true, $value);
     }
 
     /**
@@ -41,10 +41,10 @@ final class DecodedValue
      *
      * @param Throwable $e
      * @param string $json
-     * @return static
+     * @return self
      */
-    public static function failed(Throwable $e, string $json): static
+    public static function failed(Throwable $e, string $json): self
     {
-        return new static(false, null, $e->getMessage(), $e->getCode(), $e, $json);
+        return new self(false, null, $e->getMessage(), $e->getCode(), $e, $json);
     }
 }

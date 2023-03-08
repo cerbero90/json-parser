@@ -11,7 +11,7 @@ final class Tokenizer
     /**
      * The singleton instance.
      *
-     * @var static
+     * @var self
      */
     private static self $instance;
 
@@ -25,11 +25,11 @@ final class Tokenizer
     /**
      * Retrieve the singleton instance
      *
-     * @return static
+     * @return self
      */
-    public static function instance(): static
+    public static function instance(): self
     {
-        return static::$instance ??= new static();
+        return self::$instance ??= new self();
     }
 
     /**

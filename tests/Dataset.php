@@ -22,7 +22,7 @@ final class Dataset
      */
     public static function forParsing(): Generator
     {
-        foreach (static::fixtures() as $fixture) {
+        foreach (self::fixtures() as $fixture) {
             $name = $fixture->getBasename('.json');
 
             yield [

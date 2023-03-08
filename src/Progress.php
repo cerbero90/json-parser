@@ -28,9 +28,9 @@ final class Progress
      * Set the current progress
      *
      * @param int $current
-     * @return static
+     * @return self
      */
-    public function setCurrent(int $current): static
+    public function setCurrent(int $current): self
     {
         $this->current = $current;
 
@@ -51,9 +51,9 @@ final class Progress
      * Set the total possible progress
      *
      * @param int|null $total
-     * @return static
+     * @return self
      */
-    public function setTotal(?int $total): static
+    public function setTotal(?int $total): self
     {
         $this->total ??= $total;
 

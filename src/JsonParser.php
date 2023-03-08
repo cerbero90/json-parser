@@ -47,11 +47,11 @@ final class JsonParser implements IteratorAggregate
      * Statically instantiate the class
      *
      * @param mixed $source
-     * @return static
+     * @return self
      */
-    public static function parse(mixed $source): static
+    public static function parse(mixed $source): self
     {
-        return new static($source);
+        return new self($source);
     }
 
     /**
@@ -72,9 +72,9 @@ final class JsonParser implements IteratorAggregate
      * Set the JSON pointers
      *
      * @param string[]|array<string, Closure> $pointers
-     * @return static
+     * @return self
      */
-    public function pointers(array $pointers): static
+    public function pointers(array $pointers): self
     {
         foreach ($pointers as $pointer => $callback) {
             $callback instanceof Closure ? $this->pointer($pointer, $callback) : $this->pointer($callback);
@@ -88,9 +88,9 @@ final class JsonParser implements IteratorAggregate
      *
      * @param string $pointer
      * @param Closure|null $callback
-     * @return static
+     * @return self
      */
-    public function pointer(string $pointer, Closure $callback = null): static
+    public function pointer(string $pointer, Closure $callback = null): self
     {
         $this->config->pointers[] = new Pointer($pointer, $callback);
 
@@ -116,9 +116,9 @@ final class JsonParser implements IteratorAggregate
      * Set the JSON decoder
      *
      * @param Decoder $decoder
-     * @return static
+     * @return self
      */
-    public function decoder(Decoder $decoder): static
+    public function decoder(Decoder $decoder): self
     {
         $this->config->decoder = $decoder;
 
@@ -139,9 +139,9 @@ final class JsonParser implements IteratorAggregate
      * The number of bytes to read in each chunk
      *
      * @param int<1, max> $bytes
-     * @return static
+     * @return self
      */
-    public function bytes(int $bytes): static
+    public function bytes(int $bytes): self
     {
         $this->config->bytes = $bytes;
 
@@ -152,9 +152,9 @@ final class JsonParser implements IteratorAggregate
      * Set the patch to apply during a decoding error
      *
      * @param mixed $patch
-     * @return static
+     * @return self
      */
-    public function patchDecodingError(mixed $patch = null): static
+    public function patchDecodingError(mixed $patch = null): self
     {
         return $this->onDecodingError(function (DecodedValue $decoded) use ($patch) {
             $decoded->value = is_callable($patch) ? $patch($decoded) : $patch;
@@ -165,9 +165,9 @@ final class JsonParser implements IteratorAggregate
      * Set the logic to run during a decoding error
      *
      * @param Closure $callback
-     * @return static
+     * @return self
      */
-    public function onDecodingError(Closure $callback): static
+    public function onDecodingError(Closure $callback): self
     {
         $this->config->onDecodingError = $callback;
 
@@ -178,9 +178,9 @@ final class JsonParser implements IteratorAggregate
      * Set the logic to run during a syntax error
      *
      * @param Closure $callback
-     * @return static
+     * @return self
      */
-    public function onSyntaxError(Closure $callback): static
+    public function onSyntaxError(Closure $callback): self
     {
         $this->config->onSyntaxError = $callback;
 
