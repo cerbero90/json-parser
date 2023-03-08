@@ -17,3 +17,7 @@ it('supports single JSON pointers', function (string $json, string $pointer, arr
 it('supports multiple JSON pointers', function (string $json, array $pointers, array $parsed) {
     expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
 })->with(Dataset::forMultiplePointers());
+
+it('can intersect pointers with wildcards', function (string $json, array $pointers, array $parsed) {
+    expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
+})->with(Dataset::forIntersectingPointersWithWildcards());

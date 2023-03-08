@@ -2,6 +2,8 @@
 
 namespace Cerbero\JsonParser;
 
+use Cerbero\JsonParser\Pointers\Pointers;
+
 use function count;
 
 /**
@@ -39,11 +41,13 @@ final class Tree
     private int $depth = -1;
 
     /**
-     * Whether the tree changed.
+     * Instantiate the class.
      *
-     * @var bool
+     * @param Pointers $pointers
      */
-    public bool $changed = false;
+    public function __construct(private Pointers $pointers)
+    {
+    }
 
     /**
      * Retrieve the original JSON tree
@@ -119,26 +123,27 @@ final class Tree
 
         $this->original[$this->depth] = $trimmedKey;
         $this->wildcarded[$this->depth] = $trimmedKey;
-        $this->changed = true;
+        $this->pointers->matchTree($this);
     }
 
     /**
      * Traverse an array
      *
-     * @param string[] $referenceTokens
      * @return void
      */
-    public function traverseArray(array $referenceTokens): void
+    public function traverseArray(): void
     {
-        $referenceToken = $referenceTokens[$this->depth] ?? null;
         $index = $this->original[$this->depth] ?? null;
-
-        $this->original[$this->depth] = is_int($index) ? $index + 1 : 0;
-        $this->wildcarded[$this->depth] = $referenceToken == '-' ? '-' : $this->original[$this->depth];
-        $this->changed = true;
+        $this->original[$this->depth] = $index = is_int($index) ? $index + 1 : 0;
 
         if (count($this->original) > $this->depth + 1) {
             array_splice($this->original, $this->depth + 1);
+        }
+
+        $referenceTokens = $this->pointers->matchTree($this)->referenceTokens();
+        $this->wildcarded[$this->depth] = ($referenceTokens[$this->depth] ?? null) == '-' ? '-' : $index;
+
+        if (count($this->wildcarded) > $this->depth + 1) {
             array_splice($this->wildcarded, $this->depth + 1);
         }
     }

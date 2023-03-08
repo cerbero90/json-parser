@@ -28,13 +28,6 @@ final class State
     private Pointers $pointers;
 
     /**
-     * The JSON pointer matching the tree.
-     *
-     * @var Pointer
-     */
-    private Pointer $pointer;
-
-    /**
      * The JSON buffer.
      *
      * @var string
@@ -58,10 +51,12 @@ final class State
     /**
      * Instantiate the class.
      *
+     * @param Pointer ...$pointers
      */
-    public function __construct()
+    public function __construct(Pointer ...$pointers)
     {
-        $this->tree = new Tree();
+        $this->pointers = new Pointers(...$pointers);
+        $this->tree = new Tree($this->pointers);
     }
 
     /**
@@ -81,9 +76,9 @@ final class State
      */
     public function treeIsDeep(): bool
     {
-        return $this->pointer == ''
-            ? $this->tree->depth() > $this->pointer->depth()
-            : $this->tree->depth() >= $this->pointer->depth();
+        return $this->pointers->matching() == ''
+            ? $this->tree->depth() > $this->pointers->matching()->depth()
+            : $this->tree->depth() >= $this->pointers->matching()->depth();
     }
 
     /**
@@ -97,26 +92,13 @@ final class State
     }
 
     /**
-     * Set and match the given pointers
-     *
-     * @param Pointer ...$pointers
-     * @return void
-     */
-    public function setPointers(Pointer ...$pointers): void
-    {
-        $this->pointers = new Pointers(...$pointers ?: [new Pointer('')]);
-
-        $this->pointer = $this->pointers->matchTree($this->tree);
-    }
-
-    /**
      * Determine whether the parser can stop parsing
      *
      * @return bool
      */
     public function canStopParsing(): bool
     {
-        return $this->pointers->wereFound() && !$this->pointer->includesTree($this->tree);
+        return $this->pointers->wereFound() && !$this->pointers->matching()->includesTree($this->tree);
     }
 
     /**
@@ -128,7 +110,7 @@ final class State
      */
     public function callPointer(mixed $value, mixed $key): mixed
     {
-        return $this->pointer->call($value, $key);
+        return $this->pointers->matching()->call($value, $key);
     }
 
     /**
@@ -139,26 +121,21 @@ final class State
      */
     public function mutateByToken(Token $token): void
     {
-        $this->tree->changed = false;
-        $shouldTrackTree = $this->pointer == '' || $this->tree->depth() < $this->pointer->depth();
+        $shouldTrackTree = $this->pointers->matching() == '' || $this->tree->depth() < $this->pointers->matching()->depth();
 
         if ($shouldTrackTree && $this->expectsKey) {
             $this->tree->traverseKey($token);
         } elseif ($shouldTrackTree && $token->isValue() && !$this->tree->inObject()) {
-            $this->tree->traverseArray($this->pointer->referenceTokens());
-        }
-
-        if ($this->tree->changed && $this->pointers->count() > 1) {
-            $this->pointer = $this->pointers->matchTree($this->tree);
+            $this->tree->traverseArray();
         }
 
         $shouldBuffer = $this->tree->depth() >= 0
-            && $this->pointer->matchesTree($this->tree)
+            && $this->pointers->matching()->matchesTree($this->tree)
             && ((!$this->expectsKey && $token->isValue()) || $this->treeIsDeep());
 
         if ($shouldBuffer) {
             $this->buffer .= $token;
-            $this->pointers->markAsFound($this->pointer);
+            $this->pointers->markAsFound();
         }
 
         $token->mutateState($this);

@@ -16,13 +16,6 @@ use Traversable;
 final class Parser implements IteratorAggregate
 {
     /**
-     * The JSON parsing state.
-     *
-     * @var State
-     */
-    private State $state;
-
-    /**
      * The decoder handling potential errors.
      *
      * @var ConfigurableDecoder
@@ -37,7 +30,6 @@ final class Parser implements IteratorAggregate
      */
     public function __construct(private Lexer $lexer, private Config $config)
     {
-        $this->state = new State();
         $this->decoder = new ConfigurableDecoder($config);
     }
 
@@ -59,28 +51,28 @@ final class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        $this->state->setPointers(...$this->config->pointers);
+        $state = new State(...$this->config->pointers);
 
         foreach ($this->lexer as $token) {
-            if (!$token->matches($this->state->expectedToken)) {
+            if (!$token->matches($state->expectedToken)) {
                 throw new SyntaxException($token, $this->lexer->position());
             }
 
-            $this->state->mutateByToken($token);
+            $state->mutateByToken($token);
 
-            if (!$token->endsChunk() || $this->state->treeIsDeep()) {
+            if (!$token->endsChunk() || $state->treeIsDeep()) {
                 continue;
             }
 
-            if ($this->state->hasBuffer()) {
+            if ($state->hasBuffer()) {
                 /** @var string|int $key */
-                $key = $this->decoder->decode($this->state->key());
-                $value = $this->decoder->decode($this->state->value());
+                $key = $this->decoder->decode($state->key());
+                $value = $this->decoder->decode($state->value());
 
-                yield $key => $this->state->callPointer($value, $key);
+                yield $key => $state->callPointer($value, $key);
             }
 
-            if ($this->state->canStopParsing()) {
+            if ($state->canStopParsing()) {
                 break;
             }
         }

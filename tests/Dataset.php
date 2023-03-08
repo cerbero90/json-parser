@@ -93,6 +93,37 @@ final class Dataset
     }
 
     /**
+     * Retrieve the dataset to test intersecting pointers with wildcards
+     *
+     * @return Generator
+     */
+    public static function forIntersectingPointersWithWildcards(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+
+        $pointers = [
+            '/topping/6/type' => fn (string $value) => "$value @ /topping/6/type",
+            '/topping/-/type' => fn (string $value) => "$value @ /topping/-/type",
+            '/topping/0/type' => fn (string $value) => "$value @ /topping/0/type",
+            '/topping/2/type' => fn (string $value) => "$value @ /topping/2/type",
+        ];
+
+        $parsed = [
+            'type' => [
+                'None @ /topping/0/type',
+                'Glazed @ /topping/-/type',
+                'Sugar @ /topping/2/type',
+                'Powdered Sugar @ /topping/-/type',
+                'Chocolate with Sprinkles @ /topping/-/type',
+                'Chocolate @ /topping/-/type',
+                'Maple @ /topping/6/type',
+            ]
+        ];
+
+        yield [$json, $pointers, $parsed];
+    }
+
+    /**
      * Retrieve the dataset to test syntax errors
      *
      * @return Generator
