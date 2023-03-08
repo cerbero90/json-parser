@@ -121,7 +121,8 @@ final class State
      */
     public function mutateByToken(Token $token): void
     {
-        $shouldTrackTree = $this->pointers->matching() == '' || $this->tree->depth() < $this->pointers->matching()->depth();
+        $pointer = $this->pointers->matching();
+        $shouldTrackTree = $pointer == '' || $this->tree->depth() < $pointer->depth();
 
         if ($shouldTrackTree && $this->expectsKey) {
             $this->tree->traverseKey($token);
