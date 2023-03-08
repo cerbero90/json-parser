@@ -21,13 +21,6 @@ final class State
     private Tree $tree;
 
     /**
-     * The JSON pointers.
-     *
-     * @var Pointers
-     */
-    private Pointers $pointers;
-
-    /**
      * The JSON buffer.
      *
      * @var string
@@ -51,11 +44,10 @@ final class State
     /**
      * Instantiate the class.
      *
-     * @param Pointer ...$pointers
+     * @param Pointers $pointers
      */
-    public function __construct(Pointer ...$pointers)
+    public function __construct(private Pointers $pointers)
     {
-        $this->pointers = new Pointers(...$pointers);
         $this->tree = new Tree($this->pointers);
     }
 

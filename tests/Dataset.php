@@ -124,6 +124,59 @@ final class Dataset
     }
 
     /**
+     * Retrieve the dataset to test intersecting pointers
+     *
+     * @return Generator
+     */
+    public static function forIntersectingPointers(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+        $message = 'The pointers [%s] and [%s] are intersecting';
+        $pointersByIntersection = [
+            '/topping,/topping/0' => [
+                '/topping',
+                '/topping/0',
+            ],
+            '/topping/0,/topping' => [
+                '/topping/0',
+                '/topping',
+            ],
+            '/topping,/topping/-' => [
+                '/topping',
+                '/topping/-',
+            ],
+            '/topping/-,/topping' => [
+                '/topping/-',
+                '/topping',
+            ],
+            '/topping/0/type,/topping' => [
+                '/topping/0/type',
+                '/topping/-/type',
+                '/topping',
+            ],
+            '/topping,/topping/-/type' => [
+                '/topping',
+                '/topping/-/type',
+                '/topping/0/type',
+            ],
+            '/topping/-/type,/topping/-/type/baz' => [
+                '/topping/-/type',
+                '/topping/-/types',
+                '/topping/-/type/baz',
+            ],
+            '/topping/-/type/baz,/topping/-/type' => [
+                '/topping/-/type/baz',
+                '/topping/-/type',
+                '/topping/-/types',
+            ],
+        ];
+
+        foreach ($pointersByIntersection as $intersection => $pointers) {
+            yield [$json, $pointers, vsprintf($message, explode(',', $intersection))];
+        }
+    }
+
+    /**
      * Retrieve the dataset to test syntax errors
      *
      * @return Generator

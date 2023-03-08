@@ -1,6 +1,7 @@
 <?php
 
 use Cerbero\JsonParser\Dataset;
+use Cerbero\JsonParser\Exceptions\IntersectingPointersException;
 use Cerbero\JsonParser\Exceptions\InvalidPointerException;
 use Cerbero\JsonParser\JsonParser;
 
@@ -21,3 +22,8 @@ it('supports multiple JSON pointers', function (string $json, array $pointers, a
 it('can intersect pointers with wildcards', function (string $json, array $pointers, array $parsed) {
     expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
 })->with(Dataset::forIntersectingPointersWithWildcards());
+
+it('throws an exception when two pointers intersect', function (string $json, array $pointers, string $message) {
+    expect(fn () => JsonParser::parse($json)->pointers($pointers)->traverse())
+        ->toThrow(IntersectingPointersException::class, $message);
+})->with(Dataset::forIntersectingPointers());

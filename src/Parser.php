@@ -51,7 +51,7 @@ final class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        $state = new State(...$this->config->pointers);
+        $state = new State($this->config->pointers);
 
         foreach ($this->lexer as $token) {
             if (!$token->matches($state->expectedToken)) {

@@ -8,7 +8,7 @@ use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
 use Cerbero\JsonParser\Exceptions\DecodingException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
-use Cerbero\JsonParser\Pointers\Pointer;
+use Cerbero\JsonParser\Pointers\Pointers;
 use Closure;
 
 /**
@@ -27,9 +27,9 @@ final class Config
     /**
      * The JSON pointers.
      *
-     * @var Pointer[]
+     * @var Pointers
      */
-    public array $pointers = [];
+    public Pointers $pointers;
 
     /**
      * The number of bytes to read in each chunk.
@@ -59,6 +59,7 @@ final class Config
     public function __construct()
     {
         $this->decoder = extension_loaded('simdjson') ? new SimdjsonDecoder() : new JsonDecoder();
+        $this->pointers = new Pointers();
         $this->onDecodingError = fn (DecodedValue $decoded) => throw new DecodingException($decoded);
         $this->onSyntaxError = fn (SyntaxException $e) => throw $e;
     }

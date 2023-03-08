@@ -92,7 +92,7 @@ final class JsonParser implements IteratorAggregate
      */
     public function pointer(string $pointer, Closure $callback = null): self
     {
-        $this->config->pointers[] = new Pointer($pointer, $callback);
+        $this->config->pointers->add(new Pointer($pointer, $callback));
 
         return $this;
     }

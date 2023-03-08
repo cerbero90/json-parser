@@ -2,22 +2,23 @@
 
 namespace Cerbero\JsonParser\Pointers;
 
+use Cerbero\JsonParser\Exceptions\IntersectingPointersException;
 use Cerbero\JsonParser\Tree;
 
 use function count;
 
 /**
- * The JSON pointers collection.
+ * The JSON pointers aggregate.
  *
  */
 final class Pointers
 {
     /**
-     * The JSON pointers collection.
+     * The JSON pointers.
      *
      * @var Pointer[]
      */
-    private array $pointers;
+    private array $pointers = [];
 
     /**
      * The JSON pointer matching with the current tree.
@@ -34,14 +35,19 @@ final class Pointers
     private array $found = [];
 
     /**
-     * Instantiate the class.
+     * Add the given pointer
      *
-     * @param Pointer ...$pointers
+     * @param Pointer $pointer
      */
-    public function __construct(Pointer ...$pointers)
+    public function add(Pointer $pointer): void
     {
-        $this->pointers = $pointers;
-        $this->matching = $pointers[0] ?? new Pointer('');
+        foreach ($this->pointers as $existingPointer) {
+            if (str_starts_with($existingPointer, "$pointer/") || str_starts_with($pointer, "$existingPointer/")) {
+                throw new IntersectingPointersException($existingPointer, $pointer);
+            }
+        }
+
+        $this->pointers[] = $pointer;
     }
 
     /**
@@ -51,7 +57,7 @@ final class Pointers
      */
     public function matching(): Pointer
     {
-        return $this->matching;
+        return $this->matching ??= $this->pointers[0] ?? new Pointer('');
     }
 
     /**
