@@ -158,7 +158,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-JSON Parser takes advantage of the `-` character to point to any array index, so we can extract all the genders with the `/-/gender` pointer:
+JSON Parser takes advantage of the `-` wildcard to point to any array index, so we can extract all the genders with the `/-/gender` pointer:
 
 ```php
 $json = JsonParser::parse($source)->pointer('/-/gender');
@@ -185,7 +185,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-> ⚠️ Please avoid intersecting pointers (e.g. setting both `/foo` and `/foo/bar`) as the deeper pointer won't be found and will force the parser to parse the whole JSON.
+> ⚠️ Intersecting pointers like `/foo` and `/foo/bar` is not allowed but intersecting wildcards like `foo/-/bar` and `foo/0/bar` is possible.
 
 We can also specify a callback to execute when JSON pointers are found. This is handy when we have different pointers and we need to run custom logic for each of them:
 
@@ -361,6 +361,7 @@ For reference, here is a comprehensive table of all the exceptions thrown by thi
 |---|---|
 |`DecodingException`|a value in the JSON can't be decoded|
 |`GuzzleRequiredException`|Guzzle is not installed and the JSON source is an endpoint|
+|`IntersectingPointersException`|two JSON pointers intersect|
 |`InvalidPointerException`|a JSON pointer syntax is not valid|
 |`SyntaxException`|the JSON structure is not valid|
 |`UnsupportedSourceException`|a JSON source is not supported|
