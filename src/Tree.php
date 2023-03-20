@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointers;
+use Cerbero\JsonParser\Tokens\Token;
 
 use function count;
 
@@ -124,15 +125,23 @@ final class Tree
     }
 
     /**
-     * Determine whether the tree should be tracked
+     * Traverse the given token
      *
-     * @return bool
+     * @param Token $token
+     * @param bool $expectsKey
+     * @return void
      */
-    public function shouldBeTracked(): bool
+    public function traverseToken(Token $token, bool $expectsKey): void
     {
         $pointer = $this->pointers->matching();
 
-        return $pointer == '' || $this->depth() < $pointer->depth();
+        if ($pointer != '' && $this->depth >= $pointer->depth()) {
+            return;
+        } elseif ($expectsKey) {
+            $this->traverseKey($token);
+        } elseif ($token->isValue() && !$this->inObject()) {
+            $this->traverseArray();
+        }
     }
 
     /**
@@ -142,7 +151,11 @@ final class Tree
      */
     public function isMatched(): bool
     {
-        return $this->depth >= 0 && $this->pointers->matching()->matchesTree($this);
+        if ($isMatched = $this->depth >= 0 && $this->pointers->matching()->matchesTree($this)) {
+            $this->pointers->markAsFound();
+        }
+
+        return $isMatched;
     }
 
     /**
