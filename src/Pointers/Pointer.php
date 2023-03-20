@@ -50,9 +50,10 @@ final class Pointer implements Stringable
      * Instantiate the class.
      *
      * @param string $pointer
+     * @param bool $isLazy
      * @param Closure|null $callback
      */
-    public function __construct(private string $pointer, Closure $callback = null)
+    public function __construct(private string $pointer, private bool $isLazy = false, Closure $callback = null)
     {
         $this->referenceTokens = $this->toReferenceTokens();
         $this->depth = count($this->referenceTokens);
@@ -74,6 +75,16 @@ final class Pointer implements Stringable
         $referenceTokens = array_map(fn (string $token) => str_replace(['~1', '~0'], ['/', '~'], $token), $tokens);
 
         return array_slice($referenceTokens, 1);
+    }
+
+    /**
+     * Determine whether the pointer is lazy
+     *
+     * @return bool
+     */
+    public function isLazy(): bool
+    {
+        return $this->isLazy;
     }
 
     /**
@@ -148,6 +159,7 @@ final class Pointer implements Stringable
      */
     public function includesTree(Tree $tree): bool
     {
+        // if ($this->pointer == '' && !$this->isLazy) {
         if ($this->pointer == '') {
             return true;
         }

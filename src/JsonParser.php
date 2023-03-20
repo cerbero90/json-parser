@@ -64,6 +64,7 @@ final class JsonParser implements IteratorAggregate
         try {
             yield from $this->parser;
         } catch (SyntaxException $e) {
+            $e->setPosition($this->parser->position());
             call_user_func($this->config->onSyntaxError, $e);
         }
     }
@@ -92,7 +93,36 @@ final class JsonParser implements IteratorAggregate
      */
     public function pointer(string $pointer, Closure $callback = null): self
     {
-        $this->config->pointers->add(new Pointer($pointer, $callback));
+        $this->config->pointers->add(new Pointer($pointer, false, $callback));
+
+        return $this;
+    }
+
+    /**
+     * Set the lazy JSON pointers
+     *
+     * @param string[]|array<string, Closure> $pointers
+     * @return self
+     */
+    public function lazyPointers(array $pointers): self
+    {
+        foreach ($pointers as $pointer => $callback) {
+            $callback instanceof Closure ? $this->lazyPointer($pointer, $callback) : $this->lazyPointer($callback);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set a lazy JSON pointer
+     *
+     * @param string $pointer
+     * @param Closure|null $callback
+     * @return self
+     */
+    public function lazyPointer(string $pointer, Closure $callback = null): self
+    {
+        $this->config->pointers->add(new Pointer($pointer, true, $callback));
 
         return $this;
     }
