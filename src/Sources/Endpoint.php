@@ -68,7 +68,7 @@ class Endpoint extends Source
      */
     public function matches(): bool
     {
-        // @phpstan-ignore-next-line
+        /** @phpstan-ignore-next-line */
         return (is_string($this->source) || $this->source instanceof UriInterface) && $this->isEndpoint($this->source);
     }
 
