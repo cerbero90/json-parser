@@ -1,5 +1,7 @@
 <?php
 
+use Cerbero\JsonParser\Parser;
+
 if (!function_exists('fixture')) {
     /**
      * Retrieve the absolute path of the given fixture
@@ -53,4 +55,22 @@ expect()->extend('toPointTo', function (array $expected) {
     }
 
     return expect($actual)->toBe($expected);
+});
+
+/**
+ * Expect that values defined by lazy JSON pointers are parsed correctly
+ *
+ * @param array $expected
+ * @return Expectation
+ */
+expect()->extend('toLazyLoadRecursively', function (array $keys, array $expected) {
+    foreach ($this->value as $key => $value) {
+        expect($value)->toBeInstanceOf(Parser::class);
+
+        if (is_null($expectedKey = array_shift($keys))) {
+            expect($key)->toBeInt()->and($value)->toParseTo($expected[$key]);
+        } else {
+            expect($key)->toBe($expectedKey)->and($value)->toLazyLoadRecursively($keys, $expected);
+        }
+    }
 });

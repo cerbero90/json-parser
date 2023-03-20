@@ -11,11 +11,11 @@ it('throws an exception when providing an invalid JSON pointer', function (strin
         ->toThrow(InvalidPointerException::class, "The string [$pointer] is not a valid JSON pointer");
 })->with(Dataset::forInvalidPointers());
 
-it('supports single JSON pointers', function (string $json, string $pointer, array $parsed) {
+it('loads JSON from a single JSON pointer', function (string $json, string $pointer, array $parsed) {
     expect(JsonParser::parse($json)->pointer($pointer))->toPointTo($parsed);
 })->with(Dataset::forSinglePointers());
 
-it('supports multiple JSON pointers', function (string $json, array $pointers, array $parsed) {
+it('loads JSON from multiple JSON pointers', function (string $json, array $pointers, array $parsed) {
     expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
 })->with(Dataset::forMultiplePointers());
 
@@ -24,6 +24,18 @@ it('can intersect pointers with wildcards', function (string $json, array $point
 })->with(Dataset::forIntersectingPointersWithWildcards());
 
 it('throws an exception when two pointers intersect', function (string $json, array $pointers, string $message) {
-    expect(fn () => JsonParser::parse($json)->pointers($pointers)->traverse())
+    expect(fn () => JsonParser::parse($json)->pointers($pointers))
         ->toThrow(IntersectingPointersException::class, $message);
 })->with(Dataset::forIntersectingPointers());
+
+it('lazy loads JSON from a single lazy JSON pointer', function (string $json, string $pointer, array $sequence) {
+    expect(JsonParser::parse($json)->lazyPointer($pointer))->sequence(...$sequence);
+})->with(Dataset::forSingleLazyPointers());
+
+it('lazy loads JSON from multiple lazy JSON pointers', function (string $json, array $pointers, array $sequence) {
+    expect(JsonParser::parse($json)->lazyPointers($pointers))->sequence(...$sequence);
+})->with(Dataset::forMultipleLazyPointers());
+
+it('lazy loads JSON recursively', function (string $json, string $pointer, array $keys, array $expected) {
+    expect(JsonParser::parse($json)->lazyPointer($pointer))->toLazyLoadRecursively($keys, $expected);
+})->with(Dataset::forRecursiveLazyLoading());

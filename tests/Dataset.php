@@ -8,6 +8,7 @@ use Cerbero\JsonParser\Sources\Psr7Request;
 use DirectoryIterator;
 use Generator;
 use Mockery;
+use Pest\Expectation;
 
 /**
  * The dataset provider.
@@ -173,6 +174,107 @@ final class Dataset
 
         foreach ($pointersByIntersection as $intersection => $pointers) {
             yield [$json, $pointers, vsprintf($message, explode(',', $intersection))];
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test single lazy pointers
+     *
+     * @return Generator
+     */
+    public static function forSingleLazyPointers(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+        $sequenceByPointer = [
+            '' => [
+                fn ($value, $key) => $key->toBe('id')->and($value->value)->toBe('0001'),
+                fn ($value, $key) => $key->toBe('type')->and($value->value)->toBe('donut'),
+                fn ($value, $key) => $key->toBe('name')->and($value->value)->toBe('Cake'),
+                fn ($value, $key) => $key->toBe('ppu')->and($value->value)->toBe(0.55),
+                fn ($value, $key) => $key->toBe('batters')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value->value)->toBeInstanceOf(Parser::class),
+            ],
+            '/batters/batter/-' => [
+                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
+            ],
+            '/topping/-' => [
+                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(4)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(5)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(6)->and($value->value)->toBeInstanceOf(Parser::class),
+            ],
+        ];
+
+        foreach ($sequenceByPointer as $pointer => $sequence) {
+            yield [$json, $pointer, $sequence];
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test multiple lazy pointers
+     *
+     * @return Generator
+     */
+    public static function forMultipleLazyPointers(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+        $sequenceByPointer = [
+            '/topping,/batters' => [
+                fn ($value, $key) => $key->toBe('batters')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value->value)->toBeInstanceOf(Parser::class),
+            ],
+            '/topping/-,/batters/batter' => [
+                fn ($value, $key) => $key->toBe('batter')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(4)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(5)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(6)->and($value->value)->toBeInstanceOf(Parser::class),
+            ],
+        ];
+
+        foreach ($sequenceByPointer as $pointers => $sequence) {
+            yield [$json, explode(',', $pointers), $sequence];
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test recursive lazy loading
+     *
+     * @return Generator
+     */
+    public static function forRecursiveLazyLoading(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+        $expectedByKeys = [
+            'batters,batter' => [
+                ['id' => '1001', 'type' => 'Regular'],
+                ['id' => '1002', 'type' => 'Chocolate'],
+                ['id' => '1003', 'type' => 'Blueberry'],
+                ['id' => '1004', 'type' => 'Devil\'s Food'],
+            ],
+            'topping' => [
+                ['id' => '5001', 'type' => 'None'],
+                ['id' => '5002', 'type' => 'Glazed'],
+                ['id' => '5005', 'type' => 'Sugar'],
+                ['id' => '5007', 'type' => 'Powdered Sugar'],
+                ['id' => '5006', 'type' => 'Chocolate with Sprinkles'],
+                ['id' => '5003', 'type' => 'Chocolate'],
+                ['id' => '5004', 'type' => 'Maple'],
+            ],
+        ];
+
+        foreach ($expectedByKeys as $keys => $expected) {
+            $keys = explode(',', $keys);
+            yield [$json, '/' . $keys[0], $keys, $expected];
         }
     }
 
