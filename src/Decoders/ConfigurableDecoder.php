@@ -3,6 +3,7 @@
 namespace Cerbero\JsonParser\Decoders;
 
 use Cerbero\JsonParser\Config;
+use Cerbero\JsonParser\Parser;
 
 use function call_user_func;
 
@@ -24,12 +25,12 @@ final class ConfigurableDecoder
     /**
      * Decode the given value.
      *
-     * @param string|int $value
+     * @param Parser|string|int $value
      * @return mixed
      */
-    public function decode(string|int $value): mixed
+    public function decode(Parser|string|int $value): mixed
     {
-        if (is_int($value)) {
+        if (!is_string($value)) {
             return $value;
         }
 
