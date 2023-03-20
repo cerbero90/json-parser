@@ -3,8 +3,10 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Pointers\Pointers;
+use Cerbero\JsonParser\Tokens\CompoundBegin;
 use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Tokens;
+use Closure;
 
 /**
  * The JSON parsing state.
@@ -22,9 +24,9 @@ final class State
     /**
      * The JSON buffer.
      *
-     * @var string
+     * @var Parser|string
      */
-    private string $buffer = '';
+    private Parser|string $buffer = '';
 
     /**
      * Whether an object key is expected.
@@ -44,8 +46,9 @@ final class State
      * Instantiate the class.
      *
      * @param Pointers $pointers
+     * @param Closure $lazyLoad
      */
-    public function __construct(private Pointers $pointers)
+    public function __construct(private Pointers $pointers, private Closure $lazyLoad)
     {
         $this->tree = new Tree($this->pointers);
     }
@@ -100,17 +103,14 @@ final class State
      */
     public function mutateByToken(Token $token): void
     {
-        $shouldTrackTree = $this->tree->shouldBeTracked();
-
-        if ($shouldTrackTree && $this->expectsKey) {
-            $this->tree->traverseKey($token);
-        } elseif ($shouldTrackTree && $token->isValue() && !$this->tree->inObject()) {
-            $this->tree->traverseArray();
-        }
+        $this->tree->traverseToken($token, $this->expectsKey);
 
         if ($this->tree->isMatched() && ((!$this->expectsKey && $token->isValue()) || $this->tree->isDeep())) {
-            $this->buffer .= $token;
-            $this->pointers->markAsFound();
+            $shouldLazyLoad = $token instanceof CompoundBegin && $this->pointers->matching()->isLazy();
+            /** @phpstan-ignore-next-line */
+            $this->buffer = $shouldLazyLoad ? ($this->lazyLoad)() : $this->buffer . $token;
+            /** @var CompoundBegin $token */
+            $shouldLazyLoad && $token->shouldLazyLoad = true;
         }
 
         $token->mutateState($this);
@@ -129,9 +129,9 @@ final class State
     /**
      * Retrieve the value from the buffer and reset it
      *
-     * @return string
+     * @return Parser|string
      */
-    public function value(): string
+    public function value(): Parser|string
     {
         $buffer = $this->buffer;
 
