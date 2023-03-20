@@ -63,7 +63,7 @@ final class Lexer implements IteratorAggregate
                 $shouldBuffer = $inString || !isset(Tokens::BOUNDARIES[$character]);
 
                 if ($shouldBuffer && $buffer == '' && !isset(Tokens::TYPES[$character])) {
-                    throw new SyntaxException($character, $this->position);
+                    throw new SyntaxException($character);
                 }
 
                 if ($shouldBuffer) {

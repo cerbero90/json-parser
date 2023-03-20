@@ -11,13 +11,33 @@ use Exception;
 final class SyntaxException extends Exception implements JsonParserException
 {
     /**
+     * The error position.
+     *
+     * @var int|null
+     */
+    public ?int $position = null;
+
+    /**
      * Instantiate the class
      *
      * @param string $value
-     * @param int $position
      */
-    public function __construct(public string $value, public int $position)
+    public function __construct(public string $value)
     {
-        parent::__construct("Syntax error: unexpected '$value' at position {$position}");
+        parent::__construct("Syntax error: unexpected '$value'");
+    }
+
+    /**
+     * Set the error position
+     *
+     * @param int $position
+     * @return self
+     */
+    public function setPosition(int $position): self
+    {
+        $this->position = $position;
+        $this->message .= " at position {$position}";
+
+        return $this;
     }
 }
