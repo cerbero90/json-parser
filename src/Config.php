@@ -8,6 +8,7 @@ use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
 use Cerbero\JsonParser\Exceptions\DecodingException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
+use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
 use Closure;
 
@@ -62,5 +63,16 @@ final class Config
         $this->pointers = new Pointers();
         $this->onDecodingError = fn (DecodedValue $decoded) => throw new DecodingException($decoded);
         $this->onSyntaxError = fn (SyntaxException $e) => throw $e;
+    }
+
+    /**
+     * Clone the configuration
+     *
+     * @return void
+     */
+    public function __clone(): void
+    {
+        $this->pointers = new Pointers();
+        $this->pointers->add(new Pointer('', true));
     }
 }
