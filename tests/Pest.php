@@ -60,6 +60,7 @@ expect()->extend('toPointTo', function (array $expected) {
 /**
  * Expect that values defined by lazy JSON pointers are parsed correctly
  *
+ * @param array $keys
  * @param array $expected
  * @return Expectation
  */
