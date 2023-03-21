@@ -8,7 +8,6 @@ use Closure;
 use Stringable;
 
 use function count;
-use function call_user_func;
 use function is_int;
 use function array_slice;
 
@@ -120,7 +119,7 @@ final class Pointer implements Stringable
             return $value;
         }
 
-        return call_user_func($this->callback, $value, $key) ?? $value;
+        return ($this->callback)($value, $key) ?? $value;
     }
 
     /**

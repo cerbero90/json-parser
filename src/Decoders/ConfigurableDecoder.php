@@ -5,8 +5,6 @@ namespace Cerbero\JsonParser\Decoders;
 use Cerbero\JsonParser\Config;
 use Cerbero\JsonParser\Parser;
 
-use function call_user_func;
-
 /**
  * The configurable decoder.
  *
@@ -37,7 +35,7 @@ final class ConfigurableDecoder
         $decoded = $this->config->decoder->decode($value);
 
         if (!$decoded->succeeded) {
-            call_user_func($this->config->onDecodingError, $decoded);
+            ($this->config->onDecodingError)($decoded);
         }
 
         return $decoded->value;
