@@ -28,8 +28,9 @@ composer require cerbero/json-parser
 * [👣 Basics](#-basics)
 * [💧 Sources](#-sources)
 * [🎯 Pointers](#-pointers)
+* [🐼 Lazy pointers](#-lazy-pointers)
 * [⚙️ Decoders](#%EF%B8%8F-decoders)
-* [💢 Errors](#-errors)
+* [💢 Errors handling](#-errors-handling)
 * [⏳ Progress](#-progress)
 * [🛠 Settings](#-settings)
 
@@ -148,20 +149,20 @@ If you find yourself implementing the same custom source in different projects, 
 
 A JSON pointer is a [standard](https://www.rfc-editor.org/rfc/rfc6901) used to point to nodes within a JSON. This package leverages JSON pointers to extract only some sub-trees from large JSONs.
 
-Consider [this JSON](https://randomuser.me/api/1.4?seed=json-parser&results=5) for example. To extract only the first gender and avoid parsing the rest of the JSON, we can set the `/0/gender` pointer:
+Consider [this JSON](https://randomuser.me/api/1.4?seed=json-parser&results=5) for example. To extract only the first gender and avoid parsing the rest of the JSON, we can set the `/results/0/gender` pointer:
 
 ```php
-$json = JsonParser::parse($source)->pointer('/0/gender');
+$json = JsonParser::parse($source)->pointer('/results/0/gender');
 
 foreach ($json as $key => $value) {
     // 1st and only iteration: $key === 'gender', $value === 'female'
 }
 ```
 
-JSON Parser takes advantage of the `-` wildcard to point to any array index, so we can extract all the genders with the `/-/gender` pointer:
+JSON Parser takes advantage of the `-` wildcard to point to any array index, so we can extract all the genders with the `/results/-/gender` pointer:
 
 ```php
-$json = JsonParser::parse($source)->pointer('/-/gender');
+$json = JsonParser::parse($source)->pointer('/results/-/gender');
 
 foreach ($json as $key => $value) {
     // 1st iteration: $key === 'gender', $value === 'female'
@@ -174,7 +175,7 @@ foreach ($json as $key => $value) {
 If we want to extract more sub-trees, we can set multiple pointers. Let's extract all genders and countries:
 
 ```php
-$json = JsonParser::parse($source)->pointers(['/-/gender', '/-/location/country']);
+$json = JsonParser::parse($source)->pointers(['/results/-/gender', '/results/-/location/country']);
 
 foreach ($json as $key => $value) {
     // 1st iteration: $key === 'gender', $value === 'female'
@@ -191,8 +192,8 @@ We can also specify a callback to execute when JSON pointers are found. This is 
 
 ```php
 $json = JsonParser::parse($source)->pointers([
-    '/-/gender' => fn (string $gender, string $key) => new Gender($gender),
-    '/-/location/country' => fn (string $country, string $key) => new Country($country),
+    '/results/-/gender' => fn (string $gender, string $key) => new Gender($gender),
+    '/results/-/location/country' => fn (string $country, string $key) => new Country($country),
 ]);
 
 foreach ($json as $key => $value) {
@@ -208,8 +209,8 @@ The same can also be achieved by chaining the method `pointer()` multiple times:
 
 ```php
 $json = JsonParser::parse($source)
-    ->pointer('/-/gender', fn (string $gender, string $key) => new Gender($gender))
-    ->pointer('/-/location/country', fn (string $country, string $key) => new Country($country));
+    ->pointer('/results/-/gender', fn (string $gender, string $key) => new Gender($gender))
+    ->pointer('/results/-/location/country', fn (string $country, string $key) => new Country($country));
 
 foreach ($json as $key => $value) {
     // 1st iteration: $key === 'gender', $value instanceof Gender
@@ -233,8 +234,8 @@ Otherwise if some common logic for all pointers is needed but we prefer methods 
 
 ```php
 JsonParser::parse($source)
-    ->pointer('/-/gender', fn (string $gender, string $key) => new Gender($gender))
-    ->pointer('/-/location/country', fn (string $country, string $key) => new Country($country))
+    ->pointer('/results/-/gender', fn (string $gender, string $key) => new Gender($gender))
+    ->pointer('/results/-/location/country', fn (string $country, string $key) => new Country($country))
     ->traverse(function (Gender|Country $value, string $key, JsonParser $parser) {
         // 1st iteration: $key === 'gender', $value instanceof Gender
         // 2nd iteration: $key === 'country', $value instanceof Country
@@ -246,6 +247,74 @@ JsonParser::parse($source)
 
 > ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
 
+### 🐼 Lazy pointers
+
+JSON Parser keeps in memory only one key and one value at a time. However, if the value is a large array or a large object, we may not want to keep it all in memory.
+
+The solution is to use lazy pointers, which recursively keep in memory only one key and one value at a time of any nested array or object:
+
+```php
+$json = JsonParser::parse($source)->lazyPointer('/results/0/name');
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'name', $value instanceof Parser
+}
+```
+
+Lazy pointers return a light-weight instance of `Cerbero\JsonParser\Parser` instead of the actual large value. To lazy load nested keys and values, we can then loop through the parser:
+
+```php
+$json = JsonParser::parse($source)->lazyPointer('/results/0/name');
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'name', $value instanceof Parser
+    foreach ($value as $nestedKey => $nestedValue) {
+        // 1st iteration: $nestedKey === 'title', $nestedValue === 'Mrs'
+        // 2nd iteration: $nestedKey === 'first', $nestedValue === 'Sara'
+        // 3rd iteration: $nestedKey === 'last', $nestedValue === 'Meder'
+    }
+}
+```
+
+As mentioned above, lazy pointers are recursive. This means that no nested objects or arrays will ever be kept in memory:
+
+```php
+$json = JsonParser::parse($source)->lazyPointer('/results/0/location');
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'location', $value instanceof Parser
+    foreach ($value as $nestedKey => $nestedValue) {
+        // 1st iteration: $nestedKey === 'street', $nestedValue instanceof Parser
+        // 2nd iteration: $nestedKey === 'city', $nestedValue === 'Sontra'
+        // ...
+        // 6th iteration: $nestedKey === 'coordinates', $nestedValue instanceof Parser
+        // 7th iteration: $nestedKey === 'timezone', $nestedValue instanceof Parser
+    }
+}
+```
+
+Lazy pointers also have all the other functionalities of normal pointers: they accept callbacks, they can be set one by one or all together and they can be mixed with normal pointers as well:
+
+```php
+// set custom callback to run only when names are found
+$json = JsonParser::parse($source)->lazyPointer('/results/-/name', fn (Parser $name) => $this->handleName($name));
+
+// set multiple lazy pointers one by one
+$json = JsonParser::parse($source)
+    ->lazyPointer('/results/-/name', fn (Parser $name) => $this->handleName($name))
+    ->lazyPointer('/results/-/location', fn (Parser $location) => $this->handleLocation($location));
+
+// set multiple lazy pointers all together
+$json = JsonParser::parse($source)->lazyPointers([
+    '/results/-/name' => fn (Parser $name) => $this->handleName($name)),
+    '/results/-/location' => fn (Parser $location) => $this->handleLocation($location)),
+]);
+
+// mix pointers and lazy pointers
+$json = JsonParser::parse($source)
+    ->pointer('/results/-/gender', fn (string $gender) => $this->handleGender($gender))
+    ->lazyPointer('/results/-/name', fn (Parser $name) => $this->handleName($name));
+```
 
 ### ⚙️ Decoders
 
@@ -311,7 +380,7 @@ If you find yourself implementing the same custom decoder in different projects,
 </details>
 
 
-### 💢 Errors
+### 💢 Errors handling
 
 Not all JSONs are valid, some may present syntax errors due to an incorrect structure (e.g. `[}`) or decoding errors when values can't be decoded properly (e.g. `[1a]`). JSON Parser allows us to intervene and define the logic to run when these issues occur:
 
