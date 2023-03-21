@@ -8,7 +8,6 @@ use Cerbero\JsonParser\Sources\Psr7Request;
 use DirectoryIterator;
 use Generator;
 use Mockery;
-use Pest\Expectation;
 
 /**
  * The dataset provider.
@@ -275,6 +274,50 @@ final class Dataset
         foreach ($expectedByKeys as $keys => $expected) {
             $keys = explode(',', $keys);
             yield [$json, '/' . $keys[0], $keys, $expected];
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test mixed pointers
+     *
+     * @return Generator
+     */
+    public static function forMixedPointers(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+        $pointersList = [
+            [
+                '/name' => fn (string $name) => "name_{$name}",
+            ],
+            [
+                '/id' => fn (string $id) => "id_{$id}",
+                '/type' => fn (string $type) => "type_{$type}",
+            ],
+        ];
+        $lazyPointers = [
+            [
+                '/batters/batter' => fn (Parser $batter) => $batter::class,
+            ],
+            [
+                '/batters' => fn (Parser $batters) => $batters::class,
+                '/topping' => fn (Parser $topping) => $topping::class,
+            ],
+        ];
+        $expected = [
+            [
+                'name' => 'name_Cake',
+                'batter' => Parser::class,
+            ],
+            [
+                'id' => 'id_0001',
+                'type' => 'type_donut',
+                'batters' => Parser::class,
+                'topping' => Parser::class,
+            ],
+        ];
+
+        foreach ($pointersList as $index => $pointers) {
+            yield [$json, $pointers, $lazyPointers[$index], $expected[$index]];
         }
     }
 

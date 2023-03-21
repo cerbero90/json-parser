@@ -39,3 +39,7 @@ it('lazy loads JSON from multiple lazy JSON pointers', function (string $json, a
 it('lazy loads JSON recursively', function (string $json, string $pointer, array $keys, array $expected) {
     expect(JsonParser::parse($json)->lazyPointer($pointer))->toLazyLoadRecursively($keys, $expected);
 })->with(Dataset::forRecursiveLazyLoading());
+
+it('mixes pointers and lazy pointers', function (string $json, array $pointers, array $lazyPointers, array $expected) {
+    expect(JsonParser::parse($json)->pointers($pointers)->lazyPointers($lazyPointers))->toParseTo($expected);
+})->with(Dataset::forMixedPointers());
