@@ -130,7 +130,7 @@ final class Parser implements IteratorAggregate
     /**
      * Eager load the current compound into an array
      *
-     * @return array
+     * @return array<string|int, mixed>
      */
     public function toArray(): array
     {

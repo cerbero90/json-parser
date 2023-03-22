@@ -146,7 +146,7 @@ final class JsonParser implements IteratorAggregate
     /**
      * Eager load the JSON into an array
      *
-     * @return array
+     * @return array<string|int, mixed>
      */
     public function toArray(): array
     {
