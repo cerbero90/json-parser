@@ -15,9 +15,25 @@ it('loads JSON from a single JSON pointer', function (string $json, string $poin
     expect(JsonParser::parse($json)->pointer($pointer))->toPointTo($parsed);
 })->with(Dataset::forSinglePointers());
 
+it('eager loads pointers into an array', function (string $json, string $pointer, array $expected) {
+    expect(JsonParser::parse($json)->pointer($pointer)->toArray())->toBe($expected);
+})->with(Dataset::forSinglePointersToArray());
+
+it('eager loads lazy pointers into an array', function (string $json, string $pointer, array $expected) {
+    expect(JsonParser::parse($json)->lazyPointer($pointer)->toArray())->toBe($expected);
+})->with(Dataset::forSinglePointersToArray());
+
 it('loads JSON from multiple JSON pointers', function (string $json, array $pointers, array $parsed) {
     expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
 })->with(Dataset::forMultiplePointers());
+
+it('eager loads multiple pointers into an array', function (string $json, array $pointers, array $expected) {
+    expect(JsonParser::parse($json)->pointers($pointers)->toArray())->toBe($expected);
+})->with(Dataset::forMultiplePointersToArray());
+
+it('eager loads multiple lazy pointers into an array', function (string $json, array $pointers, array $expected) {
+    expect(JsonParser::parse($json)->lazyPointers($pointers)->toArray())->toBe($expected);
+})->with(Dataset::forMultiplePointersToArray());
 
 it('can intersect pointers with wildcards', function (string $json, array $pointers, array $parsed) {
     expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);

@@ -64,7 +64,18 @@ final class Dataset
      */
     public static function forSinglePointers(): Generator
     {
-        $singlePointers = require fixture('pointers/single_pointer.php');
+        yield from self::forSinglePointersWithFixture('pointers/single_pointer.php');
+    }
+
+    /**
+     * Retrieve the dataset to test single pointers with the given fixture
+     *
+     * @param string $path
+     * @return Generator
+     */
+    private static function forSinglePointersWithFixture(string $path): Generator
+    {
+        $singlePointers = require fixture($path);
 
         foreach ($singlePointers as $fixture => $pointers) {
             $json = file_get_contents(fixture("json/{$fixture}.json"));
@@ -76,13 +87,34 @@ final class Dataset
     }
 
     /**
+     * Retrieve the dataset to test single pointers eager loading
+     *
+     * @return Generator
+     */
+    public static function forSinglePointersToArray(): Generator
+    {
+        yield from self::forSinglePointersWithFixture('pointers/single_pointer_to_array.php');
+    }
+
+    /**
      * Retrieve the dataset to test multiple pointers
      *
      * @return Generator
      */
     public static function forMultiplePointers(): Generator
     {
-        $multiplePointers = require fixture('pointers/multiple_pointers.php');
+        yield from self::forMultiplePointersWithFixture('pointers/multiple_pointers.php');
+    }
+
+    /**
+     * Retrieve the dataset to test multiple pointers with the given fixture
+     *
+     * @param string $path
+     * @return Generator
+     */
+    private static function forMultiplePointersWithFixture(string $path): Generator
+    {
+        $multiplePointers = require fixture($path);
 
         foreach ($multiplePointers as $fixture => $valueByPointers) {
             $json = file_get_contents(fixture("json/{$fixture}.json"));
@@ -91,6 +123,16 @@ final class Dataset
                 yield [$json, explode(',', $pointers), $value];
             }
         }
+    }
+
+    /**
+     * Retrieve the dataset to test multiple pointers eager loading
+     *
+     * @return Generator
+     */
+    public static function forMultiplePointersToArray(): Generator
+    {
+        yield from self::forMultiplePointersWithFixture('pointers/multiple_pointers_to_array.php');
     }
 
     /**

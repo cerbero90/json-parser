@@ -17,3 +17,7 @@ it('parses JSON when instantiated statically', function (string $json, array $pa
 it('parses JSON when calling the helper', function (string $json, array $parsed) {
     expect(parseJson($json))->toParseTo($parsed);
 })->with(Dataset::forParsing());
+
+it('eager loads JSON into an array', function (string $json, array $parsed) {
+    expect(JsonParser::parse($json)->toArray())->toBe($parsed);
+})->with(Dataset::forParsing());
