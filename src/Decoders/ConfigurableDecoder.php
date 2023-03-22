@@ -2,8 +2,8 @@
 
 namespace Cerbero\JsonParser\Decoders;
 
-use Cerbero\JsonParser\Config;
-use Cerbero\JsonParser\Parser;
+use Cerbero\JsonParser\Tokens\Parser;
+use Cerbero\JsonParser\ValueObjects\Config;
 
 /**
  * The configurable decoder.

@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser\Tokens;
 
-use Cerbero\JsonParser\State;
+use Cerbero\JsonParser\ValueObjects\State;
 
 /**
  * The token that begins compound data (JSON arrays or objects).

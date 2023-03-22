@@ -1,6 +1,6 @@
 <?php
 
-namespace Cerbero\JsonParser;
+namespace Cerbero\JsonParser\Tokens;
 
 use Cerbero\JsonParser\Decoders\ConfigurableDecoder;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
@@ -8,6 +8,9 @@ use Cerbero\JsonParser\Sources\Source;
 use Cerbero\JsonParser\Tokens\CompoundBegin;
 use Cerbero\JsonParser\Tokens\CompoundEnd;
 use Cerbero\JsonParser\Tokens\Token;
+use Cerbero\JsonParser\ValueObjects\Config;
+use Cerbero\JsonParser\ValueObjects\Progress;
+use Cerbero\JsonParser\ValueObjects\State;
 use Generator;
 use IteratorAggregate;
 use Traversable;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cerbero\JsonParser;
+namespace Cerbero\JsonParser\ValueObjects;
 
 use function is_null;
 

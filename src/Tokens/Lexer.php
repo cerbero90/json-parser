@@ -1,12 +1,13 @@
 <?php
 
-namespace Cerbero\JsonParser;
+namespace Cerbero\JsonParser\Tokens;
 
 use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Sources\Source;
 use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\Tokens\Tokenizer;
 use Cerbero\JsonParser\Tokens\Tokens;
+use Cerbero\JsonParser\ValueObjects\Progress;
 use IteratorAggregate;
 use Traversable;
 

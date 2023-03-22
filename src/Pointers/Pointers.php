@@ -3,7 +3,7 @@
 namespace Cerbero\JsonParser\Pointers;
 
 use Cerbero\JsonParser\Exceptions\IntersectingPointersException;
-use Cerbero\JsonParser\Tree;
+use Cerbero\JsonParser\ValueObjects\Tree;
 
 use function count;
 

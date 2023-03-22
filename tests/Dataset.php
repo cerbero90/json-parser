@@ -5,6 +5,7 @@ namespace Cerbero\JsonParser;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Sources\Endpoint;
 use Cerbero\JsonParser\Sources\Psr7Request;
+use Cerbero\JsonParser\Tokens\Parser;
 use DirectoryIterator;
 use Generator;
 use Mockery;

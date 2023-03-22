@@ -3,7 +3,7 @@
 namespace Cerbero\JsonParser\Pointers;
 
 use Cerbero\JsonParser\Exceptions\InvalidPointerException;
-use Cerbero\JsonParser\Tree;
+use Cerbero\JsonParser\ValueObjects\Tree;
 use Closure;
 use Stringable;
 

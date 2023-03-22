@@ -1,6 +1,6 @@
 <?php
 
-namespace Cerbero\JsonParser;
+namespace Cerbero\JsonParser\ValueObjects;
 
 use Cerbero\JsonParser\Pointers\Pointers;
 use Cerbero\JsonParser\Tokens\Token;

@@ -2,7 +2,7 @@
 
 namespace Cerbero\JsonParser\Sources;
 
-use Cerbero\JsonParser\Config;
+use Cerbero\JsonParser\ValueObjects\Config;
 use IteratorAggregate;
 use Traversable;
 

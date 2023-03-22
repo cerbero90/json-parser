@@ -1,6 +1,6 @@
 <?php
 
-use Cerbero\JsonParser\Parser;
+use Cerbero\JsonParser\Tokens\Parser;
 
 if (!function_exists('fixture')) {
     /**
