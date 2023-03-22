@@ -247,6 +247,13 @@ JsonParser::parse($source)
 
 > ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
 
+Sometimes the sub-trees extracted by pointers are small enough to be kept all in memory. We can chain `toArray()` to eager load the extracted sub-trees into an array:
+
+```php
+// ['gender' => 'female', 'country' => 'Germany']
+$array = JsonParser::parse($source)->pointers(['/results/0/gender', '/results/0/location/country'])->toArray();
+```
+
 ### 🐼 Lazy pointers
 
 JSON Parser keeps in memory only one key and one value at a time. However, if the value is a large array or a large object, we may not want to keep it all in memory.
@@ -293,7 +300,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-Lazy pointers also have all the other functionalities of normal pointers: they accept callbacks, they can be set one by one or all together and they can be mixed with normal pointers as well:
+Lazy pointers also have all the other functionalities of normal pointers: they accept callbacks, can be set one by one or all together, can be eager loaded into an array and can be mixed with normal pointers as well:
 
 ```php
 // set custom callback to run only when names are found
@@ -309,6 +316,10 @@ $json = JsonParser::parse($source)->lazyPointers([
     '/results/-/name' => fn (Parser $name) => $this->handleName($name)),
     '/results/-/location' => fn (Parser $location) => $this->handleLocation($location)),
 ]);
+
+// eager load lazy pointers into an array
+// ['name' => ['title' => 'Mrs', 'first' => 'Sara', 'last' => 'Meder'], 'street' => ['number' => 46, 'name' => 'Römerstraße']]
+$array = JsonParser::parse($source)->lazyPointers(['/results/0/name', '/results/0/location/street'])->toArray();
 
 // mix pointers and lazy pointers
 $json = JsonParser::parse($source)
