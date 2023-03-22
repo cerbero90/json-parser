@@ -128,6 +128,22 @@ final class Parser implements IteratorAggregate
     }
 
     /**
+     * Eager load the current compound into an array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $array = [];
+
+        foreach ($this as $key => $value) {
+            $array[$key] = $value instanceof self ? $value->toArray() : $value;
+        }
+
+        return $array;
+    }
+
+    /**
      * Fast-forward the parser
      *
      * @return void

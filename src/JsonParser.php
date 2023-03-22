@@ -138,11 +138,19 @@ final class JsonParser implements IteratorAggregate
      */
     public function traverse(Closure $callback = null): void
     {
-        $callback ??= fn () => true;
-
         foreach ($this as $key => $value) {
-            $callback($value, $key, $this);
+            $callback && $callback($value, $key, $this);
         }
+    }
+
+    /**
+     * Eager load the JSON into an array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->parser->toArray();
     }
 
     /**
