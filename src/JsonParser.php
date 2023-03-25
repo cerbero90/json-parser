@@ -7,6 +7,7 @@ use Cerbero\JsonParser\Decoders\Decoder;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Sources\AnySource;
+use Cerbero\JsonParser\Tokens\Lexer;
 use Cerbero\JsonParser\Tokens\Parser;
 use Cerbero\JsonParser\ValueObjects\Config;
 use Cerbero\JsonParser\ValueObjects\Progress;
@@ -29,6 +30,13 @@ final class JsonParser implements IteratorAggregate
     private Config $config;
 
     /**
+     * The lexer.
+     *
+     * @var Lexer
+     */
+    private Lexer $lexer;
+
+    /**
      * The parser.
      *
      * @var Parser
@@ -43,7 +51,8 @@ final class JsonParser implements IteratorAggregate
     public function __construct(mixed $source)
     {
         $this->config = new Config();
-        $this->parser = Parser::for(new AnySource($source, $this->config));
+        $this->lexer = new Lexer(new AnySource($source, $this->config));
+        $this->parser = new Parser($this->lexer->getIterator(), $this->config);
     }
 
     /**
@@ -67,7 +76,7 @@ final class JsonParser implements IteratorAggregate
         try {
             yield from $this->parser;
         } catch (SyntaxException $e) {
-            $e->setPosition($this->parser->position());
+            $e->setPosition($this->lexer->position());
             ($this->config->onSyntaxError)($e);
         }
     }
@@ -173,7 +182,7 @@ final class JsonParser implements IteratorAggregate
      */
     public function progress(): Progress
     {
-        return $this->parser->progress();
+        return $this->lexer->progress();
     }
 
     /**
