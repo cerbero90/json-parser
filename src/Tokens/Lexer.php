@@ -47,7 +47,7 @@ final class Lexer implements IteratorAggregate
     /**
      * Retrieve the JSON fragments
      *
-     * @return Traversable<int, Token>
+     * @return \Generator<int, Token>
      */
     public function getIterator(): Traversable
     {
@@ -56,10 +56,8 @@ final class Lexer implements IteratorAggregate
 
         foreach ($this->source as $chunk) {
             for ($i = 0, $size = strlen($chunk); $i < $size; $i++, $this->position++) {
-                $character = $chunk[$i];
-                $inString = ($character == '"' && $inString && $isEscaping)
-                    || ($character != '"' && $inString)
-                    || ($character == '"' && !$inString);
+                $isQuote = '"' == $character = $chunk[$i];
+                $inString = $isQuote != $inString || ($isQuote && $inString && $isEscaping);
                 $isEscaping = $character == '\\' && !$isEscaping;
                 $shouldBuffer = $inString || !isset(Tokens::BOUNDARIES[$character]);
 
