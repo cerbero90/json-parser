@@ -56,8 +56,8 @@ final class Lexer implements IteratorAggregate
 
         foreach ($this->source as $chunk) {
             for ($i = 0, $size = strlen($chunk); $i < $size; $i++, $this->position++) {
-                $isQuote = '"' == $character = $chunk[$i];
-                $inString = $isQuote != $inString || $isEscaping;
+                $character = $chunk[$i];
+                $inString = ($character == '"') != $inString || $isEscaping;
                 $isEscaping = $character == '\\' && !$isEscaping;
                 $shouldBuffer = $inString || !isset(Tokens::BOUNDARIES[$character]);
 
