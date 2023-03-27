@@ -121,7 +121,7 @@ final class Tree
     {
         $pointer = $this->pointers->matching();
 
-        return $pointer == '' ? $this->depth > $pointer->depth() : $this->depth >= $pointer->depth();
+        return $pointer == '' ? $this->depth > 0 : $this->depth >= $pointer->depth();
     }
 
     /**
@@ -151,11 +151,7 @@ final class Tree
      */
     public function isMatched(): bool
     {
-        if ($isMatched = $this->depth >= 0 && $this->pointers->matching()->matchesTree($this)) {
-            $this->pointers->markAsFound();
-        }
-
-        return $isMatched;
+        return $this->depth >= 0 && $this->pointers->matching()->matchesTree($this);
     }
 
     /**
