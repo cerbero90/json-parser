@@ -23,6 +23,10 @@ it('eager loads lazy pointers into an array', function (string $json, string $po
     expect(JsonParser::parse($json)->lazyPointer($pointer)->toArray())->toBe($expected);
 })->with(Dataset::forSinglePointersToArray());
 
+it('can modify key and value of a pointer', function (string $json, array $pointers, array $expected) {
+    expect(JsonParser::parse($json)->pointers($pointers)->toArray())->toBe($expected);
+})->with(Dataset::forKeyUpdate());
+
 it('loads JSON from multiple JSON pointers', function (string $json, array $pointers, array $parsed) {
     expect(JsonParser::parse($json)->pointers($pointers))->toPointTo($parsed);
 })->with(Dataset::forMultiplePointers());

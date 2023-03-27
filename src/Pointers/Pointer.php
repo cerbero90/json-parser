@@ -113,7 +113,7 @@ final class Pointer implements Stringable
      * @param mixed $key
      * @return mixed
      */
-    public function call(mixed $value, mixed $key): mixed
+    public function call(mixed $value, mixed &$key): mixed
     {
         if ($this->callback === null) {
             return $value;

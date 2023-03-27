@@ -51,7 +51,7 @@ final class State
      */
     public function __construct(private Pointers $pointers, private Closure $lazyLoad)
     {
-        $this->tree = new Tree($this->pointers);
+        $this->tree = new Tree($pointers);
     }
 
     /**
@@ -91,7 +91,7 @@ final class State
      * @param mixed $key
      * @return mixed
      */
-    public function callPointer(mixed $value, mixed $key): mixed
+    public function callPointer(mixed $value, mixed &$key): mixed
     {
         return $this->pointers->matching()->call($value, $key);
     }
@@ -107,11 +107,15 @@ final class State
         $this->tree->traverseToken($token, $this->expectsKey);
 
         if ($this->tree->isMatched() && ((!$this->expectsKey && $token->isValue()) || $this->tree->isDeep())) {
-            $shouldLazyLoad = $token instanceof CompoundBegin && $this->pointers->matching()->isLazy();
-            /** @phpstan-ignore-next-line */
-            $this->buffer = $shouldLazyLoad ? ($this->lazyLoad)() : $this->buffer . $token;
-            /** @var CompoundBegin $token */
-            $shouldLazyLoad && $token->shouldLazyLoad = true;
+            $this->pointers->markAsFound();
+
+            if ($token instanceof CompoundBegin && $this->pointers->matching()->isLazy()) {
+                $this->buffer = ($this->lazyLoad)();
+                $token->shouldLazyLoad = true;
+            } else {
+                /** @phpstan-ignore-next-line */
+                $this->buffer .= $token;
+            }
         }
 
         $token->mutateState($this);

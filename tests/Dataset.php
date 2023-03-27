@@ -97,6 +97,23 @@ final class Dataset
     }
 
     /**
+     * Retrieve the dataset to test the key update
+     *
+     * @return Generator
+     */
+    public static function forKeyUpdate(): Generator
+    {
+        $json = fixture('json/complex_object.json');
+        $pointers = [
+            '/type' => function ($value, &$key) {
+                $key = 'foo';
+            },
+        ];
+
+        yield [$json, $pointers, ['foo' => 'donut']];
+    }
+
+    /**
      * Retrieve the dataset to test multiple pointers
      *
      * @return Generator
