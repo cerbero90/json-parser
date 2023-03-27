@@ -219,6 +219,20 @@ foreach ($json as $key => $value) {
 }
 ```
 
+Pointer callbacks can also be used to customize a key. We can achieve that by updating the key **reference**:
+
+```php
+$json = JsonParser::parse($source)->pointer('/results/-/name/first', function (string $name, string &$key) {
+    $key = 'first_name';
+});
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'first_name', $value === 'Sara'
+    // 2nd iteration: $key === 'first_name', $value === 'Andrea'
+    // and so on for all the objects in the array...
+}
+```
+
 If the callbacks are enough to handle the pointers and we don't need to run any common logic for all pointers, we can avoid to manually call `foreach()` by chaining the method `traverse()`:
 
 ```php
