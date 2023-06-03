@@ -19,6 +19,13 @@ abstract class Token implements Stringable
     protected string $value;
 
     /**
+     * Whether the token should be lazy loaded.
+     *
+     * @var bool
+     */
+    public bool $shouldLazyLoad = false;
+
+    /**
      * Mutate the given state
      *
      * @param State $state
@@ -47,6 +54,10 @@ abstract class Token implements Stringable
     {
         $this->value = $value;
 
+        if ($this->shouldLazyLoad) {
+            $this->shouldLazyLoad = false;
+        }
+
         return $this;
     }
 
@@ -57,7 +68,8 @@ abstract class Token implements Stringable
      */
     public function isValue(): bool
     {
-        return (Tokens::TYPES[$this->value[0]] | Tokens::VALUE_ANY) == Tokens::VALUE_ANY;
+        return !$this->shouldLazyLoad
+            && (Tokens::TYPES[$this->value[0]] | Tokens::VALUE_ANY) == Tokens::VALUE_ANY;
     }
 
     /**

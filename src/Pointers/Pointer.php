@@ -158,13 +158,14 @@ final class Pointer implements Stringable
      */
     public function includesTree(Tree $tree): bool
     {
-        // if ($this->pointer == '' && !$this->isLazy) {
-        if ($this->pointer == '') {
+        $originalTree = $tree->original();
+
+        if ($this->pointer == '' || end($this->referenceTokens) == end($originalTree)) {
             return true;
         }
 
         return is_int($firstNest = array_search('-', $this->referenceTokens))
-            && array_slice($this->referenceTokens, 0, $firstNest) === array_slice($tree->original(), 0, $firstNest);
+            && array_slice($this->referenceTokens, 0, $firstNest) === array_slice($originalTree, 0, $firstNest);
     }
 
     /**

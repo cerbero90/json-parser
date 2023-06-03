@@ -63,3 +63,48 @@ it('lazy loads JSON recursively', function (string $json, string $pointer, array
 it('mixes pointers and lazy pointers', function (string $json, array $pointers, array $lazyPointers, array $expected) {
     expect(JsonParser::parse($json)->pointers($pointers)->lazyPointers($lazyPointers))->toParseTo($expected);
 })->with(Dataset::forMixedPointers());
+
+
+it('ciao', function () {
+    $json = JsonParser::parse(fixture('json/complex_object.json'))->lazyPointer('');
+    $batters = $json->batters;
+    $batter = $batters->batter;
+    dd(iterator_to_array($batter));
+    dd($batter->toArray());
+    // this works correctly: to access the same node multiple times, assign it to a variable
+    // $firstBatter = $batter[0];
+    // dd($firstBatter->id, $firstBatter->type);
+    // // this doesn't work: cannot access the same node twice (expected)
+    // dd($batter[0]->id, $batter[0]->type);
+    // this doesn't work: $batter[1] is actually $batter[0]->type (not expected)
+    dd($batter[0]->id, $batter[1]->id);
+    // this doesn't work: $batter[2]->id is actually $batter[1]->id (not expected)
+    dd($batter[0]->id, $batter[2]->id);
+
+
+    dd($batter[0]->id, $batter[1]->id);
+    dd($json->batters->toArray(), $json->topping->toArray());
+    // dd($json->batters->toArray());
+    foreach ($json as $key => $value) {
+        dump("$key => " . (is_object($value) ? $value::class : $value));
+    }
+    dd();
+    // dd($json->id, $json->type);
+    // dd($json->ppu, $json->batters);
+    // dd($json->batters, $json->batters);
+    dd($json->batters->toArray(), $json->topping->toArray());
+    dd($json->batters['batter'][0]['id'], $json->batters['batter'][0]['type']);
+    dd($json->batters->batter[0]->id, $json->batters->batter[0]->type);
+    $batters = $json->batters;
+    dd($batters->batter);
+    // it's working!
+    // $json = JsonParser::parse(fixture('json/complex_object.json'));
+    // dd($json->type, $json['name'], $json->topping);
+
+    $json = JsonParser::parse(fixture('json/complex_object.json'))->pointers(['/batters/batter', '/topping']);
+    dd($json->batter, $json['topping']);
+
+    // this cannot work as we are trying to access the same key ("results") twice -> write in the docs
+    // $json = JsonParser::parse('https://randomuser.me/api/1.4?seed=json-parser&results=5');
+    // dd($json['results'][0]['gender'], $json['results'][0]['email']);
+})->only();

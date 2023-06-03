@@ -2,8 +2,10 @@
 
 namespace Cerbero\JsonParser;
 
+use ArrayAccess;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
+use Cerbero\JsonParser\Exceptions\NodeNotFoundException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Sources\AnySource;
@@ -20,7 +22,7 @@ use Traversable;
  *
  * @implements IteratorAggregate<string|int, mixed>
  */
-final class JsonParser implements IteratorAggregate
+final class JsonParser implements IteratorAggregate, ArrayAccess
 {
     /**
      * The configuration.
@@ -56,7 +58,7 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Statically instantiate the class
+     * Instantiate the class statically
      *
      * @param mixed $source
      * @return self
@@ -140,7 +142,17 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Traverse the lazily iterable JSON
+     * Set a lazy JSON pointer for the whole JSON
+     *
+     * @return self
+     */
+    public function lazy(): self
+    {
+        return $this->lazyPointer('');
+    }
+
+    /**
+     * Traverse the JSON one key and value at a time
      *
      * @param Closure|null $callback
      * @return void
@@ -235,5 +247,62 @@ final class JsonParser implements IteratorAggregate
         $this->config->onSyntaxError = $callback;
 
         return $this;
+    }
+
+    /**
+     * Determine whether a node exists: not allowed
+     *
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return false;
+    }
+
+    /**
+     * Retrieve a node dynamically
+     *
+     * @param mixed $offset
+     * @return mixed
+     * @throws NodeNotFoundException
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->parser->offsetGet($offset);
+    }
+
+    /**
+     * Set a node: not allowed
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        return;
+    }
+
+    /**
+     * Unset a node: not allowed
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        return;
+    }
+
+    /**
+     * Retrieve a node dynamically
+     *
+     * @param string $name
+     * @return mixed
+     * @throws NodeNotFoundException
+     */
+    public function __get(string $name): mixed
+    {
+        return $this->parser->offsetGet($name);
     }
 }

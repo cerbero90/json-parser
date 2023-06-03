@@ -282,7 +282,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-Lazy pointers return a light-weight instance of `Cerbero\JsonParser\Parser` instead of the actual large value. To lazy load nested keys and values, we can then loop through the parser:
+Lazy pointers return a light-weight instance of `Cerbero\JsonParser\Tokens\Parser` instead of the actual large value. To lazy load nested keys and values, we can then loop through the parser:
 
 ```php
 $json = JsonParser::parse($source)->lazyPointer('/results/0/name');
@@ -457,6 +457,7 @@ For reference, here is a comprehensive table of all the exceptions thrown by thi
 |`GuzzleRequiredException`|Guzzle is not installed and the JSON source is an endpoint|
 |`IntersectingPointersException`|two JSON pointers intersect|
 |`InvalidPointerException`|a JSON pointer syntax is not valid|
+|`NodeNotFoundException`|trying to access a not existing node|
 |`SyntaxException`|the JSON structure is not valid|
 |`UnsupportedSourceException`|a JSON source is not supported|
 
@@ -468,7 +469,7 @@ When processing large JSONs, we may need to know the parsing progress. JSON Pars
 ```php
 $json = new JsonParser($source);
 
-$json->progress(); // <Cerbero\JsonParser\Progress>
+$json->progress(); // <Cerbero\JsonParser\ValueObjects\Progress>
 $json->progress()->current(); // the already parsed bytes e.g. 86759341
 $json->progress()->total(); // the total bytes to parse e.g. 182332642
 $json->progress()->fraction(); // the completed fraction e.g. 0.47583

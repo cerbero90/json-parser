@@ -15,7 +15,7 @@ final class CompoundBegin extends Token
      *
      * @var bool
      */
-    public bool $shouldLazyLoad = false;
+    // public bool $shouldLazyLoad = false;
 
     /**
      * Mutate the given state
@@ -27,8 +27,9 @@ final class CompoundBegin extends Token
     {
         $tree = $state->tree();
 
-        if ($this->shouldLazyLoad = $this->shouldLazyLoad && $tree->depth() >= 0) {
-            $state->expectedToken = $tree->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
+        // if ($this->shouldLazyLoad = $this->shouldLazyLoad && $tree->depth() >= 0) {
+        if ($this->shouldLazyLoad = $state->isLazyLoading()) {
+            // $state->expectedToken = $tree->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
             return;
         }
 
@@ -43,12 +44,12 @@ final class CompoundBegin extends Token
      * @param string $value
      * @return static
      */
-    public function setValue(string $value): static
-    {
-        $this->shouldLazyLoad = false;
+    // public function setValue(string $value): static
+    // {
+    //     $this->shouldLazyLoad = false;
 
-        return parent::setValue($value);
-    }
+    //     return parent::setValue($value);
+    // }
 
     /**
      * Determine whether this token ends a JSON chunk

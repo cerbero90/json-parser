@@ -2,7 +2,9 @@
 
 namespace Cerbero\JsonParser\Tokens;
 
+use ArrayAccess;
 use Cerbero\JsonParser\Decoders\ConfigurableDecoder;
+use Cerbero\JsonParser\Exceptions\NodeNotFoundException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Tokens\CompoundBegin;
 use Cerbero\JsonParser\Tokens\CompoundEnd;
@@ -10,15 +12,14 @@ use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\ValueObjects\Config;
 use Cerbero\JsonParser\ValueObjects\State;
 use Generator;
-use IteratorAggregate;
-use Traversable;
+use Iterator;
 
 /**
  * The JSON parser.
  *
- * @implements IteratorAggregate<string|int, mixed>
+ * @implements Iterator<string|int, mixed>
  */
-final class Parser implements IteratorAggregate
+final class Parser implements Iterator, ArrayAccess
 {
     /**
      * The decoder handling potential errors.
@@ -26,6 +27,27 @@ final class Parser implements IteratorAggregate
      * @var ConfigurableDecoder
      */
     private ConfigurableDecoder $decoder;
+
+    /**
+     * The state.
+     *
+     * @var State
+     */
+    private State $state;
+
+    /**
+     * The current key.
+     *
+     * @var string|int|null
+     */
+    private string|int|null $key = null;
+
+    /**
+     * The current compound to lazy load.
+     *
+     * @var self|null
+     */
+    private ?self $lazyLoad = null;
 
     /**
      * Whether the parser is fast-forwarding.
@@ -46,62 +68,132 @@ final class Parser implements IteratorAggregate
     }
 
     /**
-     * Retrieve the JSON fragments
+     * Track the parsing state
      *
-     * @return Traversable<string|int, mixed>
+     * @return void
      */
-    public function getIterator(): Traversable
+    public function rewind(): void
     {
-        $state = new State($this->config->pointers, fn () => new self($this->lazyLoad(), clone $this->config));
+        $this->state ??= new State($this->config->pointers, fn () => clone $this);
 
-        foreach ($this->tokens as $token) {
-            if ($this->isFastForwarding) {
-                continue;
-            } elseif (!$token->matches($state->expectedToken)) {
-                throw new SyntaxException($token);
-            }
+        // $this->state ??= new State(
+        //     $this->config->pointers,
+        //     fn () => new self($this->lazyLoad(), clone $this->config, $this->state),
+        // );
 
-            $state->mutateByToken($token);
-
-            if (!$token->endsChunk() || $state->tree()->isDeep()) {
-                continue;
-            }
-
-            if ($state->hasBuffer()) {
-                /** @var string|int $key */
-                $key = $this->decoder->decode($state->key());
-                $value = $this->decoder->decode($state->value());
-
-                yield $key => $state->callPointer($value, $key);
-
-                $value instanceof self && $value->fastForward();
-            }
-
-            if ($state->canStopParsing()) {
-                break;
-            }
-        }
+        // $this->state ??= new State(
+        //     $this->config->pointers,
+        //     fn () => new self($this->lazyLoad(), clone $this->config),
+        // );
     }
 
     /**
-     * Retrieve the generator to lazy load the current compound
+     * Determine whether there are more tokens to parse
      *
+     * @return bool
+     */
+    public function valid(): bool
+    {
+        if (!$this->tokens->valid() || $this->state->canStopParsing()) {
+            return false;
+        }
+
+        if ($this->isFastForwarding) {
+            return true;
+        }
+
+        $token = $this->tokens->current();
+
+        if (!$token->matches($this->state->expectedToken)) {
+            throw new SyntaxException($token);
+        }
+
+        $this->state->mutateByToken($token);
+
+        if ($token->endsChunk() && $this->state->shouldYield()) {
+            return true;
+        }
+
+        $this->tokens->next();
+
+        return $this->valid();
+    }
+
+    /**
+     * Retrieve the current value
+     *
+     * @return mixed
+     */
+    public function current(): mixed
+    {
+        if ($this->isFastForwarding) {
+            return null;
+        }
+
+        $this->key = $this->decoder->decode($this->state->key());
+        $value = $this->decoder->decode($this->state->value());
+
+        if ($value instanceof self) {
+            $this->lazyLoad = $value;
+        }
+
+        return $this->state->callPointer($value, $this->key);
+    }
+
+    /**
+     * Retrieve the current key
+     *
+     * @return mixed
+     */
+    public function key(): mixed
+    {
+        if ($this->isFastForwarding) {
+            return null;
+        }
+
+        $key = $this->key;
+        $this->key = null;
+
+        return $key;
+    }
+
+    /**
+     * Move the pointer to the next token
+     *
+     * @return void
+     */
+    public function next(): void
+    {
+        if ($this->lazyLoad) {
+            $this->lazyLoad->fastForward();
+            $this->lazyLoad = null;
+        }
+
+        $this->tokens->next();
+    }
+
+    /**
+     * Lazy load the current compound
+     *
+     * @param Generator<int, Token> $tokens
      * @return Generator<int, Token>
      */
-    public function lazyLoad(): Generator
+    private function lazyLoad(Generator $tokens): Generator
     {
         $depth = 0;
 
         do {
-            yield $token = $this->tokens->current();
+            yield $token = $tokens->current();
 
             if ($token instanceof CompoundBegin) {
+                $token->shouldLazyLoad = true;
                 $depth++;
             } elseif ($token instanceof CompoundEnd) {
+                $token->shouldLazyLoad = true;
                 $depth--;
             }
 
-            $depth > 0 && $this->tokens->next();
+            $depth > 0 && $tokens->next();
         } while ($depth > 0);
     }
 
@@ -137,5 +229,84 @@ final class Parser implements IteratorAggregate
         foreach ($this as $value) {
             $value instanceof self && $value->fastForward();
         }
+    }
+
+    /**
+     * Determine whether a node exists: not allowed
+     *
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return false;
+    }
+
+    /**
+     * Retrieve a node dynamically
+     *
+     * @param mixed $offset
+     * @return mixed
+     * @throws NodeNotFoundException
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        foreach ($this as $key => $value) {
+            if ($key === $offset) {
+                !$value instanceof self && $this->tokens->next();
+                // $value instanceof self ? $this->lazyLoad->fastForward() : $this->tokens->next();
+
+                return $value;
+            }
+        }
+
+        throw new NodeNotFoundException($offset);
+    }
+
+    /**
+     * Set a node: not allowed
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        return;
+    }
+
+    /**
+     * Unset a node: not allowed
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        return;
+    }
+
+    /**
+     * Retrieve a node dynamically
+     *
+     * @param string $name
+     * @return mixed
+     * @throws NodeNotFoundException
+     */
+    public function __get(string $name): mixed
+    {
+        return $this->offsetGet($name);
+    }
+
+    /**
+     * Clone the parser
+     *
+     * @return void
+     */
+    public function __clone(): void
+    {
+        $this->tokens = $this->lazyLoad($this->tokens);
+        $this->config = clone $this->config;
+        $this->lazyLoad = null;
+        $this->key = null;
     }
 }

@@ -21,3 +21,11 @@ it('parses JSON when calling the helper', function (string $json, array $parsed)
 it('eager loads JSON into an array', function (string $json, array $parsed) {
     expect(JsonParser::parse($json)->toArray())->toBe($parsed);
 })->with(Dataset::forParsing());
+
+// it('accesses nodes like an array', function () {
+//     $source = 'https://randomuser.me/api/1.4?seed=json-parser&results=5';
+//     $json = JsonParser::parse($source)->pointer('/results/0/location');
+//     dd($json['location']['city'], $json['location']);
+//     dd($json[0], $json[1]);
+//     dd($json[0]['gender'], $json[0]['name'], $json[0]['email']);
+// })->only();

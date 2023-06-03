@@ -106,29 +106,45 @@ final class State
     {
         $this->tree->traverseToken($token, $this->expectsKey);
 
+        ///// find a way to skip this when we are processing the same compound for the second time
+        ///// i.e. when the compound is lazy loaded and we are looping through it
+        ///// maybe set flag in CompoundBegin::mutateState() when shouldLazyLoad == true
         if ($this->tree->isMatched() && ((!$this->expectsKey && $token->isValue()) || $this->tree->isDeep())) {
-            $this->pointers->markAsFound();
+            $pointer = $this->pointers->markAsFound();
+            $this->buffer = $token instanceof CompoundBegin && $pointer->isLazy()
+                ? ($this->lazyLoad)()
+                : $this->buffer . $token;
 
-            if ($token instanceof CompoundBegin && $this->pointers->matching()->isLazy()) {
-                $this->buffer = ($this->lazyLoad)();
-                $token->shouldLazyLoad = true;
-            } else {
-                /** @phpstan-ignore-next-line */
-                $this->buffer .= $token;
-            }
+            // if ($token instanceof CompoundBegin && $pointer->isLazy()) {
+            //     $this->buffer = ($this->lazyLoad)();
+            //     // $token->shouldLazyLoad = true;
+            // } else {
+            //     /** @phpstan-ignore-next-line */
+            //     $this->buffer .= $token;
+            // }
         }
 
         $token->mutateState($this);
     }
 
     /**
-     * Determine whether the buffer contains tokens
+     * Determine whether the buffer is getting lazy loaded
      *
      * @return bool
      */
-    public function hasBuffer(): bool
+    public function isLazyLoading(): bool
     {
-        return $this->buffer != '';
+        return $this->buffer instanceof Parser;
+    }
+
+    /**
+     * Determine whether the buffer is ready to be yielded
+     *
+     * @return bool
+     */
+    public function shouldYield(): bool
+    {
+        return $this->buffer != '' && !$this->tree->isDeep();
     }
 
     /**
