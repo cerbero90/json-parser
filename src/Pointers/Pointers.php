@@ -76,12 +76,14 @@ final class Pointers
         $originalTree = $tree->original();
 
         foreach ($this->pointers as $pointer) {
-            $referenceTokens = $pointer->referenceTokens();
+            if ($pointer->referenceTokens() == $originalTree) {
+                return $this->matching = $pointer;
+            }
 
             foreach ($originalTree as $depth => $key) {
                 if (!$pointer->depthMatchesKey($depth, $key)) {
                     continue 2;
-                } elseif (!isset($pointers[$depth]) || $referenceTokens == $originalTree) {
+                } elseif (!isset($pointers[$depth])) {
                     $pointers[$depth] = $pointer;
                 }
             }
@@ -93,13 +95,15 @@ final class Pointers
     /**
      * Mark the given pointer as found
      *
-     * @return void
+     * @return Pointer
      */
-    public function markAsFound(): void
+    public function markAsFound(): Pointer
     {
         if (!$this->matching->wasFound) {
             $this->found[(string) $this->matching] = $this->matching->wasFound = true;
         }
+
+        return $this->matching;
     }
 
     /**

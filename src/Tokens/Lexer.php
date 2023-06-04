@@ -53,30 +53,27 @@ final class Lexer implements IteratorAggregate
     {
         $buffer = '';
         $inString = $isEscaping = false;
+        $tokenizer = Tokenizer::instance();
 
         foreach ($this->source as $chunk) {
             for ($i = 0, $size = strlen($chunk); $i < $size; $i++, $this->position++) {
                 $character = $chunk[$i];
                 $inString = ($character == '"') != $inString || $isEscaping;
                 $isEscaping = $character == '\\' && !$isEscaping;
-                $shouldBuffer = $inString || !isset(Tokens::BOUNDARIES[$character]);
 
-                if ($shouldBuffer && $buffer == '' && !isset(Tokens::TYPES[$character])) {
-                    throw new SyntaxException($character);
-                }
-
-                if ($shouldBuffer) {
+                if ($inString || !isset(Tokens::BOUNDARIES[$character])) {
+                    $buffer == '' && !isset(Tokens::TYPES[$character]) && throw new SyntaxException($character);
                     $buffer .= $character;
                     continue;
                 }
 
                 if ($buffer != '') {
-                    yield Tokenizer::instance()->toToken($buffer);
+                    yield $tokenizer->toToken($buffer);
                     $buffer = '';
                 }
 
                 if (isset(Tokens::DELIMITERS[$character])) {
-                    yield Tokenizer::instance()->toToken($character);
+                    yield $tokenizer->toToken($character);
                 }
             }
         }

@@ -107,9 +107,9 @@ final class State
         $this->tree->traverseToken($token, $this->expectsKey);
 
         if ($this->tree->isMatched() && ((!$this->expectsKey && $token->isValue()) || $this->tree->isDeep())) {
-            $this->pointers->markAsFound();
+            $pointer = $this->pointers->markAsFound();
 
-            if ($token instanceof CompoundBegin && $this->pointers->matching()->isLazy()) {
+            if ($token instanceof CompoundBegin && $pointer->isLazy()) {
                 $this->buffer = ($this->lazyLoad)();
                 $token->shouldLazyLoad = true;
             } else {
