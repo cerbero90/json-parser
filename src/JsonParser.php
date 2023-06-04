@@ -56,7 +56,7 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Statically instantiate the class
+     * Instantiate the class statically
      *
      * @param mixed $source
      * @return self
@@ -140,7 +140,7 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Traverse the lazily iterable JSON
+     * Traverse the JSON one key and value at a time
      *
      * @param Closure|null $callback
      * @return void

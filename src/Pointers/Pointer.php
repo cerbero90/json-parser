@@ -158,7 +158,6 @@ final class Pointer implements Stringable
      */
     public function includesTree(Tree $tree): bool
     {
-        // if ($this->pointer == '' && !$this->isLazy) {
         if ($this->pointer == '') {
             return true;
         }
