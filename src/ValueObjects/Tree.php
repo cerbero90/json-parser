@@ -166,6 +166,13 @@ final class Tree
 
         $this->original[$this->depth] = $trimmedKey;
         $this->wildcarded[$this->depth] = $trimmedKey;
+
+        if (count($this->original) > $offset = $this->depth + 1) {
+            array_splice($this->original, $offset);
+            array_splice($this->wildcarded, $offset);
+            array_splice($this->inObjectByDepth, $offset);
+        }
+
         $this->pointers->matchTree($this);
     }
 
@@ -179,15 +186,16 @@ final class Tree
         $index = $this->original[$this->depth] ?? null;
         $this->original[$this->depth] = $index = is_int($index) ? $index + 1 : 0;
 
-        if (count($this->original) > $this->depth + 1) {
-            array_splice($this->original, $this->depth + 1);
+        if (count($this->original) > $offset = $this->depth + 1) {
+            array_splice($this->original, $offset);
+            array_splice($this->inObjectByDepth, $offset);
         }
 
         $referenceTokens = $this->pointers->matchTree($this)->referenceTokens();
         $this->wildcarded[$this->depth] = ($referenceTokens[$this->depth] ?? null) == '-' ? '-' : $index;
 
-        if (count($this->wildcarded) > $this->depth + 1) {
-            array_splice($this->wildcarded, $this->depth + 1);
+        if (count($this->wildcarded) > $offset) {
+            array_splice($this->wildcarded, $offset);
         }
     }
 
