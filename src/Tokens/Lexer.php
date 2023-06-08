@@ -32,7 +32,7 @@ final class Lexer implements IteratorAggregate
      *
      * @var int
      */
-    private int $position = 1;
+    private int $position = 0;
 
     /**
      * Instantiate the class.
