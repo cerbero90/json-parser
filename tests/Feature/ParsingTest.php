@@ -21,3 +21,15 @@ it('parses JSON when calling the helper', function (string $json, array $parsed)
 it('eager loads JSON into an array', function (string $json, array $parsed) {
     expect(JsonParser::parse($json)->toArray())->toBe($parsed);
 })->with(Dataset::forParsing());
+
+it('shows the progress while parsing', function () {
+    $parser = new JsonParser(fixture('json/simple_array.json'));
+
+    expect($parser->progress()->percentage())->toBe($percentage = 0.0);
+
+    foreach ($parser as $value) {
+        expect($percentage)->toBeLessThan($percentage = $parser->progress()->percentage());
+    }
+
+    expect($parser->progress()->percentage())->toBe(100.0);
+});
