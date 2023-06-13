@@ -56,6 +56,7 @@ trait GuzzleAware
     /**
      * Retrieve the Guzzle client
      *
+     * @codeCoverageIgnore
      * @return Client
      */
     protected function guzzle(): Client

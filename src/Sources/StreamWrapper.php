@@ -7,6 +7,7 @@ use Psr\Http\Message\StreamInterface;
 /**
  * The JSON stream wrapper.
  *
+ * @codeCoverageIgnore
  * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
  */
 final class StreamWrapper
