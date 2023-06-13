@@ -10,11 +10,11 @@ use Generator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use GuzzleHttp\Psr7\Response as Psr7Response;
+use GuzzleHttp\Psr7\Stream;
 use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\Response;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * The dataset provider.
@@ -462,21 +462,15 @@ final class Dataset
      */
     public static function forSources(): Generator
     {
+        $parsed = require fixture('parsing/simple_array.php');
         $path = fixture('json/simple_array.json');
         $json = file_get_contents($path);
         $size = strlen($json);
         $request = new Psr7Request('GET', 'foo');
 
-        $stream = Mockery::mock(StreamInterface::class)
-            ->shouldReceive([
-                'getSize' => $size,
-                'isReadable' => true,
-            ])
-            ->getMock();
-
         $response = Mockery::mock(ResponseInterface::class)
             ->shouldReceive('getBody')
-            ->andReturn($stream)
+            ->andReturnUsing(fn () => new Stream(fopen($path, 'rb')))
             ->getMock();
 
         $client = Mockery::mock(Client::class)
@@ -500,7 +494,7 @@ final class Dataset
 
         $psr7Response = Mockery::mock(Psr7Response::class)
             ->shouldReceive('getBody')
-            ->andReturn($stream)
+            ->andReturn(new Stream(fopen($path, 'rb')))
             ->getMock();
 
         $psr7Request = Mockery::mock(Sources\Psr7Request::class, [$request])
@@ -522,11 +516,11 @@ final class Dataset
             new Sources\LaravelClientResponse(new Response($psr7Response)),
             new Sources\Psr7Message($response),
             $psr7Request,
-            new Sources\Psr7Stream($stream),
+            new Sources\Psr7Stream(new Stream(fopen($path, 'rb'))),
         ];
 
         foreach ($sources as $source) {
-            yield [$source, $size];
+            yield [$source, $size, $parsed];
         }
     }
 }
