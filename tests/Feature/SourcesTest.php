@@ -16,3 +16,10 @@ it('throws an exception when Guzzle is required but not installed', function (So
     expect(fn () => JsonParser::parse($source)->traverse())
         ->toThrow(GuzzleRequiredException::class, 'Guzzle is required to load JSON from endpoints');
 })->with(Dataset::forSourcesRequiringGuzzle());
+
+it('supports multiple sources', function (Source $source, int $size) {
+    expect($source)
+        ->getIterator()->toBeInstanceOf(Traversable::class)
+        ->matches()->toBeTrue()
+        ->size()->toBe($size);
+})->with(Dataset::forSources());

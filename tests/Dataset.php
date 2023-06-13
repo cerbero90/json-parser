@@ -3,12 +3,18 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Decoders\DecodedValue;
-use Cerbero\JsonParser\Sources\Endpoint;
-use Cerbero\JsonParser\Sources\Psr7Request;
+use Cerbero\JsonParser\Sources;
 use Cerbero\JsonParser\Tokens\Parser;
 use DirectoryIterator;
 use Generator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use GuzzleHttp\Psr7\Response as Psr7Response;
+use Illuminate\Http\Client\Request;
+use Illuminate\Http\Client\Response;
 use Mockery;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * The dataset provider.
@@ -419,7 +425,7 @@ final class Dataset
      */
     public static function forSourcesRequiringGuzzle(): Generator
     {
-        $sources = [Endpoint::class, Psr7Request::class];
+        $sources = [Sources\Endpoint::class, Sources\Psr7Request::class];
 
         foreach ($sources as $source) {
             yield Mockery::mock($source)
@@ -446,6 +452,81 @@ final class Dataset
 
         foreach ([true, false] as $decodesToArray) {
             yield [$decodesToArray, $json, $values[$decodesToArray]];
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test sources
+     *
+     * @return Generator
+     */
+    public static function forSources(): Generator
+    {
+        $path = fixture('json/simple_array.json');
+        $json = file_get_contents($path);
+        $size = strlen($json);
+        $request = new Psr7Request('GET', 'foo');
+
+        $stream = Mockery::mock(StreamInterface::class)
+            ->shouldReceive([
+                'getSize' => $size,
+                'isReadable' => true,
+            ])
+            ->getMock();
+
+        $response = Mockery::mock(ResponseInterface::class)
+            ->shouldReceive('getBody')
+            ->andReturn($stream)
+            ->getMock();
+
+        $client = Mockery::mock(Client::class)
+            ->shouldReceive('get', 'sendRequest')
+            ->andReturn($response)
+            ->getMock();
+
+        $endpoint = Mockery::mock(Sources\Endpoint::class, ['https://example.com'])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('guzzle')
+            ->andReturn($client)
+            ->getMock();
+
+        $laravelClientRequest = Mockery::mock(Sources\LaravelClientRequest::class, [new Request($request)])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('guzzle')
+            ->andReturn($client)
+            ->getMock();
+
+        $psr7Response = Mockery::mock(Psr7Response::class)
+            ->shouldReceive('getBody')
+            ->andReturn($stream)
+            ->getMock();
+
+        $psr7Request = Mockery::mock(Sources\Psr7Request::class, [$request])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('guzzle')
+            ->andReturn($client)
+            ->getMock();
+
+        $sources = [
+            new Sources\AnySource(new Sources\Json($json)),
+            new Sources\CustomSource(new Sources\Json($json)),
+            $endpoint,
+            new Sources\Filename($path),
+            new Sources\IterableSource(str_split($json)),
+            new Sources\Json($json),
+            new Sources\JsonResource(fopen($path, 'rb')),
+            $laravelClientRequest,
+            new Sources\LaravelClientResponse(new Response($psr7Response)),
+            new Sources\Psr7Message($response),
+            $psr7Request,
+            new Sources\Psr7Stream($stream),
+        ];
+
+        foreach ($sources as $source) {
+            yield [$source, $size];
         }
     }
 }
