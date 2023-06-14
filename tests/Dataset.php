@@ -252,27 +252,27 @@ final class Dataset
         $json = fixture('json/complex_object.json');
         $sequenceByPointer = [
             '' => [
-                fn ($value, $key) => $key->toBe('id')->and($value->value)->toBe('0001'),
-                fn ($value, $key) => $key->toBe('type')->and($value->value)->toBe('donut'),
-                fn ($value, $key) => $key->toBe('name')->and($value->value)->toBe('Cake'),
-                fn ($value, $key) => $key->toBe('ppu')->and($value->value)->toBe(0.55),
-                fn ($value, $key) => $key->toBe('batters')->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe('topping')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('id')->and($value)->toBe('0001'),
+                fn ($value, $key) => $key->toBe('type')->and($value)->toBe('donut'),
+                fn ($value, $key) => $key->toBe('name')->and($value)->toBe('Cake'),
+                fn ($value, $key) => $key->toBe('ppu')->and($value)->toBe(0.55),
+                fn ($value, $key) => $key->toBe('batters')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value)->toBeInstanceOf(Parser::class),
             ],
             '/batters/batter/-' => [
-                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value)->toBeInstanceOf(Parser::class),
             ],
             '/topping/-' => [
-                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(4)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(5)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(6)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(4)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(5)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(6)->and($value)->toBeInstanceOf(Parser::class),
             ],
         ];
 
@@ -291,18 +291,18 @@ final class Dataset
         $json = fixture('json/complex_object.json');
         $sequenceByPointer = [
             '/topping,/batters' => [
-                fn ($value, $key) => $key->toBe('batters')->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe('topping')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('batters')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value)->toBeInstanceOf(Parser::class),
             ],
             '/topping/-,/batters/batter' => [
-                fn ($value, $key) => $key->toBe('batter')->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(4)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(5)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(6)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('batter')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(4)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(5)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(6)->and($value)->toBeInstanceOf(Parser::class),
             ],
         ];
 
@@ -415,7 +415,7 @@ final class Dataset
         $patch = fn (DecodedValue $decoded) => strrev($decoded->json);
         $patched = ['a1', 'b""', 'foo', '4c1.3', 'deslaf', null, ']e2,1[', '}2:f"zab",1:"rab"{'];
 
-        yield [$json, fn () => $patch, $patched];
+        yield [$json, $patch, $patched];
     }
 
     /**
