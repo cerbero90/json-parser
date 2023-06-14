@@ -135,7 +135,7 @@ final class Parser implements IteratorAggregate
         $this->isFastForwarding = true;
 
         foreach ($this as $value) {
-            $value instanceof self && $value->fastForward();
+            $value instanceof self && $value->fastForward(); // @codeCoverageIgnore
         }
     }
 }
