@@ -14,7 +14,7 @@ final class SimdjsonDecoder extends AbstractDecoder
      * @param bool $decodesToArray
      * @param int $depth
      */
-    public function __construct(private bool $decodesToArray = true, private int $depth = 512)
+    public function __construct(private readonly bool $decodesToArray = true, private readonly int $depth = 512)
     {
     }
 

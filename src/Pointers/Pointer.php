@@ -22,21 +22,14 @@ final class Pointer implements Stringable
      *
      * @var string[]
      */
-    private array $referenceTokens;
+    public readonly array $referenceTokens;
 
     /**
      * The pointer depth.
      *
      * @var int
      */
-    private int $depth;
-
-    /**
-     * The pointer callback.
-     *
-     * @var Closure
-     */
-    private ?Closure $callback;
+    public readonly int $depth;
 
     /**
      * Whether the pointer was found.
@@ -52,11 +45,13 @@ final class Pointer implements Stringable
      * @param bool $isLazy
      * @param Closure|null $callback
      */
-    public function __construct(private string $pointer, private bool $isLazy = false, Closure $callback = null)
-    {
+    public function __construct(
+        private readonly string $pointer,
+        public readonly bool $isLazy = false,
+        private readonly ?Closure $callback = null,
+    ) {
         $this->referenceTokens = $this->toReferenceTokens();
         $this->depth = count($this->referenceTokens);
-        $this->callback = $callback;
     }
 
     /**
@@ -74,36 +69,6 @@ final class Pointer implements Stringable
         $referenceTokens = array_map(fn (string $token) => str_replace(['~1', '~0'], ['/', '~'], $token), $tokens);
 
         return array_slice($referenceTokens, 1);
-    }
-
-    /**
-     * Determine whether the pointer is lazy
-     *
-     * @return bool
-     */
-    public function isLazy(): bool
-    {
-        return $this->isLazy;
-    }
-
-    /**
-     * Retrieve the reference tokens
-     *
-     * @return string[]
-     */
-    public function referenceTokens(): array
-    {
-        return $this->referenceTokens;
-    }
-
-    /**
-     * Retrieve the JSON pointer depth
-     *
-     * @return int
-     */
-    public function depth(): int
-    {
-        return $this->depth;
     }
 
     /**

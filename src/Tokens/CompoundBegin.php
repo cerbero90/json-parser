@@ -25,16 +25,14 @@ final class CompoundBegin extends Token
      */
     public function mutateState(State $state): void
     {
-        $tree = $state->tree();
-
-        if ($this->shouldLazyLoad = $this->shouldLazyLoad && $tree->depth() >= 0) {
-            $state->expectedToken = $tree->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
+        if ($this->shouldLazyLoad = $this->shouldLazyLoad && $state->tree->depth() >= 0) {
+            $state->expectedToken = $state->tree->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
             return;
         }
 
         $state->expectsKey = $beginsObject = $this->value == '{';
         $state->expectedToken = $beginsObject ? Tokens::AFTER_OBJECT_BEGIN : Tokens::AFTER_ARRAY_BEGIN;
-        $tree->deepen($beginsObject);
+        $state->tree->deepen($beginsObject);
     }
 
     /**

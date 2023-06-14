@@ -18,7 +18,7 @@ final class Comma extends Token
      */
     public function mutateState(State $state): void
     {
-        $state->expectsKey = $state->tree()->inObject();
+        $state->expectsKey = $state->tree->inObject();
         $state->expectedToken = $state->expectsKey ? Tokens::SCALAR_STRING : Tokens::VALUE_ANY;
     }
 }

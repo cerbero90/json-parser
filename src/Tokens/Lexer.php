@@ -25,7 +25,7 @@ final class Lexer implements IteratorAggregate
      *
      * @var Progress
      */
-    private Progress $progress;
+    private readonly Progress $progress;
 
     /**
      * The current position.
@@ -39,7 +39,7 @@ final class Lexer implements IteratorAggregate
      *
      * @param Source $source
      */
-    public function __construct(private Source $source)
+    public function __construct(private readonly Source $source)
     {
         $this->progress = new Progress();
     }

@@ -76,7 +76,7 @@ final class Pointers
         $originalTree = $tree->original();
 
         foreach ($this->pointers as $pointer) {
-            if ($pointer->referenceTokens() == $originalTree) {
+            if ($pointer->referenceTokens == $originalTree) {
                 return $this->matching = $pointer;
             }
 

@@ -25,7 +25,7 @@ final class Parser implements IteratorAggregate
      *
      * @var ConfigurableDecoder
      */
-    private ConfigurableDecoder $decoder;
+    private readonly ConfigurableDecoder $decoder;
 
     /**
      * Whether the parser is fast-forwarding.
@@ -40,7 +40,7 @@ final class Parser implements IteratorAggregate
      * @param Generator<int, Token> $tokens
      * @param Config $config
      */
-    public function __construct(private Generator $tokens, private Config $config)
+    public function __construct(private readonly Generator $tokens, private readonly Config $config)
     {
         $this->decoder = new ConfigurableDecoder($config);
     }
@@ -63,13 +63,13 @@ final class Parser implements IteratorAggregate
 
             $state->mutateByToken($token);
 
-            if (!$token->endsChunk() || $state->tree()->isDeep()) {
+            if (!$token->endsChunk() || $state->tree->isDeep()) {
                 continue;
             }
 
             if ($state->hasBuffer()) {
                 /** @var string|int $key */
-                $key = $this->decoder->decode($state->key());
+                $key = $this->decoder->decode($state->tree->currentKey());
                 $value = $this->decoder->decode($state->value());
 
                 yield $key => $state->callPointer($value, $key);

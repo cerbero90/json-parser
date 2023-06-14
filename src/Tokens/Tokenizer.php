@@ -20,7 +20,7 @@ final class Tokenizer
      *
      * @var array<int, Token>
      */
-    private array $tokensMap;
+    private array $tokensMap = [];
 
     /**
      * Retrieve the singleton instance
