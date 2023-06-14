@@ -1,6 +1,7 @@
 build:
     nodes:
         analysis:
+            image: default-bionic
             project_setup:
                 override: true
             tests:
