@@ -79,7 +79,7 @@ JsonParser::parse($source)->traverse(function (mixed $value, string|int $key, Js
 
 ### 💧 Sources
 
-A JSON source is any data point that provides a JSON. A wide range of sources is supported by default:
+A JSON source is any data point that provides a JSON. A wide range of sources are supported by default:
 - **strings**, e.g. `{"foo":"bar"}`
 - **iterables**, i.e. arrays or instances of `Traversable`
 - **file paths**, e.g. `/path/to/large.json`
@@ -123,13 +123,13 @@ class CustomSource extends Source
 
 The parent class `Source` gives us access to 2 properties:
 - `$source`: the JSON source we pass to the parser, i.e.: `new JsonParser($source)`
-- `$config`: the configuration we set by chaining methods, e.g.: `$parser->pointer('/foo')`
+- `$config`: the configuration we set by chaining methods like `$parser->pointer('/foo')`
 
 The method `getIterator()` defines the logic to read the JSON source in a memory-efficient way. It feeds the parser with small pieces of JSON. Please refer to the [already existing sources](https://github.com/cerbero90/json-parser/tree/master/src/Sources) to see some implementations.
 
 The method `matches()` determines whether the JSON source passed to the parser can be handled by our custom implementation. In other words, we are telling the parser if it should use our class for the JSON to parse.
 
-Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the [parsing progress](#progress), however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
+Finally, `calculateSize()` computes the whole size of the JSON source. It's used to track the [parsing progress](#-progress), however it's not always possible to know the size of a JSON source. In this case, or if we don't need to track the progress, we can return `null`.
 
 Now that we have implemented our custom source, we can pass it to the parser:
 
@@ -261,7 +261,7 @@ JsonParser::parse($source)
 
 > ⚠️ Please note the parameters order of the callbacks: the value is passed before the key.
 
-Sometimes the sub-trees extracted by pointers are small enough to be kept all in memory. We can chain `toArray()` to eager load the extracted sub-trees into an array:
+Sometimes the sub-trees extracted by pointers are small enough to be kept entirely in memory. In such cases, we can chain `toArray()` to eager load the extracted sub-trees into an array:
 
 ```php
 // ['gender' => 'female', 'country' => 'Germany']
@@ -270,9 +270,9 @@ $array = JsonParser::parse($source)->pointers(['/results/0/gender', '/results/0/
 
 ### 🐼 Lazy pointers
 
-JSON Parser keeps in memory only one key and one value at a time. However, if the value is a large array or a large object, we may not want to keep it all in memory.
+JSON Parser only keeps one key and one value in memory at a time. However, if the value is a large array or object, it may be inefficient to keep it all in memory.
 
-The solution is to use lazy pointers, which recursively keep in memory only one key and one value at a time of any nested array or object:
+To solve this problem, we can use lazy pointers. These pointers recursively keep in memory only one key and one value at a time for any nested array or object.
 
 ```php
 $json = JsonParser::parse($source)->lazyPointer('/results/0/name');
@@ -282,7 +282,7 @@ foreach ($json as $key => $value) {
 }
 ```
 
-Lazy pointers return a light-weight instance of `Cerbero\JsonParser\Tokens\Parser` instead of the actual large value. To lazy load nested keys and values, we can then loop through the parser:
+Lazy pointers return a lightweight instance of `Cerbero\JsonParser\Tokens\Parser` instead of the actual large value. To lazy load nested keys and values, we can then loop through the parser:
 
 ```php
 $json = JsonParser::parse($source)->lazyPointer('/results/0/name');
@@ -438,7 +438,7 @@ $json = JsonParser::parse($source)
     ->patchDecodingError(fn (DecodedValue $decoded) => $patches[$decoded->json] ?? null);
 ```
 
-Any exception thrown by this package implements the `JsonParserException` interface, which makes it easy to handle all exceptions in one catch:
+Any exception thrown by this package implements the `JsonParserException` interface. This makes it easy to handle all exceptions in a single catch block:
 
 ```php
 use Cerbero\JsonParser\Exceptions\JsonParserException;
@@ -463,7 +463,7 @@ For reference, here is a comprehensive table of all the exceptions thrown by thi
 
 ### ⏳ Progress
 
-When processing large JSONs, we may need to know the parsing progress. JSON Parser offers convenient methods to access all the progress details:
+When processing large JSONs, it can be helpful to track the parsing progress. JSON Parser provides convenient methods for accessing all the progress details:
 
 ```php
 $json = new JsonParser($source);
@@ -476,7 +476,7 @@ $json->progress()->percentage(); // the completed percentage e.g. 47.583
 $json->progress()->format(); // the formatted progress e.g. 47.5%
 ```
 
-The total size of a JSON is calculated differently depending on the [source](#sources). It is not always possible to determine how large a JSON is, in these cases only the current progress is known:
+The total size of a JSON is calculated differently depending on the [source](#-sources). In some cases, it may not be possible to determine the size of a JSON and only the current progress is known:
 
 ```php
 $json->progress()->current(); // 86759341
@@ -525,7 +525,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-author]: https://img.shields.io/static/v1?label=author&message=cerbero90&color=50ABF1&logo=twitter&style=flat-square
 [ico-php]: https://img.shields.io/packagist/php-v/cerbero/json-parser?color=%234F5B93&logo=php&style=flat-square
 [ico-version]: https://img.shields.io/packagist/v/cerbero/json-parser.svg?label=version&style=flat-square
-[ico-actions]: https://img.shields.io/github/actions/workflow/status/cerbero90/json-parser/workflows/build.yml?branch=master&style=flat-square&logo=github
+[ico-actions]: https://img.shields.io/github/actions/workflow/status/cerbero90/json-parser/build.yml?branch=master&style=flat-square&logo=github
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-psr7]: https://img.shields.io/static/v1?label=compliance&message=PSR-7&color=blue&style=flat-square
 [ico-psr12]: https://img.shields.io/static/v1?label=compliance&message=PSR-12&color=blue&style=flat-square
