@@ -140,6 +140,16 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
+     * Set a lazy JSON pointer for the whole JSON
+     *
+     * @return self
+     */
+    public function lazy(): self
+    {
+        return $this->lazyPointer('');
+    }
+
+    /**
      * Traverse the JSON one key and value at a time
      *
      * @param Closure|null $callback

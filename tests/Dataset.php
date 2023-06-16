@@ -388,6 +388,34 @@ final class Dataset
     }
 
     /**
+     * Retrieve the dataset to test a global lazy pointer
+     *
+     * @return Generator
+     */
+    public static function forGlobalLazyPointer(): Generator
+    {
+        $sequenceByFixture = [
+            'complex_object' => [
+                fn ($value, $key) => $key->toBe('id')->and($value)->toBe('0001'),
+                fn ($value, $key) => $key->toBe('type')->and($value)->toBe('donut'),
+                fn ($value, $key) => $key->toBe('name')->and($value)->toBe('Cake'),
+                fn ($value, $key) => $key->toBe('ppu')->and($value)->toBe(0.55),
+                fn ($value, $key) => $key->toBe('batters')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value)->toBeInstanceOf(Parser::class),
+            ],
+            'complex_array' => [
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+            ],
+        ];
+
+        foreach ($sequenceByFixture as $fixture => $sequence) {
+            yield [fixture("json/{$fixture}.json"), $sequence];
+        }
+    }
+
+    /**
      * Retrieve the dataset to test syntax errors
      *
      * @return Generator

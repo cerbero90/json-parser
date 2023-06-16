@@ -314,6 +314,15 @@ foreach ($json as $key => $value) {
 }
 ```
 
+To lazily parse the entire JSON, we can simply chain the `lazy()` method:
+
+```php
+foreach (JsonParser::parse($source)->lazy() as $key => $value) {
+    // 1st iteration: $key === 'results', $value instanceof Parser
+    // 2nd iteration: $key === 'info', $value instanceof Parser
+}
+```
+
 Lazy pointers also have all the other functionalities of normal pointers: they accept callbacks, can be set one by one or all together, can be eager loaded into an array and can be mixed with normal pointers as well:
 
 ```php
