@@ -20,3 +20,9 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 
 ### Security
 - Nothing
+
+
+## 1.0.0 - 2023-06-16
+
+### Added
+- First release of JSON Parser
