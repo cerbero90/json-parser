@@ -1,11 +1,13 @@
 {
     "name": "cerbero/json-parser",
     "type": "library",
-    "description": "Zero-dependencies pull parser and lexer to save memory while reading big JSONs.",
+    "description": "Zero-dependencies pull parser to read large JSON from any source in a memory-efficient way.",
     "keywords": [
         "json",
         "parser",
-        "lexer"
+        "json-parser",
+        "lexer",
+        "memory"
     ],
     "homepage": "https://github.com/cerbero90/json-parser",
     "license": "MIT",
@@ -16,19 +18,27 @@
         "role": "Developer"
     }],
     "require": {
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "php": "^8.0"
+        "php": "^8.1"
     },
     "require-dev": {
-        "pestphp/pest": "^1.21",
+        "guzzlehttp/guzzle": "^7.2",
+        "illuminate/http": ">=6.20",
+        "mockery/mockery": "^1.5",
+        "pestphp/pest": "^2.0",
+        "phpstan/phpstan": "^1.9",
         "scrutinizer/ocular": "^1.8",
         "squizlabs/php_codesniffer": "^3.0"
+    },
+    "suggest": {
+        "guzzlehttp/guzzle": "Required to load JSON from endpoints (^7.2)."
     },
     "autoload": {
         "psr-4": {
             "Cerbero\\JsonParser\\": "src"
-        }
+        },
+        "files": [
+            "helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -37,6 +47,7 @@
     },
     "scripts": {
         "test": "pest",
+        "static": "phpstan analyze",
         "check-style": "phpcs --standard=PSR12 src",
         "fix-style": "phpcbf --standard=PSR12 src"
     },
