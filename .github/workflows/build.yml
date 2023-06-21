@@ -1,8 +1,8 @@
 name: build
 
 on:
-  push:
-  pull_request:
+    push:
+    pull_request:
 
 jobs:
     tests:
@@ -63,44 +63,14 @@ jobs:
             - name: Upload coverage
               run: vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
 
-    style:
+    linting:
         runs-on: ubuntu-latest
 
-        name: Coding style
+        name: Linting
 
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
+            - uses: actions/checkout@v3
+            - name: Duster Lint
+              uses: tighten/duster-action@v1
               with:
-                  php-version: 8.0
-                  tools: phpcs
-                  coverage: none
-
-            - name: Execute check
-              run: phpcs --standard=psr12 src/
-
-    static:
-        runs-on: ubuntu-latest
-
-        name: Static analysis
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: 8.0
-                  extensions: simdjson
-                  tools: composer:v2
-                  coverage: none
-
-            - name: Install dependencies
-              run: composer update --prefer-stable --prefer-dist --no-interaction
-
-            - name: Execute check
-              run: vendor/bin/phpstan analyse
+                  args: lint -u tlint,phpcodesniffer,pint,phpstan

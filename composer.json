@@ -27,7 +27,8 @@
         "pestphp/pest": "^1.22",
         "phpstan/phpstan": "^1.9",
         "scrutinizer/ocular": "^1.8",
-        "squizlabs/php_codesniffer": "^3.0"
+        "squizlabs/php_codesniffer": "^3.0",
+        "tightenco/duster": "^2.0"
     },
     "suggest": {
         "guzzlehttp/guzzle": "Required to load JSON from endpoints (^7.2)."
@@ -46,10 +47,9 @@
         }
     },
     "scripts": {
-        "test": "pest",
-        "static": "phpstan analyze",
-        "check-style": "phpcs --standard=PSR12 src",
-        "fix-style": "phpcbf --standard=PSR12 src"
+        "fix": "duster fix -u tlint,phpcodesniffer,pint",
+        "lint": "duster lint -u tlint,phpcodesniffer,pint,phpstan",
+        "test": "pest"
     },
     "extra": {
         "branch-alias": {

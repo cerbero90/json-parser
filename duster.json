@@ -1,0 +1,13 @@
+{
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "tests"
+    ],
+    "scripts": {
+        "lint": {
+            "phpstan": ["./vendor/bin/phpstan", "analyse"]
+        }
+    }
+}

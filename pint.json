@@ -1,0 +1,19 @@
+{
+    "preset": "per",
+    "rules": {
+        "align_multiline_comment": true,
+        "combine_consecutive_issets": true,
+        "combine_consecutive_unsets": true,
+        "concat_space": {"spacing": "one"},
+        "explicit_string_variable": true,
+        "ordered_imports": {
+            "sort_algorithm": "alpha",
+            "imports_order": [
+                "class",
+                "function",
+                "const"
+            ]
+        },
+        "simple_to_complex_string_variable": true
+    }
+}
