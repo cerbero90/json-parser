@@ -29,21 +29,32 @@ final class JsonParser implements IteratorAggregate, ArrayAccess
      *
      * @var Config
      */
-    private Config $config;
+    private readonly Config $config;
 
     /**
      * The lexer.
      *
      * @var Lexer
      */
-    private Lexer $lexer;
+    private readonly Lexer $lexer;
 
     /**
      * The parser.
      *
      * @var Parser
      */
-    private Parser $parser;
+    private readonly Parser $parser;
+
+    /**
+     * Instantiate the class statically
+     *
+     * @param mixed $source
+     * @return self
+     */
+    public static function parse(mixed $source): self
+    {
+        return new self($source);
+    }
 
     /**
      * Instantiate the class.
@@ -55,17 +66,6 @@ final class JsonParser implements IteratorAggregate, ArrayAccess
         $this->config = new Config();
         $this->lexer = new Lexer(new AnySource($source, $this->config));
         $this->parser = new Parser($this->lexer->getIterator(), $this->config);
-    }
-
-    /**
-     * Instantiate the class statically
-     *
-     * @param mixed $source
-     * @return self
-     */
-    public static function parse(mixed $source): self
-    {
-        return new self($source);
     }
 
     /**

@@ -15,7 +15,7 @@ final class UnsupportedSourceException extends Exception implements JsonParserEx
      *
      * @param mixed $source
      */
-    public function __construct(public mixed $source)
+    public function __construct(public readonly mixed $source)
     {
         parent::__construct('Unable to load JSON from the provided source');
     }

@@ -46,7 +46,7 @@ final class Tree
      *
      * @param Pointers $pointers
      */
-    public function __construct(private Pointers $pointers)
+    public function __construct(private readonly Pointers $pointers)
     {
     }
 
@@ -121,8 +121,8 @@ final class Tree
     {
         $pointer = $this->pointers->matching();
 
-        return $pointer == '' ? false : $this->depth >= $pointer->depth();
-        return $pointer == '' ? $this->depth > 0 : $this->depth >= $pointer->depth();
+        return $pointer == '' ? false : $this->depth >= $pointer->depth;
+        return $pointer == '' ? $this->depth > 0 : $this->depth >= $pointer->depth;
     }
 
     /**
@@ -136,7 +136,7 @@ final class Tree
     {
         $pointer = $this->pointers->matching();
 
-        if ($pointer != '' && $this->depth >= $pointer->depth()) {
+        if ($pointer != '' && $this->depth >= $pointer->depth) {
             return;
         } elseif ($expectsKey) {
             $this->traverseKey($token);
@@ -192,7 +192,7 @@ final class Tree
             array_splice($this->inObjectByDepth, $offset);
         }
 
-        $referenceTokens = $this->pointers->matchTree($this)->referenceTokens();
+        $referenceTokens = $this->pointers->matchTree($this)->referenceTokens;
         $this->wildcarded[$this->depth] = ($referenceTokens[$this->depth] ?? null) == '-' ? '-' : $index;
 
         if (count($this->wildcarded) > $offset) {
@@ -209,6 +209,6 @@ final class Tree
     {
         $key = $this->original[$this->depth];
 
-        return is_string($key) ? "\"$key\"" : $key;
+        return is_string($key) ? "\"{$key}\"" : $key;
     }
 }

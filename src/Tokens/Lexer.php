@@ -25,21 +25,21 @@ final class Lexer implements IteratorAggregate
      *
      * @var Progress
      */
-    private Progress $progress;
+    private readonly Progress $progress;
 
     /**
      * The current position.
      *
      * @var int
      */
-    private int $position = 1;
+    private int $position = 0;
 
     /**
      * Instantiate the class.
      *
      * @param Source $source
      */
-    public function __construct(private Source $source)
+    public function __construct(private readonly Source $source)
     {
         $this->progress = new Progress();
     }

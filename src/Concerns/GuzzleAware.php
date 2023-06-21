@@ -45,12 +45,23 @@ trait GuzzleAware
      */
     protected function getJson(UriInterface|string $url): ResponseInterface
     {
-        return (new Client())->get($url, [
+        return $this->guzzle()->get($url, [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ],
         ]);
+    }
+
+    /**
+     * Retrieve the Guzzle client
+     *
+     * @codeCoverageIgnore
+     * @return Client
+     */
+    protected function guzzle(): Client
+    {
+        return new Client();
     }
 
     /**
@@ -61,6 +72,6 @@ trait GuzzleAware
      */
     protected function sendRequest(RequestInterface $request): ResponseInterface
     {
-        return (new Client())->sendRequest($request);
+        return $this->guzzle()->sendRequest($request);
     }
 }

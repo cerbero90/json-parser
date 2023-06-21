@@ -16,9 +16,9 @@ it('lets the user handle syntax errors', function () {
     JsonParser::parse('{a}')
         ->onSyntaxError(function (SyntaxException $e) {
             expect($e)
-                ->getMessage()->toBe("Syntax error: unexpected 'a' at position 2")
+                ->getMessage()->toBe("Syntax error: unexpected 'a' at position 1")
                 ->value->toBe('a')
-                ->position->toBe(2);
+                ->position->toBe(1);
         })
         ->traverse();
 });

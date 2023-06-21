@@ -5,10 +5,9 @@ use Cerbero\JsonParser\Exceptions\IntersectingPointersException;
 use Cerbero\JsonParser\Exceptions\InvalidPointerException;
 use Cerbero\JsonParser\JsonParser;
 
-
 it('throws an exception when providing an invalid JSON pointer', function (string $pointer) {
     expect(fn () => JsonParser::parse('{}')->pointer($pointer)->traverse())
-        ->toThrow(InvalidPointerException::class, "The string [$pointer] is not a valid JSON pointer");
+        ->toThrow(InvalidPointerException::class, "The string [{$pointer}] is not a valid JSON pointer");
 })->with(Dataset::forInvalidPointers());
 
 it('loads JSON from a single JSON pointer', function (string $json, string $pointer, array $parsed) {
@@ -64,6 +63,9 @@ it('mixes pointers and lazy pointers', function (string $json, array $pointers, 
     expect(JsonParser::parse($json)->pointers($pointers)->lazyPointers($lazyPointers))->toParseTo($expected);
 })->with(Dataset::forMixedPointers());
 
+it('lazy loads an entire JSON', function (string $json, array $sequence) {
+    expect(JsonParser::parse($json)->lazy())->sequence(...$sequence);
+})->with(Dataset::forGlobalLazyPointer());
 
 it('ciao', function () {
     $json = JsonParser::parse(fixture('json/complex_object.json'))->lazyPointer('');
@@ -86,7 +88,7 @@ it('ciao', function () {
     dd($json->batters->toArray(), $json->topping->toArray());
     // dd($json->batters->toArray());
     foreach ($json as $key => $value) {
-        dump("$key => " . (is_object($value) ? $value::class : $value));
+        dump("{$key} => " . (is_object($value) ? $value::class : $value));
     }
     dd();
     // dd($json->id, $json->type);

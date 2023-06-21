@@ -31,7 +31,7 @@ final class ScalarString extends Token
             return;
         }
 
-        $state->expectedToken = $state->tree()->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
+        $state->expectedToken = $state->tree->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
     }
 
     /**

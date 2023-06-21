@@ -6,9 +6,6 @@ use ArrayAccess;
 use Cerbero\JsonParser\Decoders\ConfigurableDecoder;
 use Cerbero\JsonParser\Exceptions\NodeNotFoundException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
-use Cerbero\JsonParser\Tokens\CompoundBegin;
-use Cerbero\JsonParser\Tokens\CompoundEnd;
-use Cerbero\JsonParser\Tokens\Token;
 use Cerbero\JsonParser\ValueObjects\Config;
 use Cerbero\JsonParser\ValueObjects\State;
 use Generator;
@@ -26,7 +23,7 @@ final class Parser implements Iterator, ArrayAccess
      *
      * @var ConfigurableDecoder
      */
-    private ConfigurableDecoder $decoder;
+    private readonly ConfigurableDecoder $decoder;
 
     /**
      * The state.
@@ -62,7 +59,7 @@ final class Parser implements Iterator, ArrayAccess
      * @param Generator<int, Token> $tokens
      * @param Config $config
      */
-    public function __construct(private Generator $tokens, private Config $config)
+    public function __construct(private readonly Generator $tokens, private readonly Config $config)
     {
         $this->decoder = new ConfigurableDecoder($config);
     }
@@ -130,7 +127,7 @@ final class Parser implements Iterator, ArrayAccess
             return null;
         }
 
-        $this->key = $this->decoder->decode($this->state->key());
+        $this->key = $this->decoder->decode($state->tree->currentKey());
         $value = $this->decoder->decode($this->state->value());
 
         if ($value instanceof self) {
@@ -227,7 +224,7 @@ final class Parser implements Iterator, ArrayAccess
         $this->isFastForwarding = true;
 
         foreach ($this as $value) {
-            $value instanceof self && $value->fastForward();
+            $value instanceof self && $value->fastForward(); // @codeCoverageIgnore
         }
     }
 

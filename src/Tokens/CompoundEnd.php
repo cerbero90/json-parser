@@ -19,10 +19,10 @@ final class CompoundEnd extends Token
     public function mutateState(State $state): void
     {
         if (!$this->shouldLazyLoad) {
-            $state->tree()->emerge();
+            $state->tree->emerge();
         }
 
-        $state->expectedToken = $state->tree()->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
+        $state->expectedToken = $state->tree->inObject() ? Tokens::AFTER_OBJECT_VALUE : Tokens::AFTER_ARRAY_VALUE;
     }
 
     /**

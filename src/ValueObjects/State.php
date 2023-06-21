@@ -20,7 +20,7 @@ final class State
      *
      * @var Tree
      */
-    private Tree $tree;
+    public readonly Tree $tree;
 
     /**
      * The JSON buffer.
@@ -49,7 +49,7 @@ final class State
      * @param Pointers $pointers
      * @param Closure $lazyLoad
      */
-    public function __construct(private Pointers $pointers, private Closure $lazyLoad)
+    public function __construct(private readonly Pointers $pointers, private readonly Closure $lazyLoad)
     {
         $this->tree = new Tree($pointers);
     }
@@ -62,16 +62,6 @@ final class State
     public function tree(): Tree
     {
         return $this->tree;
-    }
-
-    /**
-     * Retrieve the current key of the JSON tree
-     *
-     * @return string|int
-     */
-    public function key(): string|int
-    {
-        return $this->tree->currentKey();
     }
 
     /**
@@ -111,7 +101,8 @@ final class State
         ///// maybe set flag in CompoundBegin::mutateState() when shouldLazyLoad == true
         if ($this->tree->isMatched() && ((!$this->expectsKey && $token->isValue()) || $this->tree->isDeep())) {
             $pointer = $this->pointers->markAsFound();
-            $this->buffer = $token instanceof CompoundBegin && $pointer->isLazy()
+
+            $this->buffer = $token instanceof CompoundBegin && $pointer->isLazy
                 ? ($this->lazyLoad)()
                 : $this->buffer . $token;
 

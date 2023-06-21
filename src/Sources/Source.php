@@ -14,13 +14,6 @@ use Traversable;
 abstract class Source implements IteratorAggregate
 {
     /**
-     * The configuration.
-     *
-     * @var Config
-     */
-    protected Config $config;
-
-    /**
      * The cached size of the JSON source.
      *
      * @var int|null
@@ -57,24 +50,15 @@ abstract class Source implements IteratorAggregate
     abstract protected function calculateSize(): ?int;
 
     /**
-     * Enforce the factory method to instantiate the class.
+     * Instantiate the class.
      *
      * @param mixed $source
-     * @param Config|null $config
+     * @param Config $config
      */
-    final public function __construct(protected mixed $source, Config $config = null)
-    {
-        $this->config = $config ?: new Config();
-    }
-
-    /**
-     * Retrieve the underlying configuration
-     *
-     * @return Config
-     */
-    public function config(): Config
-    {
-        return $this->config;
+    final public function __construct(
+        protected readonly mixed $source,
+        protected readonly Config $config = new Config(),
+    ) {
     }
 
     /**

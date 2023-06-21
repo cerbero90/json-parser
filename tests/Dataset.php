@@ -3,12 +3,18 @@
 namespace Cerbero\JsonParser;
 
 use Cerbero\JsonParser\Decoders\DecodedValue;
-use Cerbero\JsonParser\Sources\Endpoint;
-use Cerbero\JsonParser\Sources\Psr7Request;
+use Cerbero\JsonParser\Sources;
 use Cerbero\JsonParser\Tokens\Parser;
 use DirectoryIterator;
 use Generator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use GuzzleHttp\Psr7\Response as Psr7Response;
+use GuzzleHttp\Psr7\Stream;
+use Illuminate\Http\Client\Request;
+use Illuminate\Http\Client\Response;
 use Mockery;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * The dataset provider.
@@ -246,27 +252,27 @@ final class Dataset
         $json = fixture('json/complex_object.json');
         $sequenceByPointer = [
             '' => [
-                fn ($value, $key) => $key->toBe('id')->and($value->value)->toBe('0001'),
-                fn ($value, $key) => $key->toBe('type')->and($value->value)->toBe('donut'),
-                fn ($value, $key) => $key->toBe('name')->and($value->value)->toBe('Cake'),
-                fn ($value, $key) => $key->toBe('ppu')->and($value->value)->toBe(0.55),
-                fn ($value, $key) => $key->toBe('batters')->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe('topping')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('id')->and($value)->toBe('0001'),
+                fn ($value, $key) => $key->toBe('type')->and($value)->toBe('donut'),
+                fn ($value, $key) => $key->toBe('name')->and($value)->toBe('Cake'),
+                fn ($value, $key) => $key->toBe('ppu')->and($value)->toBe(0.55),
+                fn ($value, $key) => $key->toBe('batters')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value)->toBeInstanceOf(Parser::class),
             ],
             '/batters/batter/-' => [
-                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value)->toBeInstanceOf(Parser::class),
             ],
             '/topping/-' => [
-                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(4)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(5)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(6)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(4)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(5)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(6)->and($value)->toBeInstanceOf(Parser::class),
             ],
         ];
 
@@ -285,18 +291,18 @@ final class Dataset
         $json = fixture('json/complex_object.json');
         $sequenceByPointer = [
             '/topping,/batters' => [
-                fn ($value, $key) => $key->toBe('batters')->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe('topping')->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('batters')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value)->toBeInstanceOf(Parser::class),
             ],
             '/topping/-,/batters/batter' => [
-                fn ($value, $key) => $key->toBe('batter')->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(0)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(1)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(2)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(3)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(4)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(5)->and($value->value)->toBeInstanceOf(Parser::class),
-                fn ($value, $key) => $key->toBe(6)->and($value->value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('batter')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(3)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(4)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(5)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(6)->and($value)->toBeInstanceOf(Parser::class),
             ],
         ];
 
@@ -382,6 +388,34 @@ final class Dataset
     }
 
     /**
+     * Retrieve the dataset to test a global lazy pointer
+     *
+     * @return Generator
+     */
+    public static function forGlobalLazyPointer(): Generator
+    {
+        $sequenceByFixture = [
+            'complex_object' => [
+                fn ($value, $key) => $key->toBe('id')->and($value)->toBe('0001'),
+                fn ($value, $key) => $key->toBe('type')->and($value)->toBe('donut'),
+                fn ($value, $key) => $key->toBe('name')->and($value)->toBe('Cake'),
+                fn ($value, $key) => $key->toBe('ppu')->and($value)->toBe(0.55),
+                fn ($value, $key) => $key->toBe('batters')->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe('topping')->and($value)->toBeInstanceOf(Parser::class),
+            ],
+            'complex_array' => [
+                fn ($value, $key) => $key->toBe(0)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(1)->and($value)->toBeInstanceOf(Parser::class),
+                fn ($value, $key) => $key->toBe(2)->and($value)->toBeInstanceOf(Parser::class),
+            ],
+        ];
+
+        foreach ($sequenceByFixture as $fixture => $sequence) {
+            yield [fixture("json/{$fixture}.json"), $sequence];
+        }
+    }
+
+    /**
      * Retrieve the dataset to test syntax errors
      *
      * @return Generator
@@ -409,7 +443,7 @@ final class Dataset
         $patch = fn (DecodedValue $decoded) => strrev($decoded->json);
         $patched = ['a1', 'b""', 'foo', '4c1.3', 'deslaf', null, ']e2,1[', '}2:f"zab",1:"rab"{'];
 
-        yield [$json, fn () => $patch, $patched];
+        yield [$json, $patch, $patched];
     }
 
     /**
@@ -419,7 +453,7 @@ final class Dataset
      */
     public static function forSourcesRequiringGuzzle(): Generator
     {
-        $sources = [Endpoint::class, Psr7Request::class];
+        $sources = [Sources\Endpoint::class, Sources\Psr7Request::class];
 
         foreach ($sources as $source) {
             yield Mockery::mock($source)
@@ -446,6 +480,75 @@ final class Dataset
 
         foreach ([true, false] as $decodesToArray) {
             yield [$decodesToArray, $json, $values[$decodesToArray]];
+        }
+    }
+
+    /**
+     * Retrieve the dataset to test sources
+     *
+     * @return Generator
+     */
+    public static function forSources(): Generator
+    {
+        $parsed = require fixture('parsing/simple_array.php');
+        $path = fixture('json/simple_array.json');
+        $json = file_get_contents($path);
+        $size = strlen($json);
+        $request = new Psr7Request('GET', 'foo');
+
+        $response = Mockery::mock(ResponseInterface::class)
+            ->shouldReceive('getBody')
+            ->andReturnUsing(fn () => new Stream(fopen($path, 'rb')))
+            ->getMock();
+
+        $client = Mockery::mock(Client::class)
+            ->shouldReceive('get', 'sendRequest')
+            ->andReturn($response)
+            ->getMock();
+
+        $endpoint = Mockery::mock(Sources\Endpoint::class, ['https://example.com'])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('guzzle')
+            ->andReturn($client)
+            ->getMock();
+
+        $laravelClientRequest = Mockery::mock(Sources\LaravelClientRequest::class, [new Request($request)])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('guzzle')
+            ->andReturn($client)
+            ->getMock();
+
+        $psr7Response = Mockery::mock(Psr7Response::class)
+            ->shouldReceive('getBody')
+            ->andReturn(new Stream(fopen($path, 'rb')))
+            ->getMock();
+
+        $psr7Request = Mockery::mock(Sources\Psr7Request::class, [$request])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('guzzle')
+            ->andReturn($client)
+            ->getMock();
+
+        $sources = [
+            new Sources\AnySource(new Sources\Json($json)),
+            new Sources\CustomSource(new Sources\Json($json)),
+            $endpoint,
+            new Sources\Filename($path),
+            new Sources\IterableSource(str_split($json)),
+            new Sources\Json($json),
+            new Sources\JsonResource(fopen($path, 'rb')),
+            $laravelClientRequest,
+            new Sources\LaravelClientResponse(new Response($psr7Response)),
+            new Sources\Psr7Message($response),
+            $psr7Request,
+            new Sources\Psr7Stream(new Stream(fopen($path, 'rb'))),
+        ];
+
+        foreach ($sources as $source) {
+            yield [$source, $size, $parsed];
         }
     }
 }
