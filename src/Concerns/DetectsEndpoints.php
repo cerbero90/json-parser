@@ -2,8 +2,8 @@
 
 namespace Cerbero\JsonParser\Concerns;
 
-use function is_array;
 use function in_array;
+use function is_array;
 
 /**
  * The trait to detect endpoints.

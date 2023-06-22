@@ -19,6 +19,6 @@ class IntersectingPointersException extends Exception implements JsonParserExcep
      */
     public function __construct(public readonly Pointer $pointer1, public readonly Pointer $pointer2)
     {
-        parent::__construct("The pointers [$pointer1] and [$pointer2] are intersecting");
+        parent::__construct("The pointers [{$pointer1}] and [{$pointer2}] are intersecting");
     }
 }

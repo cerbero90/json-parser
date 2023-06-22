@@ -24,7 +24,7 @@ final class SyntaxException extends Exception implements JsonParserException
      */
     public function __construct(public readonly string $value)
     {
-        parent::__construct("Syntax error: unexpected '$value'");
+        parent::__construct("Syntax error: unexpected '{$value}'");
     }
 
     /**

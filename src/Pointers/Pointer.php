@@ -7,9 +7,9 @@ use Cerbero\JsonParser\ValueObjects\Tree;
 use Closure;
 use Stringable;
 
+use function array_slice;
 use function count;
 use function is_int;
-use function array_slice;
 
 /**
  * The JSON pointer.
@@ -123,13 +123,9 @@ final class Pointer implements Stringable
      */
     public function includesTree(Tree $tree): bool
     {
-<<<<<<< HEAD
         $originalTree = $tree->original();
 
         if ($this->pointer == '' || end($this->referenceTokens) == end($originalTree)) {
-=======
-        if ($this->pointer == '') {
->>>>>>> develop
             return true;
         }
 

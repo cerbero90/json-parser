@@ -17,6 +17,6 @@ final class InvalidPointerException extends Exception implements JsonParserExcep
      */
     public function __construct(public readonly string $pointer)
     {
-        parent::__construct("The string [$pointer] is not a valid JSON pointer");
+        parent::__construct("The string [{$pointer}] is not a valid JSON pointer");
     }
 }

@@ -122,7 +122,7 @@ final class Tree
         $pointer = $this->pointers->matching();
 
         return $pointer == '' ? false : $this->depth >= $pointer->depth;
-        return $pointer == '' ? $this->depth > 0 : $this->depth >= $pointer->depth;
+        // return $pointer == '' ? $this->depth > 0 : $this->depth >= $pointer->depth;
     }
 
     /**

@@ -4,8 +4,8 @@ namespace Cerbero\JsonParser\Concerns;
 
 use Cerbero\JsonParser\Exceptions\GuzzleRequiredException;
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
 /**

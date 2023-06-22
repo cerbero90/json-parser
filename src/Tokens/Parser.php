@@ -127,7 +127,7 @@ final class Parser implements Iterator, ArrayAccess
             return null;
         }
 
-        $this->key = $this->decoder->decode($state->tree->currentKey());
+        $this->key = $this->decoder->decode($this->state->tree->currentKey());
         $value = $this->decoder->decode($this->state->value());
 
         if ($value instanceof self) {

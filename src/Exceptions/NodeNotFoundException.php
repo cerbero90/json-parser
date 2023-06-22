@@ -17,6 +17,6 @@ class NodeNotFoundException extends Exception implements JsonParserException
      */
     public function __construct(public mixed $node)
     {
-        parent::__construct("The node [$node] was not found");
+        parent::__construct("The node [{$node}] was not found");
     }
 }

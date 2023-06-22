@@ -4,8 +4,8 @@ namespace Cerbero\JsonParser\Sources;
 
 use Traversable;
 
-use function is_array;
 use function count;
+use function is_array;
 
 /**
  * The iterable source.

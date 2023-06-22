@@ -2,9 +2,9 @@
 
 namespace Cerbero\JsonParser\ValueObjects;
 
-use Cerbero\JsonParser\Decoders\JsonDecoder;
 use Cerbero\JsonParser\Decoders\DecodedValue;
 use Cerbero\JsonParser\Decoders\Decoder;
+use Cerbero\JsonParser\Decoders\JsonDecoder;
 use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
 use Cerbero\JsonParser\Exceptions\DecodingException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;

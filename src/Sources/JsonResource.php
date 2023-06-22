@@ -4,8 +4,8 @@ namespace Cerbero\JsonParser\Sources;
 
 use Traversable;
 
-use function is_string;
 use function is_resource;
+use function is_string;
 
 /**
  * The resource source.
