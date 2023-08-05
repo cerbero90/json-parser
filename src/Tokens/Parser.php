@@ -71,8 +71,9 @@ final class Parser implements IteratorAggregate
                 /** @var string|int $key */
                 $key = $this->decoder->decode($state->tree->currentKey());
                 $value = $this->decoder->decode($state->value());
+                $wrapper = $value instanceof self ? ($this->config->wrapper)($value) : $value;
 
-                yield $key => $state->callPointer($value, $key);
+                yield $key => $state->callPointer($wrapper, $key);
 
                 $value instanceof self && $value->fastForward();
             }

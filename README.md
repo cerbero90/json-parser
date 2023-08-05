@@ -270,7 +270,7 @@ $array = JsonParser::parse($source)->pointers(['/results/0/gender', '/results/0/
 
 ### 🐼 Lazy pointers
 
-JSON Parser only keeps one key and one value in memory at a time. However, if the value is a large array or object, it may be inefficient to keep it all in memory.
+JSON Parser only keeps one key and one value in memory at a time. However, if the value is a large array or object, it may be inefficient or even impossible to keep it all in memory.
 
 To solve this problem, we can use lazy pointers. These pointers recursively keep in memory only one key and one value at a time for any nested array or object.
 
@@ -320,6 +320,23 @@ To lazily parse the entire JSON, we can simply chain the `lazy()` method:
 foreach (JsonParser::parse($source)->lazy() as $key => $value) {
     // 1st iteration: $key === 'results', $value instanceof Parser
     // 2nd iteration: $key === 'info', $value instanceof Parser
+}
+```
+
+We can recursively wrap any instance of `Cerbero\JsonParser\Tokens\Parser` by chaining `wrap()`. This lets us wrap lazy loaded JSON arrays and objects into classes with advanced functionalities, like mapping or filtering:
+
+```php
+$json = JsonParser::parse($source)
+    ->wrap(fn (Parser $parser) => new MyWrapper(fn () => yield from $parser))
+    ->lazy();
+
+foreach ($json as $key => $value) {
+    // 1st iteration: $key === 'results', $value instanceof MyWrapper
+    foreach ($value as $nestedKey => $nestedValue) {
+        // 1st iteration: $nestedKey === 0, $nestedValue instanceof MyWrapper
+        // 2nd iteration: $nestedKey === 1, $nestedValue instanceof MyWrapper
+        // ...
+    }
 }
 ```
 

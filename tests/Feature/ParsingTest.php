@@ -3,6 +3,8 @@
 use Cerbero\JsonParser\Dataset;
 use Cerbero\JsonParser\Decoders\SimdjsonDecoder;
 use Cerbero\JsonParser\JsonParser;
+use Cerbero\JsonParser\Tokens\Parser;
+use Pest\Expectation;
 
 use function Cerbero\JsonParser\parseJson;
 
@@ -42,3 +44,9 @@ it('shows the progress while parsing', function () {
 
     expect($parser->progress()->percentage())->toBe(100.0);
 });
+
+it('wraps the parser recursively', function (string $source) {
+    $json = JsonParser::parse($source)->wrap(fn (Parser $parser) => yield from $parser)->lazy();
+
+    expect($json)->traverse(fn (Expectation $value) => $value->toBeWrappedInto(Generator::class));
+})->with([fixture('json/complex_array.json'), fixture('json/complex_array.json')]);
