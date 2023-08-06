@@ -340,6 +340,8 @@ foreach ($json as $key => $value) {
 }
 ```
 
+> ℹ️ If your wrapper class implements the method `toArray()`, such method will be called when eager loading sub-trees into an array.
+
 Lazy pointers also have all the other functionalities of normal pointers: they accept callbacks, can be set one by one or all together, can be eager loaded into an array and can be mixed with normal pointers as well:
 
 ```php

@@ -113,13 +113,21 @@ final class Parser implements IteratorAggregate
      */
     public function toArray(): array
     {
+        $index = 0;
         $array = [];
+        $hasWildcards = false;
 
         foreach ($this as $key => $value) {
-            $array[$key] = $value instanceof self ? $value->toArray() : $value;
+            if (isset($array[$index][$key])) {
+                $index++;
+                $hasWildcards = true;
+            }
+
+            $turnsIntoArray = is_object($value) && method_exists($value, 'toArray');
+            $array[$index][$key] = $turnsIntoArray ? $value->toArray() : $value;
         }
 
-        return $array;
+        return $hasWildcards || empty($array) ? $array : $array[0];
     }
 
     /**
