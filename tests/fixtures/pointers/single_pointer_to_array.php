@@ -4,52 +4,166 @@ return [
     'complex_array' => [
         '' => $complexArray = require __DIR__ . '/../parsing/complex_array.php',
         '/-' => $complexArray,
-        '/-/id' => ['id' => '0003'],
+        '/-/id' => [
+            [
+                'id' => '0001',
+            ],
+            [
+                'id' => '0002',
+            ],
+            [
+                'id' => '0003',
+            ],
+        ],
         '/-/batters' => [
-            'batters' => [
-                'batter' => [
-                    [
-                        "id" => "1001",
-                        "type" => "Regular",
+            [
+                'batters' => [
+                    'batter' => [
+                        [
+                            'id' => '1001',
+                            'type' => 'Regular',
+                        ],
+                        [
+                            'id' => '1002',
+                            'type' => 'Chocolate',
+                        ],
+                        [
+                            'id' => '1003',
+                            'type' => 'Blueberry',
+                        ],
+                        [
+                            'id' => '1004',
+                            'type' => 'Devil\'s Food',
+                        ],
                     ],
-                    [
-                        "id" => "1002",
-                        "type" => "Chocolate",
+                ],
+            ],
+            [
+                'batters' => [
+                    'batter' => [
+                        [
+                            'id' => '1001',
+                            'type' => 'Regular',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'batters' => [
+                    'batter' => [
+                        [
+                            'id' => '1001',
+                            'type' => 'Regular',
+                        ],
+                        [
+                            'id' => '1002',
+                            'type' => 'Chocolate',
+                        ],
                     ],
                 ],
             ],
         ],
         '/-/batters/batter' => [
-            'batter' => [
-                [
-                    "id" => "1001",
-                    "type" => "Regular",
+            [
+                'batter' => [
+                    [
+                        'id' => '1001',
+                        'type' => 'Regular',
+                    ],
+                    [
+                        'id' => '1002',
+                        'type' => 'Chocolate',
+                    ],
+                    [
+                        'id' => '1003',
+                        'type' => 'Blueberry',
+                    ],
+                    [
+                        'id' => '1004',
+                        'type' => 'Devil\'s Food',
+                    ],
                 ],
-                [
-                    "id" => "1002",
-                    "type" => "Chocolate",
+            ],
+            [
+                'batter' => [
+                    [
+                        'id' => '1001',
+                        'type' => 'Regular',
+                    ],
+                ],
+            ],
+            [
+                'batter' => [
+                    [
+                        'id' => '1001',
+                        'type' => 'Regular',
+                    ],
+                    [
+                        'id' => '1002',
+                        'type' => 'Chocolate',
+                    ],
                 ],
             ],
         ],
         '/-/batters/batter/-' => [
             [
-                "id" => "1001",
-                "type" => "Regular",
+                [
+                    'id' => '1001',
+                    'type' => 'Regular',
+                ],
+                [
+                    'id' => '1002',
+                    'type' => 'Chocolate',
+                ],
+                [
+                    'id' => '1003',
+                    'type' => 'Blueberry',
+                ],
+                [
+                    'id' => '1004',
+                    'type' => 'Devil\'s Food',
+                ],
             ],
             [
-                "id" => "1002",
-                "type" => "Chocolate",
+                [
+                    'id' => '1001',
+                    'type' => 'Regular',
+                ],
             ],
             [
-                "id" => "1003",
-                "type" => "Blueberry",
-            ],
-            [
-                "id" => "1004",
-                "type" => "Devil's Food",
+                [
+                    'id' => '1001',
+                    'type' => 'Regular',
+                ],
+                [
+                    'id' => '1002',
+                    'type' => 'Chocolate',
+                ],
             ],
         ],
-        '/-/batters/batter/-/id' => ['id' => "1002"],
+        '/-/batters/batter/-/id' => [
+            [
+                'id' => '1001',
+            ],
+            [
+                'id' => '1002',
+            ],
+            [
+                'id' => '1003',
+            ],
+            [
+                'id' => '1004',
+            ],
+            [
+                'id' => '1001',
+            ],
+            [
+                'id' => '1001',
+            ],
+            [
+                'id' => '1002',
+            ],
+        ],
     ],
     'complex_object' => [
         '' => require __DIR__ . '/../parsing/complex_object.php',
@@ -115,7 +229,20 @@ return [
                 "type" => "Devil's Food",
             ],
         ],
-        '/batters/batter/-/id' => ['id' => "1004"],
+        '/batters/batter/-/id' => [
+            [
+                'id' => '1001',
+            ],
+            [
+                'id' => '1002',
+            ],
+            [
+                'id' => '1003',
+            ],
+            [
+                'id' => '1004',
+            ],
+        ],
     ],
     'empty_array' => [
         '' => [],

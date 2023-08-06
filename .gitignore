@@ -1,7 +1,9 @@
 build
-composer.lock
+profiling
 vendor
-phpcs.xml
-phpunit.xml
+.DS_Store
 .phpunit.cache
 .phpunit.result.cache
+composer.lock
+phpcs.xml
+phpunit.xml

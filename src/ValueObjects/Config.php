@@ -10,6 +10,7 @@ use Cerbero\JsonParser\Exceptions\DecodingException;
 use Cerbero\JsonParser\Exceptions\SyntaxException;
 use Cerbero\JsonParser\Pointers\Pointer;
 use Cerbero\JsonParser\Pointers\Pointers;
+use Cerbero\JsonParser\Tokens\Parser;
 use Closure;
 
 /**
@@ -54,6 +55,13 @@ final class Config
     public Closure $onSyntaxError;
 
     /**
+     * The callback to run for wrapping the parser.
+     *
+     * @var Closure
+     */
+    public Closure $wrapper;
+
+    /**
      * Instantiate the class
      *
      */
@@ -63,6 +71,7 @@ final class Config
         $this->pointers = new Pointers();
         $this->onDecodingError = fn (DecodedValue $decoded) => throw new DecodingException($decoded);
         $this->onSyntaxError = fn (SyntaxException $e) => throw $e;
+        $this->wrapper = fn (Parser $parser) => $parser;
     }
 
     /**
