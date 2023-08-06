@@ -55,16 +55,6 @@ final class State
     }
 
     /**
-     * Retrieve the JSON tree
-     *
-     * @return Tree
-     */
-    public function tree(): Tree
-    {
-        return $this->tree;
-    }
-
-    /**
      * Determine whether the parser can stop parsing
      *
      * @return bool
