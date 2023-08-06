@@ -22,6 +22,14 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 - Nothing
 
 
+## 1.1.0 - 2023-08-06
+
+### Added
+- Ability to wrap Parser instances recursively when lazy loading
+- Support for turning Parser wrappers into array
+- Support for turning sub-trees using wildcards into array
+
+
 ## 1.0.0 - 2023-06-16
 
 ### Added
