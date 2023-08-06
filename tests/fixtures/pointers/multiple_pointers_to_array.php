@@ -4,44 +4,168 @@ return [
     'complex_array' => [
         '/-1,/-2' => [],
         '/-/id,/-/batters/batter/-/type' => [
-            'id' => '0003',
-            'type' => 'Chocolate',
+            [
+                'id' => '0001',
+                'type' => 'Regular',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
+            [
+                'type' => 'Blueberry',
+            ],
+            [
+                'type' => 'Devil\'s Food',
+                'id' => '0002',
+            ],
+            [
+                'type' => 'Regular',
+                'id' => '0003',
+            ],
+            [
+                'type' => 'Regular',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
         ],
         '/-/name,/-/topping/-/type,/-/id' => [
-            'id' => '0003',
-            'name' => 'Old Fashioned',
-            'type' => 'Maple',
+            [
+                'id' => '0001',
+                'name' => 'Cake',
+                'type' => 'None',
+            ],
+            [
+                'type' => 'Glazed',
+            ],
+            [
+                'type' => 'Sugar',
+            ],
+            [
+                'type' => 'Powdered Sugar',
+            ],
+            [
+                'type' => 'Chocolate with Sprinkles',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
+            [
+                'type' => 'Maple',
+                'id' => '0002',
+                'name' => 'Raised',
+            ],
+            [
+                'type' => 'None',
+            ],
+            [
+                'type' => 'Glazed',
+            ],
+            [
+                'type' => 'Sugar',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
+            [
+                'type' => 'Maple',
+                'id' => '0003',
+                'name' => 'Old Fashioned',
+            ],
+            [
+                'type' => 'None',
+            ],
+            [
+                'type' => 'Glazed',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
+            [
+                'type' => 'Maple',
+            ],
         ],
         '/-/batters/batter/-,/-/name' => [
-            'name' => 'Old Fashioned',
             [
-                "id" => "1001",
-                "type" => "Regular",
+                'name' => 'Cake',
+                [
+                    'id' => '1001',
+                    'type' => 'Regular',
+                ],
+                [
+                    'id' => '1002',
+                    'type' => 'Chocolate',
+                ],
+                [
+                    'id' => '1003',
+                    'type' => 'Blueberry',
+                ],
+                [
+                    'id' => '1004',
+                    'type' => 'Devil\'s Food',
+                ],
             ],
             [
-                "id" => "1002",
-                "type" => "Chocolate",
+                'name' => 'Raised',
+                [
+                    'id' => '1001',
+                    'type' => 'Regular',
+                ],
             ],
             [
-                "id" => "1003",
-                "type" => "Blueberry",
-            ],
-            [
-                "id" => "1004",
-                "type" => "Devil's Food",
+                'name' => 'Old Fashioned',
+                [
+                    'id' => '1001',
+                    'type' => 'Regular',
+                ],
+                [
+                    'id' => '1002',
+                    'type' => 'Chocolate',
+                ],
             ],
         ],
     ],
     'complex_object' => [
         '/-1,/-2' => [],
         '/id,/batters/batter/-/type' => [
-            'id' => '0001',
-            'type' => "Devil's Food",
+            [
+                'id' => '0001',
+                'type' => 'Regular',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
+            [
+                'type' => 'Blueberry',
+            ],
+            [
+                'type' => 'Devil\'s Food',
+            ],
         ],
         '/name,/topping/-/type,/id' => [
-            'id' => '0001',
-            'name' => 'Cake',
-            'type' => 'Maple',
+            [
+                'id' => '0001',
+                'name' => 'Cake',
+                'type' => 'None',
+            ],
+            [
+                'type' => 'Glazed',
+            ],
+            [
+                'type' => 'Sugar',
+            ],
+            [
+                'type' => 'Powdered Sugar',
+            ],
+            [
+                'type' => 'Chocolate with Sprinkles',
+            ],
+            [
+                'type' => 'Chocolate',
+            ],
+            [
+                'type' => 'Maple',
+            ],
         ],
         '/batters/batter/-,/type' => [
             'type' => 'donut',

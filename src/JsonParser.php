@@ -246,4 +246,17 @@ final class JsonParser implements IteratorAggregate
 
         return $this;
     }
+
+    /**
+     * Set the logic to run for wrapping the parser
+     *
+     * @param Closure $callback
+     * @return self
+     */
+    public function wrap(Closure $callback): self
+    {
+        $this->config->wrapper = $callback;
+
+        return $this;
+    }
 }
