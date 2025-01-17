@@ -103,7 +103,7 @@ final class JsonParser implements IteratorAggregate
      * @param Closure|null $callback
      * @return self
      */
-    public function pointer(string $pointer, Closure $callback = null): self
+    public function pointer(string $pointer, ?Closure $callback = null): self
     {
         $this->config->pointers->add(new Pointer($pointer, false, $callback));
 
@@ -132,7 +132,7 @@ final class JsonParser implements IteratorAggregate
      * @param Closure|null $callback
      * @return self
      */
-    public function lazyPointer(string $pointer, Closure $callback = null): self
+    public function lazyPointer(string $pointer, ?Closure $callback = null): self
     {
         $this->config->pointers->add(new Pointer($pointer, true, $callback));
 
@@ -155,7 +155,7 @@ final class JsonParser implements IteratorAggregate
      * @param Closure|null $callback
      * @return void
      */
-    public function traverse(Closure $callback = null): void
+    public function traverse(?Closure $callback = null): void
     {
         foreach ($this as $key => $value) {
             $callback && $callback($value, $key, $this);
