@@ -100,7 +100,7 @@ final class JsonParser implements IteratorAggregate
      * Set a JSON pointer
      *
      * @param string $pointer
-     * @param Closure|null $callback
+     * @param ?Closure $callback
      * @return self
      */
     public function pointer(string $pointer, ?Closure $callback = null): self
@@ -129,7 +129,7 @@ final class JsonParser implements IteratorAggregate
      * Set a lazy JSON pointer
      *
      * @param string $pointer
-     * @param Closure|null $callback
+     * @param ?Closure $callback
      * @return self
      */
     public function lazyPointer(string $pointer, ?Closure $callback = null): self
@@ -152,7 +152,7 @@ final class JsonParser implements IteratorAggregate
     /**
      * Traverse the JSON one key and value at a time
      *
-     * @param Closure|null $callback
+     * @param ?Closure $callback
      * @return void
      */
     public function traverse(?Closure $callback = null): void
