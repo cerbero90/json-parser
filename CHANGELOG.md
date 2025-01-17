@@ -22,6 +22,12 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 - Nothing
 
 
+## 1.1.1 - 2025-01-17
+
+### Added
+- Support for PHP 8.4
+
+
 ## 1.1.0 - 2023-08-06
 
 ### Added
